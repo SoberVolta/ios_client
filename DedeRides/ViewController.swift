@@ -15,6 +15,7 @@ class ViewController: UIViewController {
     
     @IBOutlet weak var signInLabel: UILabel!
     let rootRef = Database.database().reference()
+    let usersRef = Database.database().reference().child("users")
     var labelText = "Sign in to use ΔΔ"
     var uiReady = false
     var userAlreadySignedIn = false
@@ -44,6 +45,7 @@ class ViewController: UIViewController {
             if let displayName = user.displayName {
                 labelText = displayName
                 updateUI()
+                addUserToDatabase(user: user)
                 userAlreadySignedIn = true
                 performSegue(withIdentifier: "segueToMainMenu", sender: self)
             }
@@ -76,6 +78,34 @@ class ViewController: UIViewController {
         }
         
         signInLabel.text = labelText
+    }
+    
+    func addUserToDatabase(user: User) {
+        usersRef.child(user.uid).runTransactionBlock({(currentData: MutableData) -> TransactionResult in
+            
+            if let userData = currentData.value as? [String : AnyObject] {
+                print("User already in data base: \(userData["displayName"] ?? "Unnamed" as AnyObject)")
+                return TransactionResult.success(withValue: currentData)
+            }
+        
+            print("Adding user to database")
+            var newUserData = [String : AnyObject]()
+            if let displayName = user.displayName {
+                newUserData["displayName"] = displayName as AnyObject
+            } else {
+                newUserData["displayName"] = "Unnamed" as AnyObject
+            }
+            
+            currentData.value = newUserData
+            
+            return TransactionResult.success(withValue: currentData)
+            
+        }) { (error, committed, snap) in
+            if let error = error {
+                print(error.localizedDescription)
+            }
+        }
+        
     }
     
 }
