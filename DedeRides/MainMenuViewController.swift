@@ -14,6 +14,9 @@ class MainMenuViewController : UITableViewController {
     
     var userToPresent: User?
     
+    let sectionTitles = ["New Events", "My Events", "My Rides", "My Drives", "Saved Events"]
+    let newEventOptions = ["Create Event", "Search for event"]
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -23,6 +26,11 @@ class MainMenuViewController : UITableViewController {
         // Hide back button
         let hiddentBackButton = UIBarButtonItem(title: "", style: .plain, target: navigationController, action: nil)
         navigationItem.leftBarButtonItem = hiddentBackButton
+        
+        // Table View Tasks
+        tableView.delegate = self
+        tableView.dataSource = self
+        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "mainMenuCell")
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -41,5 +49,41 @@ class MainMenuViewController : UITableViewController {
         }
         
     }
+    
+    // Table View Methods
+    
+    override func numberOfSections(in tableView: UITableView) -> Int {
+        return 5
+    }
+    
+    override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        return sectionTitles[section]
+    }
+    
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "mainMenuCell", for: indexPath as IndexPath)
+        
+        if indexPath.section == 0 {
+            cell.textLabel?.text = newEventOptions[indexPath.item]
+        }
+        
+        return cell
+    }
+    
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        if section == 0 {
+            return 2
+        }
+        return 0
+    }
+    
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        if indexPath.section == 0 {
+            if indexPath.item == 0 {
+                performSegue(withIdentifier: "segueToCreateEvent", sender: self)
+            }
+        }
+    }
+    
     
 }

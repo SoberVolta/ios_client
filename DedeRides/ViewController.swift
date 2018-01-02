@@ -86,11 +86,11 @@ class ViewController: UIViewController {
         usersRef.child(user.uid).runTransactionBlock({(currentData: MutableData) -> TransactionResult in
             
             if let userData = currentData.value as? [String : AnyObject] {
-                print("User already in data base: \(userData["displayName"] ?? "Unnamed" as AnyObject)")
+                print("User already in data base: \(userData["displayName"] ?? "Unnamed" as AnyObject).")
                 return TransactionResult.success(withValue: currentData)
             }
         
-            print("Adding user to database")
+            print("Adding user to database.")
             var newUserData = [String : AnyObject]()
             if let displayName = user.displayName {
                 newUserData["displayName"] = displayName as AnyObject

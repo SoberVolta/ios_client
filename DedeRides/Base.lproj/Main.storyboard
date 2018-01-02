@@ -66,10 +66,95 @@
                             <outlet property="delegate" destination="oKR-dq-umk" id="W8Y-Uy-rgw"/>
                         </connections>
                     </tableView>
+                    <connections>
+                        <segue destination="xhj-YK-PRq" kind="showDetail" identifier="segueToCreateEvent" id="qM9-aQ-cbl"/>
+                    </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Rx3-Xg-5lg" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="836" y="54"/>
+        </scene>
+        <!--Create Event-->
+        <scene sceneID="Ks8-ph-XzS">
+            <objects>
+                <viewController title="Create Event" modalPresentationStyle="currentContext" id="xhj-YK-PRq" customClass="CreateEventViewController" customModule="DedeRides" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="iuD-Oe-3EF">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="603"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Event Name:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="6IH-Me-r0Y">
+                                <rect key="frame" x="16" y="29" width="343" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Mosh Pit" textAlignment="right" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="S7A-u4-AgO">
+                                <rect key="frame" x="16" y="58" width="343" height="30"/>
+                                <nil key="textColor"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits"/>
+                            </textField>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Location:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ETO-i6-fB3">
+                                <rect key="frame" x="16" y="96" width="343" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Grandma's" textAlignment="right" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="vWE-fl-crh">
+                                <rect key="frame" x="16" y="125" width="343" height="30"/>
+                                <nil key="textColor"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits"/>
+                            </textField>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="1KH-6A-Thc">
+                                <rect key="frame" x="16" y="163" width="343" height="30"/>
+                                <state key="normal" title="Create Event"/>
+                                <connections>
+                                    <action selector="createEventButtonPressed:" destination="xhj-YK-PRq" eventType="touchUpInside" id="Ouj-iB-4wC"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="tnU-2h-4CC">
+                                <rect key="frame" x="16" y="201" width="343" height="30"/>
+                                <state key="normal" title="Cancel">
+                                    <color key="titleColor" red="1" green="0.14913141730000001" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                </state>
+                                <connections>
+                                    <action selector="cancelButtonPressed:" destination="xhj-YK-PRq" eventType="touchUpInside" id="EdU-Fy-ptF"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="S7A-u4-AgO" firstAttribute="leading" secondItem="EcT-Ph-gTv" secondAttribute="leading" constant="16" id="3cI-s3-vjm"/>
+                            <constraint firstItem="EcT-Ph-gTv" firstAttribute="trailing" secondItem="6IH-Me-r0Y" secondAttribute="trailing" constant="16" id="61M-I7-p5L"/>
+                            <constraint firstItem="EcT-Ph-gTv" firstAttribute="trailing" secondItem="tnU-2h-4CC" secondAttribute="trailing" constant="16" id="7hS-lS-FPV"/>
+                            <constraint firstItem="vWE-fl-crh" firstAttribute="leading" secondItem="EcT-Ph-gTv" secondAttribute="leading" constant="16" id="EU9-9l-jop"/>
+                            <constraint firstItem="6IH-Me-r0Y" firstAttribute="top" secondItem="EcT-Ph-gTv" secondAttribute="top" constant="29" id="FuR-Fa-gPH"/>
+                            <constraint firstItem="EcT-Ph-gTv" firstAttribute="trailing" secondItem="vWE-fl-crh" secondAttribute="trailing" constant="16" id="IPA-fo-EQe"/>
+                            <constraint firstItem="EcT-Ph-gTv" firstAttribute="trailing" secondItem="ETO-i6-fB3" secondAttribute="trailing" constant="16" id="Lf0-EO-bmX"/>
+                            <constraint firstItem="S7A-u4-AgO" firstAttribute="top" secondItem="6IH-Me-r0Y" secondAttribute="bottom" constant="8" id="MqA-tT-dPB"/>
+                            <constraint firstItem="EcT-Ph-gTv" firstAttribute="trailing" secondItem="S7A-u4-AgO" secondAttribute="trailing" constant="16" id="Mwh-Hy-kgQ"/>
+                            <constraint firstItem="tnU-2h-4CC" firstAttribute="leading" secondItem="EcT-Ph-gTv" secondAttribute="leading" constant="16" id="O9q-NM-UvN"/>
+                            <constraint firstItem="EcT-Ph-gTv" firstAttribute="trailing" secondItem="1KH-6A-Thc" secondAttribute="trailing" constant="16" id="fOq-t5-kSU"/>
+                            <constraint firstItem="tnU-2h-4CC" firstAttribute="top" secondItem="1KH-6A-Thc" secondAttribute="bottom" constant="8" id="kjd-HD-fHI"/>
+                            <constraint firstItem="1KH-6A-Thc" firstAttribute="top" secondItem="vWE-fl-crh" secondAttribute="bottom" constant="8" id="rS0-TX-vfV"/>
+                            <constraint firstItem="vWE-fl-crh" firstAttribute="top" secondItem="ETO-i6-fB3" secondAttribute="bottom" constant="8" id="sFx-YZ-7dH"/>
+                            <constraint firstItem="ETO-i6-fB3" firstAttribute="leading" secondItem="EcT-Ph-gTv" secondAttribute="leading" constant="16" id="uMz-uh-mS0"/>
+                            <constraint firstItem="6IH-Me-r0Y" firstAttribute="leading" secondItem="EcT-Ph-gTv" secondAttribute="leading" constant="16" id="vo4-BA-nyG"/>
+                            <constraint firstItem="1KH-6A-Thc" firstAttribute="leading" secondItem="EcT-Ph-gTv" secondAttribute="leading" constant="16" id="x4l-ot-YAH"/>
+                            <constraint firstItem="ETO-i6-fB3" firstAttribute="top" secondItem="S7A-u4-AgO" secondAttribute="bottom" constant="8" id="zvT-5E-1TY"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="EcT-Ph-gTv"/>
+                    </view>
+                    <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" translucent="NO" prompted="NO"/>
+                    <connections>
+                        <outlet property="eventLocationTextField" destination="vWE-fl-crh" id="FB3-BB-GAX"/>
+                        <outlet property="eventNameTextField" destination="S7A-u4-AgO" id="xyw-ro-a0w"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="VWT-lZ-1GF" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1829.5999999999999" y="-344.07796101949026"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="NHA-fR-7To">
