@@ -14,8 +14,10 @@ class MainMenuViewController : UITableViewController {
     
     var userToPresent: User?
     
+    let usersRef = Database.database().reference().child("users")
     let sectionTitles = ["New Events", "My Events", "My Rides", "My Drives", "Saved Events"]
     let newEventOptions = ["Create Event", "Search for event"]
+    var userEvents = [String:AnyObject]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -31,14 +33,20 @@ class MainMenuViewController : UITableViewController {
         tableView.delegate = self
         tableView.dataSource = self
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "mainMenuCell")
-    }
-    
-    override func viewDidAppear(_ animated: Bool) {
+        
+        // Set user specific data
         if let currentUser = userToPresent {
             self.title = currentUser.displayName
+            usersRef.child(currentUser.uid).child("events").observe(.value, with: userEventsWatcher)
         } else {
             self.title = "No User"
         }
+    }
+    
+    func userEventsWatcher(snap:DataSnapshot) {
+        self.userEvents = snap.value as? [String : AnyObject] ?? [:]
+        print("Adding events: \(userEvents)")
+        self.tableView.reloadData()
     }
     
     func handleAuthStateChange( auth: Auth, user: User? ) {
@@ -85,6 +93,9 @@ class MainMenuViewController : UITableViewController {
         
         if indexPath.section == 0 {
             cell.textLabel?.text = newEventOptions[indexPath.item]
+        } else if indexPath.section == 1 {
+            let key = Array(userEvents.keys)[indexPath.item]
+            cell.textLabel?.text = key
         }
         
         return cell
@@ -92,7 +103,9 @@ class MainMenuViewController : UITableViewController {
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if section == 0 {
-            return 2
+            return newEventOptions.count
+        } else if section == 1 {
+            return userEvents.count
         }
         return 0
     }
