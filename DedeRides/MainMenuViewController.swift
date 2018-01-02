@@ -12,6 +12,8 @@ import Firebase
 
 class MainMenuViewController : UITableViewController {
     
+    var userToPresent: User?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -23,10 +25,17 @@ class MainMenuViewController : UITableViewController {
         navigationItem.leftBarButtonItem = hiddentBackButton
     }
     
+    override func viewDidAppear(_ animated: Bool) {
+        if let currentUser = userToPresent {
+            self.title = currentUser.displayName
+        } else {
+            self.title = "No User"
+        }
+    }
+    
     func handleAuthStateChange( auth: Auth, user: User? ) {
         
-        if let user = user {
-            self.title = user.displayName
+        if let _ = user {
         } else {
             print("User not signed in")
         }

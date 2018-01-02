@@ -19,6 +19,7 @@ class ViewController: UIViewController {
     var labelText = "Sign in to use ΔΔ"
     var uiReady = false
     var userAlreadySignedIn = false
+    var userToPresent: User?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -47,6 +48,7 @@ class ViewController: UIViewController {
                 updateUI()
                 addUserToDatabase(user: user)
                 userAlreadySignedIn = true
+                userToPresent = user
                 performSegue(withIdentifier: "segueToMainMenu", sender: self)
             }
         } else {
@@ -106,6 +108,18 @@ class ViewController: UIViewController {
             }
         }
         
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "segueToMainMenu" {
+            if let destinationVC = segue.destination as? MainMenuViewController {
+                if let newUser = self.userToPresent {
+                    destinationVC.userToPresent = newUser
+                }
+            } else {
+                print("destination not main menu")
+            }
+        }
     }
     
 }
