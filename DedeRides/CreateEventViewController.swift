@@ -8,11 +8,13 @@
 
 import Foundation
 import UIKit
+import Firebase
 
 class CreateEventViewController : UIViewController {
     
     @IBOutlet weak var eventNameTextField: UITextField!
     @IBOutlet weak var eventLocationTextField: UITextField!
+    let eventsRef = Database.database().reference().child("events")
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -52,13 +54,13 @@ class CreateEventViewController : UIViewController {
     func createEvent( _: UIAlertAction ) {
         if let eName = eventNameTextField.text {
             if let eLocation = eventLocationTextField.text {
-                let alert = UIAlertController(
-                    title: "Alert",
-                    message: "Create event \(eName) at \(eLocation)",
-                    preferredStyle: UIAlertControllerStyle.alert
-                )
-                alert.addAction(UIAlertAction(title: "Okay", style: UIAlertActionStyle.default, handler: nil))
-                self.present(alert, animated: true, completion: nil)
+                let newEventRef = eventsRef.childByAutoId()
+                let newEventData = [
+                    "name": eName,
+                    "location": eLocation
+                ]
+                newEventRef.setValue(newEventData)
+                exit()
             }
         }
     }
