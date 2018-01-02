@@ -9,7 +9,6 @@
 import Foundation
 import FacebookCore
 import FacebookLogin
-import Firebase
 
 class DedeSignInButtonDelegate : LoginButtonDelegate {
     

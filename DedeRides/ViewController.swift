@@ -17,6 +17,7 @@ class ViewController: UIViewController {
     let rootRef = Database.database().reference()
     var labelText = "Sign in to use ΔΔ"
     var uiReady = false
+    var userAlreadySignedIn = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -39,18 +40,22 @@ class ViewController: UIViewController {
     }
 
     func handleAuthStateChange( auth: Auth, user: User? ) {
-        if( user != nil ) {
-            if let displayName = user?.displayName {
+        if let user = user {
+            if let displayName = user.displayName {
                 labelText = displayName
                 updateUI()
+                userAlreadySignedIn = true
+                performSegue(withIdentifier: "segueToMainMenu", sender: self)
             }
         } else {
             labelText = "Sign in to use ΔΔ"
             updateUI()
+            userAlreadySignedIn = false
         }
     }
     
     func signOut() {
+        FacebookLogin.LoginManager().logOut()
         do {
             try Auth.auth().signOut()
         } catch let signOutError as NSError {

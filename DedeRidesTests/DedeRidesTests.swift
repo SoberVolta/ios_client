@@ -7,6 +7,7 @@
 //
 
 import XCTest
+
 @testable import DedeRides
 
 class DedeRidesTests: XCTestCase {

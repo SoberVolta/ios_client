@@ -18,6 +18,7 @@
 		E0A8A8CB1FFB2C9400B76C04 /* DedeRidesUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0A8A8CA1FFB2C9400B76C04 /* DedeRidesUITests.swift */; };
 		E0A8A8D91FFB3BA300B76C04 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = E0A8A8D81FFB3BA300B76C04 /* GoogleService-Info.plist */; };
 		E0A8A8DB1FFB3F9200B76C04 /* DedeSignInButtonDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0A8A8DA1FFB3F9200B76C04 /* DedeSignInButtonDelegate.swift */; };
+		E0A8A8DD1FFB509300B76C04 /* MainMenuViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0A8A8DC1FFB509300B76C04 /* MainMenuViewController.swift */; };
 		E496332F1B1B35EF26B0EAFA /* Pods_DedeRidesUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 023651CCE9097E1F03D31860 /* Pods_DedeRidesUITests.framework */; };
 /* End PBXBuildFile section */
 
@@ -63,6 +64,7 @@
 		E0A8A8CC1FFB2C9400B76C04 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		E0A8A8D81FFB3BA300B76C04 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		E0A8A8DA1FFB3F9200B76C04 /* DedeSignInButtonDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DedeSignInButtonDelegate.swift; sourceTree = "<group>"; };
+		E0A8A8DC1FFB509300B76C04 /* MainMenuViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainMenuViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -136,6 +138,7 @@
 				E0A8A8B31FFB2C9400B76C04 /* LaunchScreen.storyboard */,
 				E0A8A8D81FFB3BA300B76C04 /* GoogleService-Info.plist */,
 				E0A8A8B61FFB2C9400B76C04 /* Info.plist */,
+				E0A8A8DC1FFB509300B76C04 /* MainMenuViewController.swift */,
 			);
 			path = DedeRides;
 			sourceTree = "<group>";
@@ -485,6 +488,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E0A8A8DD1FFB509300B76C04 /* MainMenuViewController.swift in Sources */,
 				E0A8A8AD1FFB2C9400B76C04 /* ViewController.swift in Sources */,
 				E0A8A8AB1FFB2C9400B76C04 /* AppDelegate.swift in Sources */,
 				E0A8A8DB1FFB3F9200B76C04 /* DedeSignInButtonDelegate.swift in Sources */,
