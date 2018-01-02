@@ -15,9 +15,10 @@ class MainMenuViewController : UITableViewController {
     var userToPresent: User?
     
     let usersRef = Database.database().reference().child("users")
+    let eventsRef = Database.database().reference().child("events")
     let sectionTitles = ["New Events", "My Events", "My Rides", "My Drives", "Saved Events"]
     let newEventOptions = ["Create Event", "Search for event"]
-    var userEvents = [String:AnyObject]()
+    var userEventNames = [String:String]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -44,9 +45,16 @@ class MainMenuViewController : UITableViewController {
     }
     
     func userEventsWatcher(snap:DataSnapshot) {
-        self.userEvents = snap.value as? [String : AnyObject] ?? [:]
-        print("Adding events: \(userEvents)")
-        self.tableView.reloadData()
+        self.userEventNames.removeAll()
+        let userEvents = Array((snap.value as? [String : AnyObject] ?? [:]).keys)
+        for eventID in userEvents {
+            eventsRef.child(eventID).child("name").observeSingleEvent(of: .value) {(snap) in
+                let eventName = snap.value as? String ?? "Unnamed Event"
+                self.userEventNames[eventID] = eventName
+                print("Adding event: \(eventID):\(eventName)")
+                self.tableView.reloadData()
+            }
+        }
     }
     
     func handleAuthStateChange( auth: Auth, user: User? ) {
@@ -81,7 +89,7 @@ class MainMenuViewController : UITableViewController {
     // Table View Methods
     
     override func numberOfSections(in tableView: UITableView) -> Int {
-        return 5
+        return sectionTitles.count
     }
     
     override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
@@ -94,8 +102,8 @@ class MainMenuViewController : UITableViewController {
         if indexPath.section == 0 {
             cell.textLabel?.text = newEventOptions[indexPath.item]
         } else if indexPath.section == 1 {
-            let key = Array(userEvents.keys)[indexPath.item]
-            cell.textLabel?.text = key
+            let key = Array(userEventNames.keys)[indexPath.item]
+            cell.textLabel?.text = userEventNames[key]
         }
         
         return cell
@@ -105,7 +113,7 @@ class MainMenuViewController : UITableViewController {
         if section == 0 {
             return newEventOptions.count
         } else if section == 1 {
-            return userEvents.count
+            return userEventNames.count
         }
         return 0
     }
