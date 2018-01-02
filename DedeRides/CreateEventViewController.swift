@@ -15,12 +15,16 @@ class CreateEventViewController : UIViewController {
     @IBOutlet weak var eventNameTextField: UITextField!
     @IBOutlet weak var eventLocationTextField: UITextField!
     let eventsRef = Database.database().reference().child("events")
+    let usersRef = Database.database().reference().child("users")
+    var creatingUserUID: String?
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         self.navigationController?.setNavigationBarHidden(false, animated: false)
         self.title = "Create Event"
+        
+        print("Creating user UID: \(String(describing: creatingUserUID))")
     }
     
     @IBAction func createEventButtonPressed(_ sender: Any) {
@@ -54,12 +58,31 @@ class CreateEventViewController : UIViewController {
     func createEvent( _: UIAlertAction ) {
         if let eName = eventNameTextField.text {
             if let eLocation = eventLocationTextField.text {
-                let newEventRef = eventsRef.childByAutoId()
-                let newEventData = [
-                    "name": eName,
-                    "location": eLocation
-                ]
-                newEventRef.setValue(newEventData)
+                
+                if let uid = creatingUserUID {
+                    // Create event space in database
+                    let newEventRef = eventsRef.childByAutoId()
+                    let newEventKey = newEventRef.key
+                    let newEventData = [
+                        "name": eName,
+                        "location": eLocation
+                    ]
+                    newEventRef.setValue(newEventData)
+                    
+                    // Create ref to event under user
+                    let userEventRef = usersRef.child(uid).child("events").child(newEventKey)
+                    userEventRef.setValue(true)
+                    
+                } else {
+                    let alert = UIAlertController(
+                        title: "Whoops",
+                        message: "Please sign in to create this event",
+                        preferredStyle: UIAlertControllerStyle.alert
+                    )
+                    alert.addAction(UIAlertAction(title: "Okay", style: UIAlertActionStyle.default, handler: nil))
+                    self.present(alert, animated: true, completion: nil)
+                }
+                
                 exit()
             }
         }

@@ -50,6 +50,26 @@ class MainMenuViewController : UITableViewController {
         
     }
     
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "segueToCreateEvent" {
+            if let destinationVC = segue.destination as? CreateEventViewController {
+                if let currentUser = self.userToPresent {
+                    destinationVC.creatingUserUID = currentUser.uid
+                } else {
+                    let alert = UIAlertController(
+                        title: "Whoops",
+                        message: "Please sign in to create an event",
+                        preferredStyle: UIAlertControllerStyle.alert
+                    )
+                    alert.addAction(UIAlertAction(title: "Okay", style: UIAlertActionStyle.default, handler: nil))
+                    self.present(alert, animated: true, completion: nil)
+                }
+            } else {
+                print("Destination VC not CreateEventVC")
+            }
+        }
+    }
+    
     // Table View Methods
     
     override func numberOfSections(in tableView: UITableView) -> Int {
