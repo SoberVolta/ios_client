@@ -67,6 +67,16 @@ class EventDetailViewController : UIViewController {
                     print("Not able to parse queue")
                 }
                 
+                // Check driver status
+                self.userHasOfferedDrive = false
+                if let drivers = eventData["drivers"] as? [String:Any] {
+                    if drivers[user.uid] != nil {
+                      self.userHasOfferedDrive = true
+                    }
+                } else {
+                    print("Not able to parse drivers")
+                }
+                
                 // Update UI
                 self.updateUI()
             } else {
@@ -100,6 +110,17 @@ class EventDetailViewController : UIViewController {
             requestRideBtn.setTitle("Request a Ride", for: .normal)
             if let color = self.blueButtonColor {
                 requestRideBtn.setTitleColor(color, for: .normal)
+            }
+        }
+        
+        if userHasOfferedDrive {
+            self.blueButtonColor = requestRideBtn.tintColor
+            offerDriveBtn.setTitle("Cancel Drive Offer", for: .normal)
+            offerDriveBtn.setTitleColor(.red, for: .normal)
+        } else {
+            offerDriveBtn.setTitle("Offer to Drive", for: .normal)
+            if let color = self.blueButtonColor {
+                offerDriveBtn.setTitleColor(color, for: .normal)
             }
         }
         
@@ -182,13 +203,31 @@ class EventDetailViewController : UIViewController {
         }
     }
     
-    @IBAction func offerRideBtnPressed() {
+    @IBAction func offerDriveBtnPressed() {
+        if(userHasOfferedDrive) {
+            confirmCancelDriveOffer()
+        } else {
+            confirmOfferDrive()
+        }
+    }
+    
+    func confirmOfferDrive() {
         let actionSheet = UIAlertController(title: "Offer to Drive", message: "Are you sure you want to offer to drive for \(eventNameText)?", preferredStyle: .actionSheet)
         let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
         actionSheet.addAction(cancelAction)
         
         let offerDriveAction = UIAlertAction(title: "Offer to Drive", style: .default, handler: offerDrive)
         actionSheet.addAction(offerDriveAction)
+        self.present(actionSheet, animated: true, completion: nil)
+    }
+    
+    func confirmCancelDriveOffer() {
+        let actionSheet = UIAlertController(title: "Cancel Offer to Drive", message: "Are you sure you want to offer to drive for \(eventNameText)?", preferredStyle: .actionSheet)
+        let cancelAction = UIAlertAction(title: "Keep Offer to Drive", style: .cancel, handler: nil)
+        actionSheet.addAction(cancelAction)
+        
+        let affirm = UIAlertAction(title: "Cancel Offer to Drive", style: .default, handler: cancelDriveOffer)
+        actionSheet.addAction(affirm)
         self.present(actionSheet, animated: true, completion: nil)
     }
     
@@ -199,6 +238,22 @@ class EventDetailViewController : UIViewController {
                     "/events/\(eventID)/drivers/\(curUser.uid)": true,
                     "/users/\(curUser.uid)/drivesFor/\(eventID)": true
                 ]
+                ref.updateChildValues(updates)
+                
+                // Update UI
+                prepareForDisplay(user: curUser, eventID: eventID)
+            }
+        }
+    }
+    
+    func cancelDriveOffer(_: UIAlertAction) {
+        if let curUser = self.currentUser {
+            if let eventID = self.eventUID {
+                let updates = [
+                    "/events/\(eventID)/drivers/\(curUser.uid)": NSNull(),
+                    "/users/\(curUser.uid)/drivesFor/\(eventID)": NSNull()
+                ]
+                
                 ref.updateChildValues(updates)
                 
                 // Update UI

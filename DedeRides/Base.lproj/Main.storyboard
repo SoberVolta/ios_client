@@ -125,7 +125,7 @@
                                 <rect key="frame" x="16" y="212" width="343" height="30"/>
                                 <state key="normal" title="Offer to Drive"/>
                                 <connections>
-                                    <action selector="offerRideBtnPressed" destination="BoV-Vf-erJ" eventType="touchUpInside" id="2Xu-Nh-veN"/>
+                                    <action selector="offerDriveBtnPressed" destination="BoV-Vf-erJ" eventType="touchUpInside" id="2Xu-Nh-veN"/>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="fn1-YL-OdZ">
