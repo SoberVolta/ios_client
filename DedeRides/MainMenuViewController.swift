@@ -19,6 +19,7 @@ class MainMenuViewController : UITableViewController {
     let sectionTitles = ["New Events", "My Events", "My Rides", "My Drives", "Saved Events"]
     let newEventOptions = ["Create Event", "Search for event"]
     var userEventNames = [String:String]()
+    var selectedEventIdx = -1
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -38,7 +39,7 @@ class MainMenuViewController : UITableViewController {
         // Set user specific data
         if let currentUser = userToPresent {
             self.title = currentUser.displayName
-            usersRef.child(currentUser.uid).child("events").observe(.value, with: userEventsWatcher)
+            usersRef.child(currentUser.uid).child("ownedEvents").observe(.value, with: userEventsWatcher)
         } else {
             self.title = "No User"
         }
@@ -83,6 +84,22 @@ class MainMenuViewController : UITableViewController {
             } else {
                 print("Destination VC not CreateEventVC")
             }
+        } else if segue.identifier == "segueToEventDetail" {
+            if let destinationVC = segue.destination as? EventDetailViewController {
+                if let currentUser = self.userToPresent {
+                    destinationVC.prepareForDisplay(user: currentUser, eventID: Array(self.userEventNames.keys)[selectedEventIdx])
+                } else {
+                    let alert = UIAlertController(
+                        title: "Whoops",
+                        message: "Please sign in to create an event",
+                        preferredStyle: UIAlertControllerStyle.alert
+                    )
+                    alert.addAction(UIAlertAction(title: "Okay", style: UIAlertActionStyle.default, handler: nil))
+                    self.present(alert, animated: true, completion: nil)
+                }
+            } else {
+                print("Destination VC not EventDetailVC")
+            }
         }
     }
     
@@ -123,6 +140,9 @@ class MainMenuViewController : UITableViewController {
             if indexPath.item == 0 {
                 performSegue(withIdentifier: "segueToCreateEvent", sender: self)
             }
+        } else if indexPath.section == 1 {
+            self.selectedEventIdx = indexPath.item
+            performSegue(withIdentifier: "segueToEventDetail", sender: self)
         }
     }
     
