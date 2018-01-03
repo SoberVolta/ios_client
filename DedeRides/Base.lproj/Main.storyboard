@@ -69,6 +69,7 @@
                     <connections>
                         <segue destination="xhj-YK-PRq" kind="show" identifier="segueToCreateEvent" action="showDetailViewController:sender:" id="qM9-aQ-cbl"/>
                         <segue destination="BoV-Vf-erJ" kind="show" identifier="segueToEventDetail" id="6h4-py-kfZ"/>
+                        <segue destination="Nut-l8-ekE" kind="show" identifier="segueToRideDetail" id="Pdf-z1-1C8"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Rx3-Xg-5lg" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -176,6 +177,105 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="NfS-93-fIW" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1829.5999999999999" y="371.96401799100454"/>
+        </scene>
+        <!--Ride Detail View Controller-->
+        <scene sceneID="bUT-YV-pi8">
+            <objects>
+                <viewController id="Nut-l8-ekE" customClass="RideDetailViewController" customModule="DedeRides" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="cCg-D1-iB9">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <navigationBar contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="wSr-48-SYn">
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
+                                <items>
+                                    <navigationItem title="Title" id="dqv-Zh-fOh"/>
+                                </items>
+                            </navigationBar>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Event:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="4nY-7o-a9Y">
+                                <rect key="frame" x="16" y="58" width="343" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="right" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="0Mc-zd-Y7O">
+                                <rect key="frame" x="16" y="87" width="343" height="30"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                                <state key="normal" title="Event Name Text"/>
+                            </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Status:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="JBO-hs-ecB">
+                                <rect key="frame" x="16" y="125" width="343" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Status Text" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="pwQ-Xa-ic5">
+                                <rect key="frame" x="16" y="154" width="343" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Driver:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="hzO-n2-mHZ">
+                                <rect key="frame" x="16" y="183" width="343" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Driver Text" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="XB5-JQ-rGL">
+                                <rect key="frame" x="16" y="212" width="343" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Did-vG-9I5">
+                                <rect key="frame" x="16" y="241" width="343" height="30"/>
+                                <state key="normal" title="Cancel Ride Request">
+                                    <color key="titleColor" red="1" green="0.14913141730000001" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                </state>
+                                <connections>
+                                    <action selector="cancelRideRequestButtonPressed" destination="Nut-l8-ekE" eventType="touchUpInside" id="Bum-8x-cBK"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="cBG-xT-OKm" firstAttribute="trailing" secondItem="4nY-7o-a9Y" secondAttribute="trailing" constant="16" id="0TA-3E-yYq"/>
+                            <constraint firstItem="cBG-xT-OKm" firstAttribute="trailing" secondItem="hzO-n2-mHZ" secondAttribute="trailing" constant="16" id="7NO-Zo-3Hj"/>
+                            <constraint firstItem="JBO-hs-ecB" firstAttribute="leading" secondItem="cBG-xT-OKm" secondAttribute="leading" constant="16" id="9pF-fB-0Ay"/>
+                            <constraint firstItem="cBG-xT-OKm" firstAttribute="trailing" secondItem="0Mc-zd-Y7O" secondAttribute="trailing" constant="16" id="BJg-W9-Cz9"/>
+                            <constraint firstItem="0Mc-zd-Y7O" firstAttribute="top" secondItem="4nY-7o-a9Y" secondAttribute="bottom" constant="8" id="Bz0-pg-wVg"/>
+                            <constraint firstItem="Did-vG-9I5" firstAttribute="top" secondItem="XB5-JQ-rGL" secondAttribute="bottom" constant="8" id="ITx-0n-yCe"/>
+                            <constraint firstItem="pwQ-Xa-ic5" firstAttribute="top" secondItem="JBO-hs-ecB" secondAttribute="bottom" constant="8" id="IW0-Yv-vdZ"/>
+                            <constraint firstItem="cBG-xT-OKm" firstAttribute="trailing" secondItem="pwQ-Xa-ic5" secondAttribute="trailing" constant="16" id="RMR-YB-aJV"/>
+                            <constraint firstItem="hzO-n2-mHZ" firstAttribute="top" secondItem="pwQ-Xa-ic5" secondAttribute="bottom" constant="8" id="Rf9-cF-tXs"/>
+                            <constraint firstItem="4nY-7o-a9Y" firstAttribute="top" secondItem="cBG-xT-OKm" secondAttribute="top" constant="38" id="W30-FD-B8X"/>
+                            <constraint firstItem="hzO-n2-mHZ" firstAttribute="leading" secondItem="cBG-xT-OKm" secondAttribute="leading" constant="16" id="XvS-Tx-sGM"/>
+                            <constraint firstItem="4nY-7o-a9Y" firstAttribute="leading" secondItem="cBG-xT-OKm" secondAttribute="leading" constant="16" id="YR0-UR-xSX"/>
+                            <constraint firstItem="0Mc-zd-Y7O" firstAttribute="leading" secondItem="cBG-xT-OKm" secondAttribute="leading" constant="16" id="aJM-wF-c3c"/>
+                            <constraint firstItem="cBG-xT-OKm" firstAttribute="trailing" secondItem="JBO-hs-ecB" secondAttribute="trailing" constant="16" id="dLr-RB-wMa"/>
+                            <constraint firstItem="XB5-JQ-rGL" firstAttribute="leading" secondItem="cBG-xT-OKm" secondAttribute="leading" constant="16" id="dsY-bm-CIC"/>
+                            <constraint firstItem="pwQ-Xa-ic5" firstAttribute="leading" secondItem="cBG-xT-OKm" secondAttribute="leading" constant="16" id="g36-br-yv0"/>
+                            <constraint firstItem="cBG-xT-OKm" firstAttribute="trailing" secondItem="XB5-JQ-rGL" secondAttribute="trailing" constant="16" id="mKk-wX-tJc"/>
+                            <constraint firstItem="Did-vG-9I5" firstAttribute="leading" secondItem="cBG-xT-OKm" secondAttribute="leading" constant="16" id="sZ5-zN-iqh"/>
+                            <constraint firstItem="XB5-JQ-rGL" firstAttribute="top" secondItem="hzO-n2-mHZ" secondAttribute="bottom" constant="8" id="vXD-Te-7aq"/>
+                            <constraint firstItem="cBG-xT-OKm" firstAttribute="trailing" secondItem="Did-vG-9I5" secondAttribute="trailing" constant="16" id="wjo-eH-1rx"/>
+                            <constraint firstItem="JBO-hs-ecB" firstAttribute="top" secondItem="0Mc-zd-Y7O" secondAttribute="bottom" constant="8" id="zwQ-1J-4Vo"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="cBG-xT-OKm"/>
+                    </view>
+                    <connections>
+                        <outlet property="driverIndicatorLabel" destination="hzO-n2-mHZ" id="FTC-LI-uJz"/>
+                        <outlet property="driverLabel" destination="XB5-JQ-rGL" id="NU4-Hx-dIM"/>
+                        <outlet property="eventLink" destination="0Mc-zd-Y7O" id="akX-r0-i0y"/>
+                        <outlet property="statusLabel" destination="pwQ-Xa-ic5" id="6t1-Kf-Z9k"/>
+                        <segue destination="eQv-J9-JpH" kind="unwind" identifier="unwindFromRideDetailToMainMenu" unwindAction="unwindToMainMenuWithSegue:" id="gJB-1q-AeB"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="799-X5-6An" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <exit id="eQv-J9-JpH" userLabel="Exit" sceneMemberID="exit"/>
+            </objects>
+            <point key="canvasLocation" x="2647" y="372"/>
         </scene>
         <!--Create Event-->
         <scene sceneID="Ks8-ph-XzS">

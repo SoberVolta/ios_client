@@ -67,7 +67,16 @@ class MainMenuViewController : UITableViewController {
         
         if let rides = snap.value as? [String:Any] {
             for rideID in Array(rides.keys) {
-                self.userRides[rideID] = rides[rideID] as? String ?? "Undetermined Event"
+                if let eventID = rides[rideID] as? String {
+                    eventsRef.child(eventID).child("name").observeSingleEvent(of: .value) {(snap) in
+                        if let eventName = snap.value as? String {
+                            self.userRides[rideID] = eventName
+                        } else {
+                            print("Can't parse event name")
+                        }
+                        self.tableView.reloadData()
+                    }
+                }
             }
         } else {
             print("Cant parse rides")
@@ -118,6 +127,21 @@ class MainMenuViewController : UITableViewController {
             } else {
                 print("Destination VC not EventDetailVC")
             }
+        } else if segue.identifier == "segueToRideDetail" {
+            if let destinationVC = segue.destination as? RideDetailViewController {
+                if let currentUser = self.userToPresent {
+                    let rideID = Array(self.userRides.keys)[selectedRideIdx]
+                    destinationVC.prepareForDisplay(rideID: rideID, user: currentUser, eventName: userRides[rideID]!)
+                } else {
+                    let alert = UIAlertController(
+                        title: "Whoops",
+                        message: "Please sign in to create an event",
+                        preferredStyle: UIAlertControllerStyle.alert
+                    )
+                    alert.addAction(UIAlertAction(title: "Okay", style: UIAlertActionStyle.default, handler: nil))
+                    self.present(alert, animated: true, completion: nil)
+                }
+            }
         }
     }
     
@@ -141,7 +165,7 @@ class MainMenuViewController : UITableViewController {
             cell.textLabel?.text = userEventNames[key]
         } else if indexPath.section == 2 {
             let key = Array(userRides.keys)[indexPath.item]
-            cell.textLabel?.text = userRides[key]
+            cell.textLabel?.text = "Ride to \(userRides[key] ?? "Undetermined Event")"
         }
         
         return cell
@@ -166,8 +190,14 @@ class MainMenuViewController : UITableViewController {
         } else if indexPath.section == 1 {
             self.selectedEventIdx = indexPath.item
             performSegue(withIdentifier: "segueToEventDetail", sender: self)
+        } else if indexPath.section == 2 {
+            self.selectedRideIdx = indexPath.item
+            performSegue(withIdentifier: "segueToRideDetail", sender: self)
         }
     }
     
+    @IBAction func unwindToMainMenu(segue:UIStoryboardSegue) {
+        
+    }
     
 }
