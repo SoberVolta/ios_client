@@ -472,9 +472,11 @@
                         <outlet property="eventLabel" destination="z4S-CL-QYj" id="ikQ-su-W6s"/>
                         <outlet property="nextInQueueBtn" destination="vxE-Sk-Fly" id="QGg-H4-fQd"/>
                         <outlet property="queueIdentifierLabel" destination="k3w-KP-729" id="Ucz-Fw-cm4"/>
+                        <segue destination="mk4-u6-sRT" kind="unwind" identifier="unwindFromDriveDetailToMainMenu" unwindAction="unwindToMainMenuFromDriveDetailWithSegue:" id="G0S-kO-tiU"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="yY1-g5-yk9" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <exit id="mk4-u6-sRT" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
             <point key="canvasLocation" x="2792.8000000000002" y="-299.10044977511245"/>
         </scene>
@@ -498,6 +500,6 @@
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>
-        <segue reference="6h4-py-kfZ"/>
+        <segue reference="4cd-mK-Q9n"/>
     </inferredMetricsTieBreakers>
 </document>

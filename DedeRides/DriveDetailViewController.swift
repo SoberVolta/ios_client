@@ -174,6 +174,32 @@ class DriveDetailViewController: UIViewController {
     }
     
     @IBAction func cancelDriveOfferBtnPressed() {
+        let actionSheet = UIAlertController(title: "Cancel Offer to Drive", message: "Are you sure you want to no longer offer to drive for \(self.eventName ?? "this event")?", preferredStyle: .actionSheet)
+        let cancelAction = UIAlertAction(title: "Continue Offering to Drive", style: .cancel, handler: nil)
+        actionSheet.addAction(cancelAction)
         
+        let affirm = UIAlertAction(title: "Cancel Offer to Drive", style: .default, handler: cancelDriveOffer)
+        actionSheet.addAction(affirm)
+        self.present(actionSheet, animated: true, completion: nil)
     }
+    
+    func cancelDriveOffer(_:UIAlertAction) {
+        if let curUser = self.currentUser {
+            if let eventID = self.eventUID {
+                let updates = [
+                    "/events/\(eventID)/drivers/\(curUser.uid)": NSNull(),
+                    "/users/\(curUser.uid)/drivesFor/\(eventID)": NSNull()
+                ]
+                
+                ref.updateChildValues(updates)
+                
+                exit()
+            }
+        }
+    }
+    
+    func exit() {
+        performSegue(withIdentifier: "unwindFromDriveDetailToMainMenu", sender: self)
+    }
+    
 }

@@ -277,7 +277,7 @@ class EventDetailViewController : UIViewController {
     }
     
     func deleteCurrentEvent(_: UIAlertAction) {
-        
+        print("Delete Current Event")
     }
     
 }
