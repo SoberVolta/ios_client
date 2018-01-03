@@ -20,6 +20,7 @@
 		E0A8A8DB1FFB3F9200B76C04 /* DedeSignInButtonDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0A8A8DA1FFB3F9200B76C04 /* DedeSignInButtonDelegate.swift */; };
 		E0A8A8DD1FFB509300B76C04 /* MainMenuViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0A8A8DC1FFB509300B76C04 /* MainMenuViewController.swift */; };
 		E0A8A8DF1FFB6F1800B76C04 /* CreateEventViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0A8A8DE1FFB6F1800B76C04 /* CreateEventViewController.swift */; };
+		E0A8A8E11FFC670500B76C04 /* EventDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0A8A8E01FFC670500B76C04 /* EventDetailViewController.swift */; };
 		E496332F1B1B35EF26B0EAFA /* Pods_DedeRidesUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 023651CCE9097E1F03D31860 /* Pods_DedeRidesUITests.framework */; };
 /* End PBXBuildFile section */
 
@@ -67,6 +68,7 @@
 		E0A8A8DA1FFB3F9200B76C04 /* DedeSignInButtonDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DedeSignInButtonDelegate.swift; sourceTree = "<group>"; };
 		E0A8A8DC1FFB509300B76C04 /* MainMenuViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainMenuViewController.swift; sourceTree = "<group>"; };
 		E0A8A8DE1FFB6F1800B76C04 /* CreateEventViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateEventViewController.swift; sourceTree = "<group>"; };
+		E0A8A8E01FFC670500B76C04 /* EventDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventDetailViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -142,6 +144,7 @@
 				E0A8A8B61FFB2C9400B76C04 /* Info.plist */,
 				E0A8A8DC1FFB509300B76C04 /* MainMenuViewController.swift */,
 				E0A8A8DE1FFB6F1800B76C04 /* CreateEventViewController.swift */,
+				E0A8A8E01FFC670500B76C04 /* EventDetailViewController.swift */,
 			);
 			path = DedeRides;
 			sourceTree = "<group>";
@@ -491,6 +494,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E0A8A8E11FFC670500B76C04 /* EventDetailViewController.swift in Sources */,
 				E0A8A8DD1FFB509300B76C04 /* MainMenuViewController.swift in Sources */,
 				E0A8A8AD1FFB2C9400B76C04 /* ViewController.swift in Sources */,
 				E0A8A8DF1FFB6F1800B76C04 /* CreateEventViewController.swift in Sources */,

@@ -68,11 +68,112 @@
                     </tableView>
                     <connections>
                         <segue destination="xhj-YK-PRq" kind="showDetail" identifier="segueToCreateEvent" id="qM9-aQ-cbl"/>
+                        <segue destination="BoV-Vf-erJ" kind="show" identifier="segueToEventDetail" id="6h4-py-kfZ"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Rx3-Xg-5lg" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="836" y="54"/>
+        </scene>
+        <!--Event Detail View Controller-->
+        <scene sceneID="cCM-Tm-oIb">
+            <objects>
+                <viewController id="BoV-Vf-erJ" customClass="EventDetailViewController" customModule="DedeRides" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="uce-D1-WVa">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <navigationBar contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Zec-rd-ztz">
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
+                                <items>
+                                    <navigationItem title="Title" id="oHq-A3-W8P"/>
+                                </items>
+                            </navigationBar>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Event Name:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Jhd-y3-L4l">
+                                <rect key="frame" x="16" y="58" width="343" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Event Name Text" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="8XR-Cf-0vQ">
+                                <rect key="frame" x="16" y="87" width="343" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Event Location:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="p3v-6Y-YWb">
+                                <rect key="frame" x="16" y="116" width="343" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Event Location Text" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="cro-67-lMm">
+                                <rect key="frame" x="16" y="145" width="343" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Edi-6V-WuI">
+                                <rect key="frame" x="16" y="174" width="343" height="30"/>
+                                <state key="normal" title="Request a Ride"/>
+                                <connections>
+                                    <action selector="requestRideBtnPressed" destination="BoV-Vf-erJ" eventType="touchUpInside" id="OcB-KS-nbe"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="E2h-iF-cTe">
+                                <rect key="frame" x="16" y="212" width="343" height="30"/>
+                                <state key="normal" title="Offer to Drive"/>
+                                <connections>
+                                    <action selector="offerRideBtnPressed" destination="BoV-Vf-erJ" eventType="touchUpInside" id="2Xu-Nh-veN"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="fn1-YL-OdZ">
+                                <rect key="frame" x="16" y="250" width="343" height="30"/>
+                                <state key="normal" title="Delete">
+                                    <color key="titleColor" red="1" green="0.14913141730000001" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                </state>
+                                <connections>
+                                    <action selector="deleteEventBtnPressed" destination="BoV-Vf-erJ" eventType="touchUpInside" id="d1i-9q-gyr"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="E2h-iF-cTe" firstAttribute="top" secondItem="Edi-6V-WuI" secondAttribute="bottom" constant="8" id="0Kx-eo-fGQ"/>
+                            <constraint firstItem="Jhd-y3-L4l" firstAttribute="leading" secondItem="mmV-PB-odI" secondAttribute="leading" constant="16" id="9cR-Mf-DiZ"/>
+                            <constraint firstItem="mmV-PB-odI" firstAttribute="trailing" secondItem="Edi-6V-WuI" secondAttribute="trailing" constant="16" id="Bmv-k7-1QN"/>
+                            <constraint firstItem="mmV-PB-odI" firstAttribute="trailing" secondItem="Jhd-y3-L4l" secondAttribute="trailing" constant="16" id="CuL-tI-IgN"/>
+                            <constraint firstItem="fn1-YL-OdZ" firstAttribute="leading" secondItem="mmV-PB-odI" secondAttribute="leading" constant="16" id="HQx-Km-BHH"/>
+                            <constraint firstItem="cro-67-lMm" firstAttribute="top" secondItem="p3v-6Y-YWb" secondAttribute="bottom" constant="8" id="QI2-AI-1wF"/>
+                            <constraint firstItem="Edi-6V-WuI" firstAttribute="top" secondItem="cro-67-lMm" secondAttribute="bottom" constant="8" id="QoX-Sc-LaY"/>
+                            <constraint firstItem="cro-67-lMm" firstAttribute="leading" secondItem="mmV-PB-odI" secondAttribute="leading" constant="16" id="aJy-Zl-Yci"/>
+                            <constraint firstItem="fn1-YL-OdZ" firstAttribute="top" secondItem="E2h-iF-cTe" secondAttribute="bottom" constant="8" id="aiw-NM-yZx"/>
+                            <constraint firstItem="Edi-6V-WuI" firstAttribute="leading" secondItem="mmV-PB-odI" secondAttribute="leading" constant="16" id="bUw-P4-2ub"/>
+                            <constraint firstItem="8XR-Cf-0vQ" firstAttribute="leading" secondItem="mmV-PB-odI" secondAttribute="leading" constant="16" id="dqJ-ms-p9x"/>
+                            <constraint firstItem="mmV-PB-odI" firstAttribute="trailing" secondItem="fn1-YL-OdZ" secondAttribute="trailing" constant="16" id="k3Q-Ga-eLi"/>
+                            <constraint firstItem="p3v-6Y-YWb" firstAttribute="leading" secondItem="mmV-PB-odI" secondAttribute="leading" constant="16" id="kZS-jR-eC3"/>
+                            <constraint firstItem="mmV-PB-odI" firstAttribute="trailing" secondItem="cro-67-lMm" secondAttribute="trailing" constant="16" id="mCA-o4-e17"/>
+                            <constraint firstItem="E2h-iF-cTe" firstAttribute="leading" secondItem="mmV-PB-odI" secondAttribute="leading" constant="16" id="ovB-j6-osf"/>
+                            <constraint firstItem="Jhd-y3-L4l" firstAttribute="top" secondItem="mmV-PB-odI" secondAttribute="top" constant="38" id="raO-zB-9np"/>
+                            <constraint firstItem="mmV-PB-odI" firstAttribute="trailing" secondItem="8XR-Cf-0vQ" secondAttribute="trailing" constant="16" id="sE2-Ku-3dG"/>
+                            <constraint firstItem="mmV-PB-odI" firstAttribute="trailing" secondItem="p3v-6Y-YWb" secondAttribute="trailing" constant="16" id="uEJ-jq-IT2"/>
+                            <constraint firstItem="8XR-Cf-0vQ" firstAttribute="top" secondItem="Jhd-y3-L4l" secondAttribute="bottom" constant="8" id="uLZ-Aw-MjD"/>
+                            <constraint firstItem="mmV-PB-odI" firstAttribute="trailing" secondItem="E2h-iF-cTe" secondAttribute="trailing" constant="16" id="vSc-tJ-DXK"/>
+                            <constraint firstItem="p3v-6Y-YWb" firstAttribute="top" secondItem="mmV-PB-odI" secondAttribute="top" constant="96" id="wuz-2C-myW"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="mmV-PB-odI"/>
+                    </view>
+                    <navigationItem key="navigationItem" id="fSG-pg-A0w"/>
+                    <connections>
+                        <outlet property="deleteBtn" destination="fn1-YL-OdZ" id="lKz-1u-Fgh"/>
+                        <outlet property="eventLocationLabel" destination="cro-67-lMm" id="7GX-n6-kyI"/>
+                        <outlet property="eventNameLabel" destination="8XR-Cf-0vQ" id="MeF-Kh-n8n"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="NfS-93-fIW" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1829.5999999999999" y="371.96401799100454"/>
         </scene>
         <!--Create Event-->
         <scene sceneID="Ks8-ph-XzS">
