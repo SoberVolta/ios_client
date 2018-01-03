@@ -87,6 +87,22 @@ class RideDetailViewController : UIViewController {
         
     }
     
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "segueFromRideDetailToEventDetail" {
+            if let destinationVC = segue.destination as? EventDetailViewController {
+                if let curUser = self.currentUser {
+                    if let eventID = self.dbEventID {
+                        destinationVC.prepareForDisplay(user: curUser, eventID: eventID)
+                    }
+                }
+            }
+        }
+    }
+    
+    @IBAction func eventLinkButtonPressed() {
+        performSegue(withIdentifier: "segueFromRideDetailToEventDetail", sender: self)
+    }
+    
     @IBAction func cancelRideRequestButtonPressed() {
         let actionSheet = UIAlertController(title: "Cancel Ride Request", message: "Are you sure you want to cancel your ride request to \(self.eventName ?? "Undetermined Event")?", preferredStyle: .actionSheet)
         let cancelAction = UIAlertAction(title: "Keep Ride Request", style: .cancel, handler: nil)

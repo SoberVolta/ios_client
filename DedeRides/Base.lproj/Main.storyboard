@@ -176,7 +176,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="NfS-93-fIW" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1829.5999999999999" y="371.96401799100454"/>
+            <point key="canvasLocation" x="2735" y="54"/>
         </scene>
         <!--Ride Detail View Controller-->
         <scene sceneID="bUT-YV-pi8">
@@ -203,6 +203,9 @@
                                 <rect key="frame" x="16" y="87" width="343" height="30"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="15"/>
                                 <state key="normal" title="Event Name Text"/>
+                                <connections>
+                                    <action selector="eventLinkButtonPressed" destination="Nut-l8-ekE" eventType="touchUpInside" id="9xo-SK-hha"/>
+                                </connections>
                             </button>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Status:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="JBO-hs-ecB">
                                 <rect key="frame" x="16" y="125" width="343" height="21"/>
@@ -270,12 +273,13 @@
                         <outlet property="eventLink" destination="0Mc-zd-Y7O" id="akX-r0-i0y"/>
                         <outlet property="statusLabel" destination="pwQ-Xa-ic5" id="6t1-Kf-Z9k"/>
                         <segue destination="eQv-J9-JpH" kind="unwind" identifier="unwindFromRideDetailToMainMenu" unwindAction="unwindToMainMenuWithSegue:" id="gJB-1q-AeB"/>
+                        <segue destination="BoV-Vf-erJ" kind="show" identifier="segueFromRideDetailToEventDetail" id="4cd-mK-Q9n"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="799-X5-6An" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <exit id="eQv-J9-JpH" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
-            <point key="canvasLocation" x="2647" y="372"/>
+            <point key="canvasLocation" x="1830" y="421"/>
         </scene>
         <!--Create Event-->
         <scene sceneID="Ks8-ph-XzS">
@@ -356,7 +360,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="VWT-lZ-1GF" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1829.5999999999999" y="-344.07796101949026"/>
+            <point key="canvasLocation" x="1830" y="-300"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="NHA-fR-7To">
@@ -377,4 +381,7 @@
             <point key="canvasLocation" x="-864" y="54.872563718140931"/>
         </scene>
     </scenes>
+    <inferredMetricsTieBreakers>
+        <segue reference="4cd-mK-Q9n"/>
+    </inferredMetricsTieBreakers>
 </document>
