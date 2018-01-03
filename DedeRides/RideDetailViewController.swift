@@ -34,7 +34,7 @@ class RideDetailViewController : UIViewController {
     var dbDriverID: String?
     var dbRiderID: String?
     
-    override func viewDidAppear(_ animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         uiReady = true;
         prepareForDisplay(rideID: self.rideUID!, user: self.currentUser!, eventName: self.eventName!)
     }

@@ -70,6 +70,7 @@
                         <segue destination="xhj-YK-PRq" kind="show" identifier="segueToCreateEvent" action="showDetailViewController:sender:" id="qM9-aQ-cbl"/>
                         <segue destination="BoV-Vf-erJ" kind="show" identifier="segueToEventDetail" id="6h4-py-kfZ"/>
                         <segue destination="Nut-l8-ekE" kind="show" identifier="segueToRideDetail" id="Pdf-z1-1C8"/>
+                        <segue destination="xbq-PB-OXx" kind="show" identifier="segueToDriveDetail" id="7Xv-qh-jsQ"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Rx3-Xg-5lg" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -176,7 +177,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="NfS-93-fIW" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2735" y="54"/>
+            <point key="canvasLocation" x="2778" y="421"/>
         </scene>
         <!--Ride Detail View Controller-->
         <scene sceneID="bUT-YV-pi8">
@@ -362,6 +363,121 @@
             </objects>
             <point key="canvasLocation" x="1830" y="-300"/>
         </scene>
+        <!--Drive Detail View Controller-->
+        <scene sceneID="KiW-gY-msc">
+            <objects>
+                <viewController id="xbq-PB-OXx" customClass="DriveDetailViewController" customModule="DedeRides" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="5Xh-RB-IA9">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <navigationBar contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ZoE-su-Rhw">
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
+                                <items>
+                                    <navigationItem title="Title" id="2Ub-RX-dDa"/>
+                                </items>
+                            </navigationBar>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Queue:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="k3w-KP-729">
+                                <rect key="frame" x="16" y="115" width="343" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="right" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="vxE-Sk-Fly">
+                                <rect key="frame" x="16" y="144" width="343" height="30"/>
+                                <state key="normal" title="Take next rider in queue"/>
+                                <connections>
+                                    <action selector="takeNextInQueueBtnPressed" destination="xbq-PB-OXx" eventType="touchUpInside" id="y1Q-GL-rlL"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Iif-0H-WZQ">
+                                <rect key="frame" x="16" y="249" width="343" height="30"/>
+                                <state key="normal" title="End Current Drive">
+                                    <color key="titleColor" red="1" green="0.14913141730000001" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                </state>
+                                <connections>
+                                    <action selector="endCurrentDriveBtnPressed" destination="xbq-PB-OXx" eventType="touchUpInside" id="MLM-0C-gpX"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Sh3-mK-Mde">
+                                <rect key="frame" x="16" y="287" width="343" height="30"/>
+                                <state key="normal" title="Cancel Drive Offer">
+                                    <color key="titleColor" red="1" green="0.14913141730000001" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                </state>
+                                <connections>
+                                    <action selector="cancelDriveOfferBtnPressed" destination="xbq-PB-OXx" eventType="touchUpInside" id="Tje-FU-Q2E"/>
+                                </connections>
+                            </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Drive for Event:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="TPL-jD-sQY">
+                                <rect key="frame" x="16" y="57" width="343" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Event Text" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="z4S-CL-QYj">
+                                <rect key="frame" x="16" y="86" width="343" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Current Drive:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Gm1-hS-3ej">
+                                <rect key="frame" x="16" y="182" width="343" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="right" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="oJE-fE-UKb">
+                                <rect key="frame" x="16" y="211" width="343" height="30"/>
+                                <state key="normal" title="Current Ride Text"/>
+                                <connections>
+                                    <action selector="takeNextInQueueBtnPressed" destination="xbq-PB-OXx" eventType="touchUpInside" id="qqo-n3-1gr"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="z4S-CL-QYj" firstAttribute="top" secondItem="TPL-jD-sQY" secondAttribute="bottom" constant="8" id="0Oe-lm-fzd"/>
+                            <constraint firstItem="VGT-Iz-zW9" firstAttribute="trailing" secondItem="Iif-0H-WZQ" secondAttribute="trailing" constant="16" id="4kb-Nh-o9Z"/>
+                            <constraint firstItem="VGT-Iz-zW9" firstAttribute="trailing" secondItem="k3w-KP-729" secondAttribute="trailing" constant="16" id="4yZ-fG-uhs"/>
+                            <constraint firstItem="VGT-Iz-zW9" firstAttribute="trailing" secondItem="oJE-fE-UKb" secondAttribute="trailing" constant="16" id="5hk-ul-xbU"/>
+                            <constraint firstItem="Iif-0H-WZQ" firstAttribute="top" secondItem="oJE-fE-UKb" secondAttribute="bottom" constant="8" id="8UP-WU-YGs"/>
+                            <constraint firstItem="z4S-CL-QYj" firstAttribute="leading" secondItem="VGT-Iz-zW9" secondAttribute="leading" constant="16" id="9WL-nH-iQc"/>
+                            <constraint firstItem="VGT-Iz-zW9" firstAttribute="trailing" secondItem="TPL-jD-sQY" secondAttribute="trailing" constant="16" id="ADo-EP-Mf2"/>
+                            <constraint firstItem="vxE-Sk-Fly" firstAttribute="top" secondItem="k3w-KP-729" secondAttribute="bottom" constant="8" id="Ahd-XN-fs2"/>
+                            <constraint firstItem="VGT-Iz-zW9" firstAttribute="trailing" secondItem="z4S-CL-QYj" secondAttribute="trailing" constant="16" id="Frt-RS-4zw"/>
+                            <constraint firstItem="Iif-0H-WZQ" firstAttribute="leading" secondItem="VGT-Iz-zW9" secondAttribute="leading" constant="16" id="IxS-pq-HgN"/>
+                            <constraint firstItem="vxE-Sk-Fly" firstAttribute="leading" secondItem="VGT-Iz-zW9" secondAttribute="leading" constant="16" id="Nnv-7Q-Khp"/>
+                            <constraint firstItem="oJE-fE-UKb" firstAttribute="leading" secondItem="VGT-Iz-zW9" secondAttribute="leading" constant="16" id="Q8t-PY-Iqu"/>
+                            <constraint firstItem="Sh3-mK-Mde" firstAttribute="top" secondItem="Iif-0H-WZQ" secondAttribute="bottom" constant="8" id="W2b-gJ-H82"/>
+                            <constraint firstItem="oJE-fE-UKb" firstAttribute="top" secondItem="Gm1-hS-3ej" secondAttribute="bottom" constant="8" id="W9L-em-CbB"/>
+                            <constraint firstItem="VGT-Iz-zW9" firstAttribute="trailing" secondItem="Gm1-hS-3ej" secondAttribute="trailing" constant="16" id="Wa0-5n-e7b"/>
+                            <constraint firstItem="VGT-Iz-zW9" firstAttribute="trailing" secondItem="vxE-Sk-Fly" secondAttribute="trailing" constant="16" id="Xth-wd-NDX"/>
+                            <constraint firstItem="TPL-jD-sQY" firstAttribute="top" secondItem="VGT-Iz-zW9" secondAttribute="top" constant="37" id="cd6-CC-5nc"/>
+                            <constraint firstItem="k3w-KP-729" firstAttribute="leading" secondItem="VGT-Iz-zW9" secondAttribute="leading" constant="16" id="cfp-lw-fL5"/>
+                            <constraint firstItem="Sh3-mK-Mde" firstAttribute="leading" secondItem="VGT-Iz-zW9" secondAttribute="leading" constant="16" id="dXZ-is-8tK"/>
+                            <constraint firstItem="VGT-Iz-zW9" firstAttribute="trailing" secondItem="Sh3-mK-Mde" secondAttribute="trailing" constant="16" id="g7W-4R-3LI"/>
+                            <constraint firstItem="Gm1-hS-3ej" firstAttribute="leading" secondItem="VGT-Iz-zW9" secondAttribute="leading" constant="16" id="gcW-qi-0rs"/>
+                            <constraint firstItem="TPL-jD-sQY" firstAttribute="leading" secondItem="VGT-Iz-zW9" secondAttribute="leading" constant="16" id="hFg-Lk-k2K"/>
+                            <constraint firstItem="Gm1-hS-3ej" firstAttribute="top" secondItem="vxE-Sk-Fly" secondAttribute="bottom" constant="8" id="mjt-VV-f72"/>
+                            <constraint firstItem="k3w-KP-729" firstAttribute="top" secondItem="z4S-CL-QYj" secondAttribute="bottom" constant="8" id="sGY-n0-9pH"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="VGT-Iz-zW9"/>
+                    </view>
+                    <connections>
+                        <outlet property="cancelDriveOfferBtn" destination="Sh3-mK-Mde" id="VGs-lV-9F3"/>
+                        <outlet property="currentRideBtn" destination="oJE-fE-UKb" id="SXU-Ne-9n0"/>
+                        <outlet property="currentRideIdentifierLabel" destination="Gm1-hS-3ej" id="zmI-1K-6Wo"/>
+                        <outlet property="endCurrentDriveBtn" destination="Iif-0H-WZQ" id="wKx-n4-5In"/>
+                        <outlet property="eventLabel" destination="z4S-CL-QYj" id="ikQ-su-W6s"/>
+                        <outlet property="nextInQueueBtn" destination="vxE-Sk-Fly" id="QGg-H4-fQd"/>
+                        <outlet property="queueIdentifierLabel" destination="k3w-KP-729" id="Ucz-Fw-cm4"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="yY1-g5-yk9" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2792.8000000000002" y="-299.10044977511245"/>
+        </scene>
         <!--Navigation Controller-->
         <scene sceneID="NHA-fR-7To">
             <objects>
@@ -382,6 +498,6 @@
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>
-        <segue reference="4cd-mK-Q9n"/>
+        <segue reference="6h4-py-kfZ"/>
     </inferredMetricsTieBreakers>
 </document>

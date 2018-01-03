@@ -162,6 +162,21 @@ class MainMenuViewController : UITableViewController {
                     self.present(alert, animated: true, completion: nil)
                 }
             }
+        } else if segue.identifier == "segueToDriveDetail" {
+            if let destinationVC = segue.destination as? DriveDetailViewController {
+                if let currentUser = self.userToPresent {
+                    let driveID = Array(self.userDrives.keys)[selectedDriveIdx]
+                    destinationVC.prepareForDisplay(user: currentUser, eventID: driveID, eventName: userDrives[driveID]!)
+                } else {
+                    let alert = UIAlertController(
+                        title: "Whoops",
+                        message: "Please sign in to create an event",
+                        preferredStyle: UIAlertControllerStyle.alert
+                    )
+                    alert.addAction(UIAlertAction(title: "Okay", style: UIAlertActionStyle.default, handler: nil))
+                    self.present(alert, animated: true, completion: nil)
+                }
+            }
         }
     }
     
@@ -220,6 +235,9 @@ class MainMenuViewController : UITableViewController {
         } else if indexPath.section == 2 {
             self.selectedRideIdx = indexPath.item
             performSegue(withIdentifier: "segueToRideDetail", sender: self)
+        } else if indexPath.section == 3 {
+            self.selectedDriveIdx = indexPath.item
+            performSegue(withIdentifier: "segueToDriveDetail", sender: self)
         }
     }
     

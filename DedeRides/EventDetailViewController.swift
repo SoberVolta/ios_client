@@ -35,7 +35,7 @@ class EventDetailViewController : UIViewController {
     private var blueButtonColor: UIColor?
     private var userHasOfferedDrive = false
     
-    override func viewDidAppear(_ animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         uiReady = true;
         updateUI()
     }
