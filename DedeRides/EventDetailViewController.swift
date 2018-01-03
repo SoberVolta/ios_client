@@ -17,6 +17,8 @@ class EventDetailViewController : UIViewController {
     
     @IBOutlet weak var eventNameLabel: UILabel!
     @IBOutlet weak var eventLocationLabel: UILabel!
+    @IBOutlet weak var requestRideBtn: UIButton!
+    @IBOutlet weak var offerDriveBtn: UIButton!
     @IBOutlet weak var deleteBtn: UIButton!
     
     let ref = Database.database().reference()
@@ -28,6 +30,10 @@ class EventDetailViewController : UIViewController {
     private var eventNameText = "Unnamed Event"
     private var eventLocationText = "Unspecified Location"
     private var eventOwner: String?
+    private var userHasRequestedRide = false
+    private var userRideRequestID: String?
+    private var blueButtonColor: UIColor?
+    private var userHasOfferedDrive = false
     
     override func viewDidAppear(_ animated: Bool) {
         uiReady = true;
@@ -39,10 +45,29 @@ class EventDetailViewController : UIViewController {
         self.eventUID = eventID
         
         eventsRef.child(eventID).observeSingleEvent(of: .value) { (snap) in
-            if let eventData = snap.value as? [String:String] {
-                self.eventNameText = eventData["name"] ?? "Unnamed Event"
-                self.eventLocationText = eventData["location"] ?? "Unspecified Location"
-                self.eventOwner = eventData["owner"]
+            if let eventData = snap.value as? [String:Any] {
+                
+                // Get Values
+                self.eventNameText = eventData["name"] as? String ?? "Unnamed Event"
+                self.eventLocationText = eventData["location"] as? String ?? "Unspecified Location"
+                self.eventOwner = eventData["owner"] as? String
+                
+                // Check ride status
+                self.userHasRequestedRide = false
+                self.userRideRequestID = nil
+                if let queue = eventData["queue"] as? [String:String] {
+                    for rideID in Array(queue.keys) {
+                        if queue[rideID] == user.uid {
+                            self.userHasRequestedRide = true
+                            self.userRideRequestID = rideID
+                            break
+                        }
+                    }
+                } else {
+                    print("Not able to parse queue")
+                }
+                
+                // Update UI
                 self.updateUI()
             } else {
                 print("Cannot parse event as [String:String]")
@@ -66,14 +91,44 @@ class EventDetailViewController : UIViewController {
                 }
             }
         }
+        
+        if userHasRequestedRide {
+            self.blueButtonColor = requestRideBtn.tintColor
+            requestRideBtn.setTitle("Cancel Ride Request", for: .normal)
+            requestRideBtn.setTitleColor(.red, for: .normal)
+        } else {
+            requestRideBtn.setTitle("Request a Ride", for: .normal)
+            if let color = self.blueButtonColor {
+                requestRideBtn.setTitleColor(color, for: .normal)
+            }
+        }
+        
     }
     
     @IBAction func requestRideBtnPressed() {
+        if(userHasRequestedRide) {
+            confirmCancelRideRequest()
+        } else {
+            confirmRideRequest()
+        }
+    }
+    
+    func confirmRideRequest() {
         let actionSheet = UIAlertController(title: "Request a Ride", message: "Are you sure you want to request a ride to \(eventNameText)?", preferredStyle: .actionSheet)
         let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
         actionSheet.addAction(cancelAction)
         
         let requestRideAction = UIAlertAction(title: "Request a Ride", style: .default, handler: requestRide)
+        actionSheet.addAction(requestRideAction)
+        self.present(actionSheet, animated: true, completion: nil)
+    }
+    
+    func confirmCancelRideRequest() {
+        let actionSheet = UIAlertController(title: "Cancel Ride Request", message: "Are you sure you want to cancel your ride request to \(eventNameText)?", preferredStyle: .actionSheet)
+        let cancelAction = UIAlertAction(title: "Keep Ride Request", style: .cancel, handler: nil)
+        actionSheet.addAction(cancelAction)
+        
+        let requestRideAction = UIAlertAction(title: "Cancel Ride Request", style: .default, handler: cancelRideRequest)
         actionSheet.addAction(requestRideAction)
         self.present(actionSheet, animated: true, completion: nil)
     }
@@ -94,12 +149,35 @@ class EventDetailViewController : UIViewController {
                 // Mark all updates
                 let updates: [String : Any] = [
                     "/rides/\(rideKey)": rideData,
-                    "/events/\(eventID)/queue/\(rideKey)": true,
-                    "/users/\(curUser.uid)/rides/\(rideKey)": true
+                    "/events/\(eventID)/queue/\(rideKey)": curUser.uid,
+                    "/users/\(curUser.uid)/rides/\(rideKey)": eventID
                 ]
                 
                 // Update database
                 ref.updateChildValues(updates)
+                
+                // Update UI
+                prepareForDisplay(user: curUser, eventID: eventID)
+            }
+        }
+    }
+    
+    func cancelRideRequest(_: UIAlertAction) {
+        if let curUser = self.currentUser {
+            if let eventID = self.eventUID {
+                if let rideID = self.userRideRequestID {
+                    let updates: [String : Any] = [
+                        "/rides/\(rideID)": NSNull(),
+                        "/events/\(eventID)/queue/\(rideID)": NSNull(),
+                        "/users/\(curUser.uid)/rides/\(rideID)": NSNull()
+                    ]
+                    
+                    // Update database
+                    ref.updateChildValues(updates)
+                    
+                    // Update UI
+                    prepareForDisplay(user: curUser, eventID: eventID)
+                }
             }
         }
     }
@@ -122,6 +200,9 @@ class EventDetailViewController : UIViewController {
                     "/users/\(curUser.uid)/drivesFor/\(eventID)": true
                 ]
                 ref.updateChildValues(updates)
+                
+                // Update UI
+                prepareForDisplay(user: curUser, eventID: eventID)
             }
         }
     }

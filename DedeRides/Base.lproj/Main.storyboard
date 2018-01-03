@@ -169,6 +169,8 @@
                         <outlet property="deleteBtn" destination="fn1-YL-OdZ" id="lKz-1u-Fgh"/>
                         <outlet property="eventLocationLabel" destination="cro-67-lMm" id="7GX-n6-kyI"/>
                         <outlet property="eventNameLabel" destination="8XR-Cf-0vQ" id="MeF-Kh-n8n"/>
+                        <outlet property="offerDriveBtn" destination="E2h-iF-cTe" id="ygX-YI-OAY"/>
+                        <outlet property="requestRideBtn" destination="Edi-6V-WuI" id="oIy-GV-wNg"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="NfS-93-fIW" userLabel="First Responder" sceneMemberID="firstResponder"/>
