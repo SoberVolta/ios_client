@@ -27,7 +27,7 @@ class EventDetailViewController : UIViewController {
     let ridesRef = Database.database().reference().child("rides")
     
     private var uiReady = false;
-    private var eventNameText = "Unnamed Event"
+    private var eventNameText: String?
     private var eventLocationText = "Unspecified Location"
     private var eventOwner: String?
     private var userHasRequestedRide = false
@@ -90,6 +90,8 @@ class EventDetailViewController : UIViewController {
         if(!uiReady) {
             return;
         }
+        
+        self.title = eventNameText
         
         eventNameLabel.text = eventNameText
         eventLocationLabel.text = eventLocationText
@@ -212,7 +214,7 @@ class EventDetailViewController : UIViewController {
     }
     
     func confirmOfferDrive() {
-        let actionSheet = UIAlertController(title: "Offer to Drive", message: "Are you sure you want to offer to drive for \(eventNameText)?", preferredStyle: .actionSheet)
+        let actionSheet = UIAlertController(title: "Offer to Drive", message: "Are you sure you want to offer to drive for \(eventNameText ?? "Unnamed Event")?", preferredStyle: .actionSheet)
         let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
         actionSheet.addAction(cancelAction)
         
@@ -222,7 +224,7 @@ class EventDetailViewController : UIViewController {
     }
     
     func confirmCancelDriveOffer() {
-        let actionSheet = UIAlertController(title: "Cancel Offer to Drive", message: "Are you sure you want to offer to drive for \(eventNameText)?", preferredStyle: .actionSheet)
+        let actionSheet = UIAlertController(title: "Cancel Offer to Drive", message: "Are you sure you want to offer to drive for \(eventNameText ?? "Unnamed Event")?", preferredStyle: .actionSheet)
         let cancelAction = UIAlertAction(title: "Keep Offer to Drive", style: .cancel, handler: nil)
         actionSheet.addAction(cancelAction)
         
@@ -234,14 +236,16 @@ class EventDetailViewController : UIViewController {
     func offerDrive(_: UIAlertAction) {
         if let curUser = self.currentUser {
             if let eventID = self.eventUID {
-                let updates = [
-                    "/events/\(eventID)/drivers/\(curUser.uid)": true,
-                    "/users/\(curUser.uid)/drivesFor/\(eventID)": true
-                ]
-                ref.updateChildValues(updates)
+                if let eventName = self.eventNameText {
+                    let updates = [
+                        "/events/\(eventID)/drivers/\(curUser.uid)": curUser.displayName ?? "Unnamed Driver",
+                        "/users/\(curUser.uid)/drivesFor/\(eventID)": eventName
+                    ]
+                    ref.updateChildValues(updates)
                 
-                // Update UI
-                prepareForDisplay(user: curUser, eventID: eventID)
+                    // Update UI
+                    prepareForDisplay(user: curUser, eventID: eventID)
+                }
             }
         }
     }

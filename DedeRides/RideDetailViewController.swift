@@ -78,6 +78,7 @@ class RideDetailViewController : UIViewController {
             return;
         }
         
+        self.title = "Ride to \(self.eventName ?? "")"
         self.eventLink.setTitle(eventName, for: .normal)
         self.statusLabel.text = statusLookupTable[dbStatus ?? 0]
         self.driverLabel.text = dbDriverID

@@ -22,6 +22,8 @@ class MainMenuViewController : UITableViewController {
     var selectedEventIdx = -1
     var userRides = [String:String]()
     var selectedRideIdx = -1
+    var userDrives = [String:String]()
+    var selectedDriveIdx = -1
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -43,6 +45,7 @@ class MainMenuViewController : UITableViewController {
             self.title = currentUser.displayName
             usersRef.child(currentUser.uid).child("ownedEvents").observe(.value, with: userEventsWatcher)
             usersRef.child(currentUser.uid).child("rides").observe(.value, with: userRideWatcher)
+            usersRef.child(currentUser.uid).child("drivesFor").observe(.value, with: userDriveForWatcher)
         } else {
             self.title = "No User"
         }
@@ -85,6 +88,18 @@ class MainMenuViewController : UITableViewController {
         self.tableView.reloadData()
     }
     
+    func userDriveForWatcher(snap:DataSnapshot) {
+        self.userDrives.removeAll()
+        
+        if let drives = snap.value as? [String:Any] {
+            for driveForEventID in Array(drives.keys) {
+                self.userDrives[driveForEventID] = drives[driveForEventID] as? String ?? "Unnamed Event"
+            }
+        }
+        
+        self.tableView.reloadData()
+    }
+    
     func handleAuthStateChange( auth: Auth, user: User? ) {
         
         if let _ = user {
@@ -95,6 +110,11 @@ class MainMenuViewController : UITableViewController {
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        
+        let backItem = UIBarButtonItem()
+        backItem.title = "Back"
+        navigationItem.backBarButtonItem = backItem
+        
         if segue.identifier == "segueToCreateEvent" {
             if let destinationVC = segue.destination as? CreateEventViewController {
                 if let currentUser = self.userToPresent {
@@ -166,6 +186,9 @@ class MainMenuViewController : UITableViewController {
         } else if indexPath.section == 2 {
             let key = Array(userRides.keys)[indexPath.item]
             cell.textLabel?.text = "Ride to \(userRides[key] ?? "Undetermined Event")"
+        } else if indexPath.section == 3 {
+            let key = Array(userDrives.keys)[indexPath.item]
+            cell.textLabel?.text = "Drive for \(userDrives[key] ?? "Undetermined Event")"
         }
         
         return cell
@@ -178,7 +201,11 @@ class MainMenuViewController : UITableViewController {
             return userEventNames.count
         } else if section == 2 {
             return userRides.count
+        } else if section == 3 {
+            return userDrives.count
         }
+        
+        
         return 0
     }
     
