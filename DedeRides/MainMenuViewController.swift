@@ -20,6 +20,8 @@ class MainMenuViewController : UITableViewController {
     let newEventOptions = ["Create Event", "Search for event"]
     var userEventNames = [String:String]()
     var selectedEventIdx = -1
+    var userRides = [String:String]()
+    var selectedRideIdx = -1
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -40,6 +42,7 @@ class MainMenuViewController : UITableViewController {
         if let currentUser = userToPresent {
             self.title = currentUser.displayName
             usersRef.child(currentUser.uid).child("ownedEvents").observe(.value, with: userEventsWatcher)
+            usersRef.child(currentUser.uid).child("rides").observe(.value, with: userRideWatcher)
         } else {
             self.title = "No User"
         }
@@ -47,15 +50,30 @@ class MainMenuViewController : UITableViewController {
     
     func userEventsWatcher(snap:DataSnapshot) {
         self.userEventNames.removeAll()
-        let userEvents = Array((snap.value as? [String : AnyObject] ?? [:]).keys)
-        for eventID in userEvents {
-            eventsRef.child(eventID).child("name").observeSingleEvent(of: .value) {(snap) in
-                let eventName = snap.value as? String ?? "Unnamed Event"
-                self.userEventNames[eventID] = eventName
-                print("Adding event: \(eventID):\(eventName)")
-                self.tableView.reloadData()
+
+        if let userEvents = snap.value as? [String:Any] {
+            for eventID in Array(userEvents.keys) {
+                self.userEventNames[eventID] = userEvents[eventID] as? String ?? "Unnamed Event"
             }
+        } else {
+            print("Cant parse user events")
         }
+        
+        self.tableView.reloadData()
+    }
+    
+    func userRideWatcher(snap:DataSnapshot) {
+        self.userRides.removeAll()
+        
+        if let rides = snap.value as? [String:Any] {
+            for rideID in Array(rides.keys) {
+                self.userRides[rideID] = rides[rideID] as? String ?? "Undetermined Event"
+            }
+        } else {
+            print("Cant parse rides")
+        }
+        
+        self.tableView.reloadData()
     }
     
     func handleAuthStateChange( auth: Auth, user: User? ) {
@@ -121,6 +139,9 @@ class MainMenuViewController : UITableViewController {
         } else if indexPath.section == 1 {
             let key = Array(userEventNames.keys)[indexPath.item]
             cell.textLabel?.text = userEventNames[key]
+        } else if indexPath.section == 2 {
+            let key = Array(userRides.keys)[indexPath.item]
+            cell.textLabel?.text = userRides[key]
         }
         
         return cell
@@ -131,6 +152,8 @@ class MainMenuViewController : UITableViewController {
             return newEventOptions.count
         } else if section == 1 {
             return userEventNames.count
+        } else if section == 2 {
+            return userRides.count
         }
         return 0
     }
