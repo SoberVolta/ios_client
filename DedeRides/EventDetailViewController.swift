@@ -19,7 +19,10 @@ class EventDetailViewController : UIViewController {
     @IBOutlet weak var eventLocationLabel: UILabel!
     @IBOutlet weak var deleteBtn: UIButton!
     
+    let ref = Database.database().reference()
     let eventsRef = Database.database().reference().child("events")
+    let usersRef = Database.database().reference().child("users")
+    let ridesRef = Database.database().reference().child("rides")
     
     private var uiReady = false;
     private var eventNameText = "Unnamed Event"
@@ -66,12 +69,75 @@ class EventDetailViewController : UIViewController {
     }
     
     @IBAction func requestRideBtnPressed() {
+        let actionSheet = UIAlertController(title: "Request a Ride", message: "Are you sure you want to request a ride to \(eventNameText)?", preferredStyle: .actionSheet)
+        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
+        actionSheet.addAction(cancelAction)
+        
+        let requestRideAction = UIAlertAction(title: "Request a Ride", style: .default, handler: requestRide)
+        actionSheet.addAction(requestRideAction)
+        self.present(actionSheet, animated: true, completion: nil)
+    }
+    
+    func requestRide(_: UIAlertAction) {
+        if let curUser = self.currentUser {
+            if let eventID = self.eventUID {
+                // Get unique key
+                let rideKey = self.ridesRef.childByAutoId().key
+                
+                // Set Data
+                let rideData: [String : Any] = [
+                    "status": 0,         // requested but not yet claimed
+                    "rider": curUser.uid,
+                    "event": eventID
+                ]
+                
+                // Mark all updates
+                let updates: [String : Any] = [
+                    "/rides/\(rideKey)": rideData,
+                    "/events/\(eventID)/queue/\(rideKey)": true,
+                    "/users/\(curUser.uid)/rides/\(rideKey)": true
+                ]
+                
+                // Update database
+                ref.updateChildValues(updates)
+            }
+        }
     }
     
     @IBAction func offerRideBtnPressed() {
+        let actionSheet = UIAlertController(title: "Offer to Drive", message: "Are you sure you want to offer to drive for \(eventNameText)?", preferredStyle: .actionSheet)
+        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
+        actionSheet.addAction(cancelAction)
+        
+        let offerDriveAction = UIAlertAction(title: "Offer to Drive", style: .default, handler: offerDrive)
+        actionSheet.addAction(offerDriveAction)
+        self.present(actionSheet, animated: true, completion: nil)
+    }
+    
+    func offerDrive(_: UIAlertAction) {
+        if let curUser = self.currentUser {
+            if let eventID = self.eventUID {
+                let updates = [
+                    "/events/\(eventID)/drivers/\(curUser.uid)": true,
+                    "/users/\(curUser.uid)/drivesFor/\(eventID)": true
+                ]
+                ref.updateChildValues(updates)
+            }
+        }
     }
     
     @IBAction func deleteEventBtnPressed() {
+        let actionSheet = UIAlertController(title: "Delete Event", message: "Are you sure you want to delete \(eventNameText)?", preferredStyle: .actionSheet)
+        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
+        actionSheet.addAction(cancelAction)
+        
+        let deleteAction = UIAlertAction(title: "Delete", style: .default, handler: deleteCurrentEvent)
+        actionSheet.addAction(deleteAction)
+        self.present(actionSheet, animated: true, completion: nil)
+    }
+    
+    func deleteCurrentEvent(_: UIAlertAction) {
+        
     }
     
 }

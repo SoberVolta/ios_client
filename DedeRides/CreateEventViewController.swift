@@ -23,8 +23,6 @@ class CreateEventViewController : UIViewController {
         
         self.navigationController?.setNavigationBarHidden(false, animated: false)
         self.title = "Create Event"
-        
-        print("Creating user UID: \(String(describing: creatingUserUID))")
     }
     
     @IBAction func createEventButtonPressed(_ sender: Any) {
