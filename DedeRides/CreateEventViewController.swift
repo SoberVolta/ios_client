@@ -65,12 +65,13 @@ class CreateEventViewController : UIViewController {
                     let newEventKey = newEventRef.key
                     let newEventData = [
                         "name": eName,
-                        "location": eLocation
+                        "location": eLocation,
+                        "owner": uid
                     ]
                     newEventRef.setValue(newEventData)
                     
                     // Create ref to event under user
-                    let userEventRef = usersRef.child(uid).child("events").child(newEventKey)
+                    let userEventRef = usersRef.child(uid).child("ownedEvents").child(newEventKey)
                     userEventRef.setValue(true)
                     
                 } else {
