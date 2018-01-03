@@ -14,6 +14,7 @@ class CreateEventViewController : UIViewController {
     
     @IBOutlet weak var eventNameTextField: UITextField!
     @IBOutlet weak var eventLocationTextField: UITextField!
+    let ref = Database.database().reference()
     let eventsRef = Database.database().reference().child("events")
     let usersRef = Database.database().reference().child("users")
     var creatingUserUID: String?
@@ -53,24 +54,26 @@ class CreateEventViewController : UIViewController {
         }
     }
     
-    func createEvent( _: UIAlertAction ) {
+    func createEvent(_: UIAlertAction ) {
         if let eName = eventNameTextField.text {
             if let eLocation = eventLocationTextField.text {
                 
                 if let uid = creatingUserUID {
                     // Create event space in database
-                    let newEventRef = eventsRef.childByAutoId()
-                    let newEventKey = newEventRef.key
+                    let newEventKey = eventsRef.childByAutoId().key
                     let newEventData = [
                         "name": eName,
                         "location": eLocation,
                         "owner": uid
                     ]
-                    newEventRef.setValue(newEventData)
                     
-                    // Create ref to event under user
-                    let userEventRef = usersRef.child(uid).child("ownedEvents").child(newEventKey)
-                    userEventRef.setValue(true)
+                    
+                    let updates: [String:Any] = [
+                        "/events/\(newEventKey)": newEventData,
+                        "/users/\(uid)/ownedEvents/\(newEventKey)": eName
+                    ]
+                    
+                    ref.updateChildValues(updates)
                     
                 } else {
                     let alert = UIAlertController(
