@@ -16,14 +16,14 @@ class CreateEventViewController : UIViewController, UITextFieldDelegate {
     // MARK: - Member Variables
     //-----------------------------------------------------------------------------------------------------------------
     
-    // MARK: Segue Initialized Variables
+    // Segue Initialized Variables
     var creatingUserUID: String?
     
-    // MARK: Outlets
+    // Outlets
     @IBOutlet weak var eventNameTextField: UITextField!
     @IBOutlet weak var eventLocationTextField: UITextField!
     
-    // MARK: Database References
+    // Database References
     let ref = Database.database().reference()
     let eventsRef = Database.database().reference().child("events")
     let usersRef = Database.database().reference().child("users")
@@ -38,6 +38,10 @@ class CreateEventViewController : UIViewController, UITextFieldDelegate {
         self.eventNameTextField.delegate = self
         self.eventLocationTextField.delegate = self
     }
+    
+    //-----------------------------------------------------------------------------------------------------------------
+    // MARK: - Create Event
+    //-----------------------------------------------------------------------------------------------------------------
     
     @IBAction func createEventButtonPressed(_ sender: Any? = nil) {
         
@@ -102,6 +106,10 @@ class CreateEventViewController : UIViewController, UITextFieldDelegate {
             }
         }
     }
+    
+    ///-----------------------------------------------------------------------------------------------------------------
+    // MARK: - Cancel
+    //-----------------------------------------------------------------------------------------------------------------
     
     @IBAction func cancelButtonPressed(_ sender: Any? = nil) {
         

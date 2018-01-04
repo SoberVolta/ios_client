@@ -16,14 +16,14 @@ class MainMenuViewController : UITableViewController {
     // MARK: - Member Variables
     //-----------------------------------------------------------------------------------------------------------------
     
-    // MARK: Segue Initialized Variables
+    // Segue Initialized Variables
     var currentUser: User?
     
-    // MARK: Database References
+    // Database References
     let usersRef = Database.database().reference().child("users")
     let eventsRef = Database.database().reference().child("events")
     
-    // MARK: Table View Variables
+    // Table View Variables
     let sectionTitles = ["New Events", "My Events", "My Rides", "My Drives", "Saved Events"]
     let newEventOptions = ["Create Event", "Search for event"]
     

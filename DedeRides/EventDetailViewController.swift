@@ -12,20 +12,28 @@ import Firebase
 
 class EventDetailViewController : UIViewController {
     
+    //-----------------------------------------------------------------------------------------------------------------
+    // MARK: - Member Variables
+    //-----------------------------------------------------------------------------------------------------------------
+    
+    // Segue initialized variables
     var currentUser: User?
     var eventUID: String?
     
+    // Outlets
     @IBOutlet weak var eventNameLabel: UILabel!
     @IBOutlet weak var eventLocationLabel: UILabel!
     @IBOutlet weak var requestRideBtn: UIButton!
     @IBOutlet weak var offerDriveBtn: UIButton!
     @IBOutlet weak var deleteBtn: UIButton!
     
+    // Database references
     let ref = Database.database().reference()
     let eventsRef = Database.database().reference().child("events")
     let usersRef = Database.database().reference().child("users")
     let ridesRef = Database.database().reference().child("rides")
     
+    // Member variables
     private var uiReady = false;
     private var eventNameText: String?
     private var eventLocationText = "Unspecified Location"
@@ -35,6 +43,10 @@ class EventDetailViewController : UIViewController {
     private var userIsInActiveRide = false
     private var blueButtonColor: UIColor?
     private var userHasOfferedDrive = false
+    
+    //-----------------------------------------------------------------------------------------------------------------
+    // MARK: - View Controller Functions
+    //-----------------------------------------------------------------------------------------------------------------
     
     override func viewWillAppear(_ animated: Bool) {
         uiReady = true;
@@ -81,8 +93,9 @@ class EventDetailViewController : UIViewController {
                 
                 // Check for active ride
                 self.userIsInActiveRide = false
-                if(!self.userHasRequestedRide) {
-                    Database.database().reference().child("users").child(user.uid).child("rides").observeSingleEvent(of: .value) { (snap) in
+                if !self.userHasRequestedRide {
+                    Database.database().reference().child("users").child(user.uid).child("rides")
+                        .observeSingleEvent(of: .value) { (snap) in
                         if let ridesData = snap.value as? [String:Any] {
                             for rideID in Array(ridesData.keys) {
                                 if let eventIDForCurrentRide = ridesData[rideID] as? String {
@@ -109,29 +122,37 @@ class EventDetailViewController : UIViewController {
             return;
         }
         
+        // Set labels
         self.title = eventNameText
-        
         eventNameLabel.text = eventNameText
         eventLocationLabel.text = eventLocationText
         
+        // Hide/Show delete button
         if let eventOwnerUID = self.eventOwner {
             if let curUser = self.currentUser {
                 if curUser.uid != eventOwnerUID {
                     self.deleteBtn.isHidden = true
+                } else {
+                    self.deleteBtn.isHidden = false
                 }
             }
         }
         
+        // Update "Request Ride" button depending on current ride status
+        // (not requested/requested/driver en route)
         if userHasRequestedRide {
+            // Ride status: Requested
             self.blueButtonColor = requestRideBtn.tintColor
             requestRideBtn.setTitle("Cancel Ride Request", for: .normal)
             requestRideBtn.setTitleColor(.red, for: .normal)
         } else if userIsInActiveRide {
+            // Ride status: Driver en route
             self.blueButtonColor = requestRideBtn.tintColor
             requestRideBtn.setTitle("Cancel Ride Request", for: .normal)
             requestRideBtn.setTitleColor(.gray, for: .normal)
             requestRideBtn.isEnabled = false
         } else {
+            // Ride status: Not requested
             requestRideBtn.setTitle("Request a Ride", for: .normal)
             requestRideBtn.isEnabled = true
             if let color = self.blueButtonColor {
@@ -139,9 +160,7 @@ class EventDetailViewController : UIViewController {
             }
         }
         
-        
-        
-        
+        // Update "Offer Drive" button based on if user has already offered to drive or not
         if userHasOfferedDrive {
             self.blueButtonColor = requestRideBtn.tintColor
             offerDriveBtn.setTitle("Cancel Drive Offer", for: .normal)
@@ -155,55 +174,62 @@ class EventDetailViewController : UIViewController {
         
     }
     
+    //-----------------------------------------------------------------------------------------------------------------
+    // MARK: - Request Ride
+    //-----------------------------------------------------------------------------------------------------------------
+    
     @IBAction func requestRideBtnPressed() {
-        if(userHasRequestedRide) {
-            confirmCancelRideRequest()
+        
+        // If the user has not already requested a ride...
+        if !self.userHasRequestedRide {
+            
+            // Ask if they want to request a ride
+            displayActionSheet(
+                viewController: self,
+                actionSheetTitle: "Request a Ride",
+                actionSheetMessage: "Are you sure you want to request a ride to \(eventNameText ?? "this event")?",
+                cancelTitle: "Cancel",
+                affirmTitle: "Request a Ride",
+                affirmHandler: requestRide
+            )
+            
         } else {
-            confirmRideRequest()
+            
+            // Ask if they want to cancel their ride request
+            displayActionSheet(
+                viewController: self,
+                actionSheetTitle: "Cancel Ride Request",
+                actionSheetMessage: "Are you sure you want to cancel your ride request?",
+                cancelTitle: "Keep Ride Request",
+                affirmTitle: "Cancel Ride Request",
+                affirmHandler: cancelRideRequest
+            )
+            
         }
     }
     
-    func confirmRideRequest() {
-        let actionSheet = UIAlertController(title: "Request a Ride", message: "Are you sure you want to request a ride to \(eventNameText ?? "this event")?", preferredStyle: .actionSheet)
-        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
-        actionSheet.addAction(cancelAction)
+    func requestRide(_: UIAlertAction? = nil) {
         
-        let requestRideAction = UIAlertAction(title: "Request a Ride", style: .default, handler: requestRide)
-        actionSheet.addAction(requestRideAction)
-        self.present(actionSheet, animated: true, completion: nil)
-    }
-    
-    func confirmCancelRideRequest() {
-        let actionSheet = UIAlertController(title: "Cancel Ride Request", message: "Are you sure you want to cancel your ride request to \(eventNameText ?? "this event")?", preferredStyle: .actionSheet)
-        let cancelAction = UIAlertAction(title: "Keep Ride Request", style: .cancel, handler: nil)
-        actionSheet.addAction(cancelAction)
-        
-        let requestRideAction = UIAlertAction(title: "Cancel Ride Request", style: .default, handler: cancelRideRequest)
-        actionSheet.addAction(requestRideAction)
-        self.present(actionSheet, animated: true, completion: nil)
-    }
-    
-    func requestRide(_: UIAlertAction) {
+        // Get values
         if let curUser = self.currentUser {
             if let eventID = self.eventUID {
-                // Get unique key
+                
+                // Generte new key
                 let rideKey = self.ridesRef.childByAutoId().key
                 
-                // Set Data
+                // Form new data
                 let rideData: [String : Any] = [
                     "status": 0,         // requested but not yet claimed
                     "rider": curUser.uid,
                     "event": eventID
                 ]
                 
-                // Mark all updates
+                // Update database
                 let updates: [String : Any] = [
                     "/rides/\(rideKey)": rideData,
                     "/events/\(eventID)/queue/\(rideKey)": curUser.uid,
                     "/users/\(curUser.uid)/rides/\(rideKey)": eventID
                 ]
-                
-                // Update database
                 ref.updateChildValues(updates)
                 
                 // Update UI
@@ -212,58 +238,71 @@ class EventDetailViewController : UIViewController {
         }
     }
     
-    func cancelRideRequest(_: UIAlertAction) {
+    func cancelRideRequest(_: UIAlertAction? = nil) {
+        
+        // Get values
         if let curUser = self.currentUser {
             if let eventID = self.eventUID {
                 if let rideID = self.userRideRequestID {
+                    
+                    // Update database
                     let updates: [String : Any] = [
                         "/rides/\(rideID)": NSNull(),
                         "/events/\(eventID)/queue/\(rideID)": NSNull(),
                         "/users/\(curUser.uid)/rides/\(rideID)": NSNull()
                     ]
-                    
-                    // Update database
                     ref.updateChildValues(updates)
                     
                     // Update UI
                     prepareForDisplay(user: curUser, eventID: eventID)
+                    
                 }
             }
         }
     }
     
+    //-----------------------------------------------------------------------------------------------------------------
+    // MARK: - Offer Drive
+    //-----------------------------------------------------------------------------------------------------------------
+    
     @IBAction func offerDriveBtnPressed() {
-        if(userHasOfferedDrive) {
-            confirmCancelDriveOffer()
+        
+        // If user has not yet offered to drive...
+        if !self.userHasOfferedDrive {
+            
+            // Ask if they want to drive
+            displayActionSheet(
+                viewController: self,
+                actionSheetTitle: "Offer to Drive",
+                actionSheetMessage: "Are you sure you want to drive for \(eventNameText ?? "thisEvent")?",
+                cancelTitle: "Cancel",
+                affirmTitle: "Offer to Drive",
+                affirmHandler: offerDrive
+            )
+            
         } else {
-            confirmOfferDrive()
+            
+            // Ask if they want to cancel their offer to drive
+            displayActionSheet(
+                viewController: self,
+                actionSheetTitle: "Cancel Offer to Drive",
+                actionSheetMessage: "Are you sure you want to resend you offer to drive for this event?",
+                cancelTitle: "Keep Offer to Drive",
+                affirmTitle: "Cancel Offer to Drive",
+                affirmHandler: cancelDriveOffer
+            )
+            
         }
     }
     
-    func confirmOfferDrive() {
-        let actionSheet = UIAlertController(title: "Offer to Drive", message: "Are you sure you want to offer to drive for \(eventNameText ?? "Unnamed Event")?", preferredStyle: .actionSheet)
-        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
-        actionSheet.addAction(cancelAction)
+    func offerDrive(_: UIAlertAction? = nil) {
         
-        let offerDriveAction = UIAlertAction(title: "Offer to Drive", style: .default, handler: offerDrive)
-        actionSheet.addAction(offerDriveAction)
-        self.present(actionSheet, animated: true, completion: nil)
-    }
-    
-    func confirmCancelDriveOffer() {
-        let actionSheet = UIAlertController(title: "Cancel Offer to Drive", message: "Are you sure you want to offer to drive for \(eventNameText ?? "Unnamed Event")?", preferredStyle: .actionSheet)
-        let cancelAction = UIAlertAction(title: "Keep Offer to Drive", style: .cancel, handler: nil)
-        actionSheet.addAction(cancelAction)
-        
-        let affirm = UIAlertAction(title: "Cancel Offer to Drive", style: .default, handler: cancelDriveOffer)
-        actionSheet.addAction(affirm)
-        self.present(actionSheet, animated: true, completion: nil)
-    }
-    
-    func offerDrive(_: UIAlertAction) {
+        // Get values
         if let curUser = self.currentUser {
             if let eventID = self.eventUID {
                 if let eventName = self.eventNameText {
+                    
+                    // Update Database
                     let updates = [
                         "/events/\(eventID)/drivers/\(curUser.uid)": curUser.displayName ?? "Unnamed Driver",
                         "/users/\(curUser.uid)/drivesFor/\(eventID)": eventName
@@ -277,14 +316,17 @@ class EventDetailViewController : UIViewController {
         }
     }
     
-    func cancelDriveOffer(_: UIAlertAction) {
+    func cancelDriveOffer(_: UIAlertAction? = nil) {
+        
+        // Get values
         if let curUser = self.currentUser {
             if let eventID = self.eventUID {
+                
+                // Update Database
                 let updates = [
                     "/events/\(eventID)/drivers/\(curUser.uid)": NSNull(),
                     "/users/\(curUser.uid)/drivesFor/\(eventID)": NSNull()
                 ]
-                
                 ref.updateChildValues(updates)
                 
                 // Update UI
@@ -293,17 +335,26 @@ class EventDetailViewController : UIViewController {
         }
     }
     
+    //-----------------------------------------------------------------------------------------------------------------
+    // MARK: - Delete
+    //-----------------------------------------------------------------------------------------------------------------
+    
     @IBAction func deleteEventBtnPressed() {
-        let actionSheet = UIAlertController(title: "Delete Event", message: "Are you sure you want to delete \(eventNameText ?? "this event")?", preferredStyle: .actionSheet)
-        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
-        actionSheet.addAction(cancelAction)
         
-        let deleteAction = UIAlertAction(title: "Delete", style: .default, handler: deleteCurrentEvent)
-        actionSheet.addAction(deleteAction)
-        self.present(actionSheet, animated: true, completion: nil)
+        // Confirm the user actually wants to delete event
+        displayActionSheet(
+            viewController: self,
+            actionSheetTitle: "Delete Event",
+            actionSheetMessage: "Are you sure you want to delete \(eventNameText ?? "thisEvent")",
+            cancelTitle: "Cancel",
+            affirmTitle: "Delete",
+            affirmHandler: deleteCurrentEvent
+        )
+        
     }
     
-    func deleteCurrentEvent(_: UIAlertAction) {
+    func deleteCurrentEvent(_: UIAlertAction? = nil) {
+        // FIXME: Implement Delete Function
         print("Delete Current Event")
     }
     
