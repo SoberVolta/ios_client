@@ -95,7 +95,7 @@ class MainMenuViewController : UITableViewController {
                 }
             } else if segue.identifier == "segueToDriveDetail" {
                 if let destinationVC = segue.destination as? DriveDetailViewController {
-                    let selectedDriveID = Array(self.userDrives.keys)[selectedEventIdx]
+                    let selectedDriveID = Array(self.userDrives.keys)[selectedDriveIdx]
                     destinationVC.prepareForDisplay(
                         user: curUser,
                         eventID: selectedDriveID,
