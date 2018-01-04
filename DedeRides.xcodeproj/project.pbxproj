@@ -141,13 +141,13 @@
 			isa = PBXGroup;
 			children = (
 				E0A8A8AA1FFB2C9400B76C04 /* AppDelegate.swift */,
-				E0A8A8AC1FFB2C9400B76C04 /* ViewController.swift */,
-				E0A8A8DA1FFB3F9200B76C04 /* DedeSignInButtonDelegate.swift */,
 				E0A8A8AE1FFB2C9400B76C04 /* Main.storyboard */,
 				E0A8A8B11FFB2C9400B76C04 /* Assets.xcassets */,
 				E0A8A8B31FFB2C9400B76C04 /* LaunchScreen.storyboard */,
 				E0A8A8D81FFB3BA300B76C04 /* GoogleService-Info.plist */,
 				E0A8A8B61FFB2C9400B76C04 /* Info.plist */,
+				E0A8A8AC1FFB2C9400B76C04 /* ViewController.swift */,
+				E0A8A8DA1FFB3F9200B76C04 /* DedeSignInButtonDelegate.swift */,
 				E0A8A8DC1FFB509300B76C04 /* MainMenuViewController.swift */,
 				E0A8A8DE1FFB6F1800B76C04 /* CreateEventViewController.swift */,
 				E0A8A8E01FFC670500B76C04 /* EventDetailViewController.swift */,

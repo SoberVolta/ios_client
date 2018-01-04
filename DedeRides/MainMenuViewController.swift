@@ -104,93 +104,65 @@ class MainMenuViewController : UITableViewController {
         
         if let _ = user {
         } else {
-            print("User not signed in")
+            // Re authenticate if curent user not set
+            let alert = UIAlertController(
+                title: "Whoops",
+                message: "Please sign in again",
+                preferredStyle: UIAlertControllerStyle.alert
+            )
+            alert.addAction(UIAlertAction(title: "Okay", style: UIAlertActionStyle.default, handler: nil))
+            self.present(alert, animated: true, completion: nil)
         }
         
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         
+        // Set back button icon to read "back" instead of users name
         let backItem = UIBarButtonItem()
         backItem.title = "Back"
         navigationItem.backBarButtonItem = backItem
         
-        if segue.identifier == "segueToCreateEvent" {
-            if let destinationVC = segue.destination as? CreateEventViewController {
-                if let currentUser = self.userToPresent {
-                    destinationVC.creatingUserUID = currentUser.uid
-                } else {
-                    let alert = UIAlertController(
-                        title: "Whoops",
-                        message: "Please sign in to create an event",
-                        preferredStyle: UIAlertControllerStyle.alert
-                    )
-                    alert.addAction(UIAlertAction(title: "Okay", style: UIAlertActionStyle.default, handler: nil))
-                    self.present(alert, animated: true, completion: nil)
+        // Get current user
+        if let curUser = self.userToPresent {
+            
+            // Branch on segue identifier
+            if segue.identifier == "segueToCreateEvent" {
+                if let destinationVC = segue.destination as? CreateEventViewController {
+                    destinationVC.creatingUserUID = curUser.uid
                 }
-            } else {
-                print("Destination VC not CreateEventVC")
-            }
-        } else if segue.identifier == "segueToEventDetail" {
-            if let destinationVC = segue.destination as? EventDetailViewController {
-                if let currentUser = self.userToPresent {
-                    destinationVC.prepareForDisplay(user: currentUser, eventID: Array(self.userEventNames.keys)[selectedEventIdx])
-                } else {
-                    let alert = UIAlertController(
-                        title: "Whoops",
-                        message: "Please sign in to create an event",
-                        preferredStyle: UIAlertControllerStyle.alert
-                    )
-                    alert.addAction(UIAlertAction(title: "Okay", style: UIAlertActionStyle.default, handler: nil))
-                    self.present(alert, animated: true, completion: nil)
+            } else if segue.identifier == "segueToEventDetail" {
+                if let destinationVC = segue.destination as? EventDetailViewController {
+                    let selectedEventID = Array(self.userEventNames.keys)[selectedEventIdx]
+                    destinationVC.prepareForDisplay(user: curUser, eventID: selectedEventID)
                 }
-            } else {
-                print("Destination VC not EventDetailVC")
-            }
-        } else if segue.identifier == "segueToRideDetail" {
-            if let destinationVC = segue.destination as? RideDetailViewController {
-                if let currentUser = self.userToPresent {
-                    let rideID = Array(self.userRides.keys)[selectedRideIdx]
-                    destinationVC.prepareForDisplay(rideID: rideID, user: currentUser, eventName: userRides[rideID]!)
-                } else {
-                    let alert = UIAlertController(
-                        title: "Whoops",
-                        message: "Please sign in to create an event",
-                        preferredStyle: UIAlertControllerStyle.alert
-                    )
-                    alert.addAction(UIAlertAction(title: "Okay", style: UIAlertActionStyle.default, handler: nil))
-                    self.present(alert, animated: true, completion: nil)
+            } else if segue.identifier == "segueToRideDetail" {
+                if let destinationVC = segue.destination as? RideDetailViewController {
+                    let selectedRideID = Array(self.userRides.keys)[selectedRideIdx]
+                    destinationVC.prepareForDisplay(rideID: selectedRideID, user: curUser, eventName: userRides[selectedRideID]!)
+                }
+            } else if segue.identifier == "segueToDriveDetail" {
+                if let destinationVC = segue.destination as? DriveDetailViewController {
+                    let selectedDriveID = Array(self.userDrives.keys)[selectedEventIdx]
+                    destinationVC.prepareForDisplay(user: curUser, eventID: selectedDriveID, eventName: userDrives[selectedDriveID]!)
+                }
+            } else if segue.identifier == "segueToSearch" {
+                if let destinationVC = segue.destination as? SearchViewController {
+                    destinationVC.currentUser = curUser
                 }
             }
-        } else if segue.identifier == "segueToDriveDetail" {
-            if let destinationVC = segue.destination as? DriveDetailViewController {
-                if let currentUser = self.userToPresent {
-                    let driveID = Array(self.userDrives.keys)[selectedDriveIdx]
-                    destinationVC.prepareForDisplay(user: currentUser, eventID: driveID, eventName: userDrives[driveID]!)
-                } else {
-                    let alert = UIAlertController(
-                        title: "Whoops",
-                        message: "Please sign in to create an event",
-                        preferredStyle: UIAlertControllerStyle.alert
-                    )
-                    alert.addAction(UIAlertAction(title: "Okay", style: UIAlertActionStyle.default, handler: nil))
-                    self.present(alert, animated: true, completion: nil)
-                }
-            }
-        } else if segue.identifier == "segueToSearch" {
-            if let destinationVC = segue.destination as? SearchViewController {
-                if let currentUser = self.userToPresent {
-                    destinationVC.currentUser = currentUser
-                } else {
-                    let alert = UIAlertController(
-                        title: "Whoops",
-                        message: "Please sign in to create an event",
-                        preferredStyle: UIAlertControllerStyle.alert
-                    )
-                    alert.addAction(UIAlertAction(title: "Okay", style: UIAlertActionStyle.default, handler: nil))
-                    self.present(alert, animated: true, completion: nil)
-                }
-            }
+            
+        } else {
+            
+            // Re authenticate if curent user not set
+            let alert = UIAlertController(
+                title: "Whoops",
+                message: "Please sign in again",
+                preferredStyle: UIAlertControllerStyle.alert
+            )
+            alert.addAction(UIAlertAction(title: "Okay", style: UIAlertActionStyle.default, handler: nil))
+            self.present(alert, animated: true, completion: nil)
+            
         }
     }
     
