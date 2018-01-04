@@ -126,14 +126,7 @@ class EventDetailViewController : UIViewController {
             self.blueButtonColor = requestRideBtn.tintColor
             requestRideBtn.setTitle("Cancel Ride Request", for: .normal)
             requestRideBtn.setTitleColor(.red, for: .normal)
-        } else {
-            requestRideBtn.setTitle("Request a Ride", for: .normal)
-            if let color = self.blueButtonColor {
-                requestRideBtn.setTitleColor(color, for: .normal)
-            }
-        }
-        
-        if userIsInActiveRide {
+        } else if userIsInActiveRide {
             self.blueButtonColor = requestRideBtn.tintColor
             requestRideBtn.setTitle("Cancel Ride Request", for: .normal)
             requestRideBtn.setTitleColor(.gray, for: .normal)
@@ -145,6 +138,9 @@ class EventDetailViewController : UIViewController {
                 requestRideBtn.setTitleColor(color, for: .normal)
             }
         }
+        
+        
+        
         
         if userHasOfferedDrive {
             self.blueButtonColor = requestRideBtn.tintColor
