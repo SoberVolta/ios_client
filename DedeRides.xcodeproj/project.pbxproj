@@ -24,6 +24,7 @@
 		E0A8A8E31FFC97F100B76C04 /* RideDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0A8A8E21FFC97F100B76C04 /* RideDetailViewController.swift */; };
 		E0A8A8E51FFCB73000B76C04 /* DriveDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0A8A8E41FFCB73000B76C04 /* DriveDetailViewController.swift */; };
 		E0A8A8E71FFD50F100B76C04 /* SearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0A8A8E61FFD50F100B76C04 /* SearchViewController.swift */; };
+		E0A8A8EB1FFDECDC00B76C04 /* Utility.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0A8A8EA1FFDECDC00B76C04 /* Utility.swift */; };
 		E496332F1B1B35EF26B0EAFA /* Pods_DedeRidesUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 023651CCE9097E1F03D31860 /* Pods_DedeRidesUITests.framework */; };
 /* End PBXBuildFile section */
 
@@ -75,6 +76,7 @@
 		E0A8A8E21FFC97F100B76C04 /* RideDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RideDetailViewController.swift; sourceTree = "<group>"; };
 		E0A8A8E41FFCB73000B76C04 /* DriveDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DriveDetailViewController.swift; sourceTree = "<group>"; };
 		E0A8A8E61FFD50F100B76C04 /* SearchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchViewController.swift; sourceTree = "<group>"; };
+		E0A8A8EA1FFDECDC00B76C04 /* Utility.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utility.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -146,6 +148,7 @@
 				E0A8A8B31FFB2C9400B76C04 /* LaunchScreen.storyboard */,
 				E0A8A8D81FFB3BA300B76C04 /* GoogleService-Info.plist */,
 				E0A8A8B61FFB2C9400B76C04 /* Info.plist */,
+				E0A8A8EA1FFDECDC00B76C04 /* Utility.swift */,
 				E0A8A8AC1FFB2C9400B76C04 /* ViewController.swift */,
 				E0A8A8DA1FFB3F9200B76C04 /* DedeSignInButtonDelegate.swift */,
 				E0A8A8DC1FFB509300B76C04 /* MainMenuViewController.swift */,
@@ -503,6 +506,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E0A8A8EB1FFDECDC00B76C04 /* Utility.swift in Sources */,
 				E0A8A8E11FFC670500B76C04 /* EventDetailViewController.swift in Sources */,
 				E0A8A8DD1FFB509300B76C04 /* MainMenuViewController.swift in Sources */,
 				E0A8A8AD1FFB2C9400B76C04 /* ViewController.swift in Sources */,

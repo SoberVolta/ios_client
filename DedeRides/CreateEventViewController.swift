@@ -10,26 +10,45 @@ import Foundation
 import UIKit
 import Firebase
 
-class CreateEventViewController : UIViewController {
+class CreateEventViewController : UIViewController, UITextFieldDelegate {
     
+    //-----------------------------------------------------------------------------------------------------------------
+    // MARK: - Member Variables
+    //-----------------------------------------------------------------------------------------------------------------
+    
+    // MARK: Segue Initialized Variables
+    var creatingUserUID: String?
+    
+    // MARK: Outlets
     @IBOutlet weak var eventNameTextField: UITextField!
     @IBOutlet weak var eventLocationTextField: UITextField!
+    
+    // MARK: Database References
     let ref = Database.database().reference()
     let eventsRef = Database.database().reference().child("events")
     let usersRef = Database.database().reference().child("users")
-    var creatingUserUID: String?
+    
+    //-----------------------------------------------------------------------------------------------------------------
+    // MARK: - View Controller Functions
+    //-----------------------------------------------------------------------------------------------------------------
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.navigationController?.setNavigationBarHidden(false, animated: false)
-        self.title = "Create Event"
+        self.eventNameTextField.delegate = self
+        self.eventLocationTextField.delegate = self
     }
     
-    @IBAction func createEventButtonPressed(_ sender: Any) {
+    @IBAction func createEventButtonPressed(_ sender: Any? = nil) {
+        
+        // Get values
         if let eName = eventNameTextField.text {
             if let eLocation = eventLocationTextField.text {
+                
+                // Check all fields are filled in
                 if( eName == "" || eLocation == "") {
+                    
+                    // Alert if some fields left blank
                     let alert = UIAlertController(
                         title: "Whoops",
                         message: "Please fill out all fields before creating the event",
@@ -37,28 +56,31 @@ class CreateEventViewController : UIViewController {
                     )
                     alert.addAction(UIAlertAction(title: "Okay", style: UIAlertActionStyle.default, handler: nil))
                     self.present(alert, animated: true, completion: nil)
-                } else {
-                    let actionSheet = UIAlertController(
-                        title: "Create Event",
-                        message: "Create event '\(eName)' at '\(eLocation)'",
-                        preferredStyle: .actionSheet
-                    )
-                    let cancelCreate = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
-                    actionSheet.addAction(cancelCreate)
                     
-                    let submitCreate = UIAlertAction(title: "Create Event", style: .default, handler: createEvent)
-                    actionSheet.addAction(submitCreate)
-                    self.present(actionSheet, animated: true, completion: nil)
+                } else {
+                    
+                    // Confirm action before creating
+                    displayActionSheet(
+                        viewController: self,
+                        actionSheetTitle: "Create Event",
+                        actionSheetMessage: "Are you sure you want to create this event?",
+                        cancelTitle: "Cancel",
+                        affirmTitle: "Create Event",
+                        affirmHandler: createEvent
+                    )
+                    
                 }
             }
         }
     }
     
-    func createEvent(_: UIAlertAction ) {
+    private func createEvent(_: UIAlertAction ) {
+        
+        // Get Values
         if let eName = eventNameTextField.text {
             if let eLocation = eventLocationTextField.text {
-                
                 if let uid = creatingUserUID {
+                    
                     // Create event space in database
                     let newEventKey = eventsRef.childByAutoId().key
                     let newEventData = [
@@ -67,52 +89,65 @@ class CreateEventViewController : UIViewController {
                         "owner": uid
                     ]
                     
-                    
+                    // Update database
                     let updates: [String:Any] = [
                         "/events/\(newEventKey)": newEventData,
                         "/users/\(uid)/ownedEvents/\(newEventKey)": eName
                     ]
-                    
                     ref.updateChildValues(updates)
                     
-                } else {
-                    let alert = UIAlertController(
-                        title: "Whoops",
-                        message: "Please sign in to create this event",
-                        preferredStyle: UIAlertControllerStyle.alert
-                    )
-                    alert.addAction(UIAlertAction(title: "Okay", style: UIAlertActionStyle.default, handler: nil))
-                    self.present(alert, animated: true, completion: nil)
-                }
-                
-                exit()
-            }
-        }
-    }
-    
-    @IBAction func cancelButtonPressed(_ sender: Any) {
-        if let eName = eventNameTextField.text {
-            if let eLocation = eventLocationTextField.text {
-                if( eName != "" || eLocation != "") {
-                    let actionSheet = UIAlertController(title: "Cancel Create Event", message: "All details will be lost", preferredStyle: .actionSheet)
-                    let continueEditingAction = UIAlertAction(title: "Continue editing", style: .cancel, handler: nil)
-                    actionSheet.addAction(continueEditingAction)
-                    
-                    let discardDetailsAction = UIAlertAction(title: "Discard all event details", style: .default, handler: exit)
-                    actionSheet.addAction(discardDetailsAction)
-                    self.present(actionSheet, animated: true, completion: nil)
-                } else {
+                    // Exit once completed
                     exit()
                 }
             }
         }
     }
     
-    func exit( _:UIAlertAction ) {
-        exit()
+    @IBAction func cancelButtonPressed(_ sender: Any? = nil) {
+        
+        // Get values
+        if let eName = eventNameTextField.text {
+            if let eLocation = eventLocationTextField.text {
+                
+                // If some text fields have been filled in...
+                if( eName != "" || eLocation != "") {
+                    
+                    // Confirm before discarding
+                    displayActionSheet(
+                        viewController: self,
+                        actionSheetTitle: "Cancel Create Event",
+                        actionSheetMessage: "All details will be lost",
+                        cancelTitle: "Continue Editing",
+                        affirmTitle: "Discard Details",
+                        affirmHandler: exit
+                    )
+                    
+                } else {
+                    
+                    // Otherwise exit without confirming
+                    exit()
+                }
+            }
+        }
     }
     
-    func exit() {
+    func exit( _:UIAlertAction? = nil) {
         dismiss(animated: true, completion: nil)
+    }
+    
+    //-----------------------------------------------------------------------------------------------------------------
+    // MARK: - Text Field Delegate
+    //-----------------------------------------------------------------------------------------------------------------
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        
+        if textField == self.eventNameTextField {
+            self.eventLocationTextField.becomeFirstResponder()
+        } else if textField == self.eventLocationTextField {
+            self.createEventButtonPressed()
+        }
+        
+        return true
     }
 }

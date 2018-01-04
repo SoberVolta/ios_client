@@ -16,11 +16,14 @@ class MainMenuViewController : UITableViewController {
     // MARK: - Member Variables
     //-----------------------------------------------------------------------------------------------------------------
     
+    // MARK: Segue Initialized Variables
     var currentUser: User?
     
+    // MARK: Database References
     let usersRef = Database.database().reference().child("users")
     let eventsRef = Database.database().reference().child("events")
     
+    // MARK: Table View Variables
     let sectionTitles = ["New Events", "My Events", "My Rides", "My Drives", "Saved Events"]
     let newEventOptions = ["Create Event", "Search for event"]
     
@@ -119,6 +122,8 @@ class MainMenuViewController : UITableViewController {
         }
     }
     
+    // MARK: Unwind Segues
+    
     @IBAction func unwindToMainMenu(segue:UIStoryboardSegue) {
         
     }
@@ -159,8 +164,6 @@ class MainMenuViewController : UITableViewController {
                     }
                 }
             }
-        } else {
-            print("Cant parse rides")
         }
         
         self.tableView.reloadData()
