@@ -177,6 +177,20 @@ class MainMenuViewController : UITableViewController {
                     self.present(alert, animated: true, completion: nil)
                 }
             }
+        } else if segue.identifier == "segueToSearch" {
+            if let destinationVC = segue.destination as? SearchViewController {
+                if let currentUser = self.userToPresent {
+                    destinationVC.currentUser = currentUser
+                } else {
+                    let alert = UIAlertController(
+                        title: "Whoops",
+                        message: "Please sign in to create an event",
+                        preferredStyle: UIAlertControllerStyle.alert
+                    )
+                    alert.addAction(UIAlertAction(title: "Okay", style: UIAlertActionStyle.default, handler: nil))
+                    self.present(alert, animated: true, completion: nil)
+                }
+            }
         }
     }
     
@@ -228,6 +242,8 @@ class MainMenuViewController : UITableViewController {
         if indexPath.section == 0 {
             if indexPath.item == 0 {
                 performSegue(withIdentifier: "segueToCreateEvent", sender: self)
+            } else if indexPath.item == 1 {
+                performSegue(withIdentifier: "segueToSearch", sender: self)
             }
         } else if indexPath.section == 1 {
             self.selectedEventIdx = indexPath.item

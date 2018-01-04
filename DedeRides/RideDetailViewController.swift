@@ -20,6 +20,7 @@ class RideDetailViewController : UIViewController {
     @IBOutlet weak var statusLabel: UILabel!
     @IBOutlet weak var driverLabel: UILabel!
     @IBOutlet weak var driverIndicatorLabel: UILabel!
+    @IBOutlet weak var cancelRideBtn: UIButton!
     
     let ref = Database.database().reference()
     let ridesRef = Database.database().reference().child("rides")
@@ -84,6 +85,15 @@ class RideDetailViewController : UIViewController {
         self.driverLabel.text = dbDriverID
         if dbDriverID == nil {
             self.driverIndicatorLabel.text = nil
+        }
+        if let status = self.dbStatus {
+            if status == 0 {
+                cancelRideBtn.isEnabled = true
+                cancelRideBtn.setTitleColor(.red, for: .normal)
+            } else if status == 1 {
+                cancelRideBtn.isEnabled = false
+                cancelRideBtn.setTitleColor(.gray, for: .normal)
+            }
         }
         
     }

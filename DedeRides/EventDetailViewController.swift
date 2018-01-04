@@ -32,6 +32,7 @@ class EventDetailViewController : UIViewController {
     private var eventOwner: String?
     private var userHasRequestedRide = false
     private var userRideRequestID: String?
+    private var userIsInActiveRide = false
     private var blueButtonColor: UIColor?
     private var userHasOfferedDrive = false
     
@@ -63,6 +64,7 @@ class EventDetailViewController : UIViewController {
                             break
                         }
                     }
+                    
                 } else {
                     print("Not able to parse queue")
                 }
@@ -77,8 +79,24 @@ class EventDetailViewController : UIViewController {
                     print("Not able to parse drivers")
                 }
                 
-                // Update UI
-                self.updateUI()
+                // Check for active ride
+                self.userIsInActiveRide = false
+                if(!self.userHasRequestedRide) {
+                    Database.database().reference().child("users").child(user.uid).child("rides").observeSingleEvent(of: .value) { (snap) in
+                        if let ridesData = snap.value as? [String:Any] {
+                            for rideID in Array(ridesData.keys) {
+                                if let eventIDForCurrentRide = ridesData[rideID] as? String {
+                                    if eventIDForCurrentRide == eventID {
+                                        self.userIsInActiveRide = true
+                                    }
+                                }
+                            }
+                        }
+                        self.updateUI()
+                    }
+                } else {
+                    self.updateUI()
+                }
             } else {
                 print("Cannot parse event as [String:String]")
             }
@@ -115,6 +133,19 @@ class EventDetailViewController : UIViewController {
             }
         }
         
+        if userIsInActiveRide {
+            self.blueButtonColor = requestRideBtn.tintColor
+            requestRideBtn.setTitle("Cancel Ride Request", for: .normal)
+            requestRideBtn.setTitleColor(.gray, for: .normal)
+            requestRideBtn.isEnabled = false
+        } else {
+            requestRideBtn.setTitle("Request a Ride", for: .normal)
+            requestRideBtn.isEnabled = true
+            if let color = self.blueButtonColor {
+                requestRideBtn.setTitleColor(color, for: .normal)
+            }
+        }
+        
         if userHasOfferedDrive {
             self.blueButtonColor = requestRideBtn.tintColor
             offerDriveBtn.setTitle("Cancel Drive Offer", for: .normal)
@@ -137,7 +168,7 @@ class EventDetailViewController : UIViewController {
     }
     
     func confirmRideRequest() {
-        let actionSheet = UIAlertController(title: "Request a Ride", message: "Are you sure you want to request a ride to \(eventNameText)?", preferredStyle: .actionSheet)
+        let actionSheet = UIAlertController(title: "Request a Ride", message: "Are you sure you want to request a ride to \(eventNameText ?? "this event")?", preferredStyle: .actionSheet)
         let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
         actionSheet.addAction(cancelAction)
         
@@ -147,7 +178,7 @@ class EventDetailViewController : UIViewController {
     }
     
     func confirmCancelRideRequest() {
-        let actionSheet = UIAlertController(title: "Cancel Ride Request", message: "Are you sure you want to cancel your ride request to \(eventNameText)?", preferredStyle: .actionSheet)
+        let actionSheet = UIAlertController(title: "Cancel Ride Request", message: "Are you sure you want to cancel your ride request to \(eventNameText ?? "this event")?", preferredStyle: .actionSheet)
         let cancelAction = UIAlertAction(title: "Keep Ride Request", style: .cancel, handler: nil)
         actionSheet.addAction(cancelAction)
         
@@ -267,7 +298,7 @@ class EventDetailViewController : UIViewController {
     }
     
     @IBAction func deleteEventBtnPressed() {
-        let actionSheet = UIAlertController(title: "Delete Event", message: "Are you sure you want to delete \(eventNameText)?", preferredStyle: .actionSheet)
+        let actionSheet = UIAlertController(title: "Delete Event", message: "Are you sure you want to delete \(eventNameText ?? "this event")?", preferredStyle: .actionSheet)
         let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
         actionSheet.addAction(cancelAction)
         
