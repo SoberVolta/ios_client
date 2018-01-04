@@ -12,18 +12,28 @@ import Firebase
 
 class MainMenuViewController : UITableViewController {
     
-    var userToPresent: User?
+    //-----------------------------------------------------------------------------------------------------------------
+    // MARK: - Member Variables
+    //-----------------------------------------------------------------------------------------------------------------
+    
+    var currentUser: User?
     
     let usersRef = Database.database().reference().child("users")
     let eventsRef = Database.database().reference().child("events")
+    
     let sectionTitles = ["New Events", "My Events", "My Rides", "My Drives", "Saved Events"]
     let newEventOptions = ["Create Event", "Search for event"]
+    
     var userEventNames = [String:String]()
     var selectedEventIdx = -1
     var userRides = [String:String]()
     var selectedRideIdx = -1
     var userDrives = [String:String]()
     var selectedDriveIdx = -1
+    
+    //-----------------------------------------------------------------------------------------------------------------
+    // MARK: - View Controller Functions
+    //-----------------------------------------------------------------------------------------------------------------
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -40,8 +50,8 @@ class MainMenuViewController : UITableViewController {
         tableView.dataSource = self
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "mainMenuCell")
         
-        // Set user specific data
-        if let currentUser = userToPresent {
+        // Register real time database observers
+        if let currentUser = currentUser {
             self.title = currentUser.displayName
             usersRef.child(currentUser.uid).child("ownedEvents").observe(.value, with: userEventsWatcher)
             usersRef.child(currentUser.uid).child("rides").observe(.value, with: userRideWatcher)
@@ -51,6 +61,76 @@ class MainMenuViewController : UITableViewController {
         }
     }
     
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        
+        // Set back button icon to read "back" instead of users name
+        let backItem = UIBarButtonItem()
+        backItem.title = "Back"
+        navigationItem.backBarButtonItem = backItem
+        
+        // Get current user
+        if let curUser = self.currentUser {
+            
+            // Branch on segue identifier
+            if segue.identifier == "segueToCreateEvent" {
+                if let destinationVC = segue.destination as? CreateEventViewController {
+                    destinationVC.creatingUserUID = curUser.uid
+                }
+            } else if segue.identifier == "segueToEventDetail" {
+                if let destinationVC = segue.destination as? EventDetailViewController {
+                    let selectedEventID = Array(self.userEventNames.keys)[selectedEventIdx]
+                    destinationVC.prepareForDisplay(user: curUser, eventID: selectedEventID)
+                }
+            } else if segue.identifier == "segueToRideDetail" {
+                if let destinationVC = segue.destination as? RideDetailViewController {
+                    let selectedRideID = Array(self.userRides.keys)[selectedRideIdx]
+                    destinationVC.prepareForDisplay(
+                        rideID: selectedRideID,
+                        user: curUser, eventName:
+                        userRides[selectedRideID]!
+                    )
+                }
+            } else if segue.identifier == "segueToDriveDetail" {
+                if let destinationVC = segue.destination as? DriveDetailViewController {
+                    let selectedDriveID = Array(self.userDrives.keys)[selectedEventIdx]
+                    destinationVC.prepareForDisplay(
+                        user: curUser,
+                        eventID: selectedDriveID,
+                        eventName: userDrives[selectedDriveID]!
+                    )
+                }
+            } else if segue.identifier == "segueToSearch" {
+                if let destinationVC = segue.destination as? SearchViewController {
+                    destinationVC.currentUser = curUser
+                }
+            }
+            
+        } else {
+            
+            // Re authenticate if curent user not set
+            let alert = UIAlertController(
+                title: "Whoops",
+                message: "Please sign in again",
+                preferredStyle: UIAlertControllerStyle.alert
+            )
+            alert.addAction(UIAlertAction(title: "Okay", style: UIAlertActionStyle.default, handler: nil))
+            self.present(alert, animated: true, completion: nil)
+            
+        }
+    }
+    
+    @IBAction func unwindToMainMenu(segue:UIStoryboardSegue) {
+        
+    }
+    
+    @IBAction func unwindToMainMenuFromDriveDetail(segue:UIStoryboardSegue) {
+        
+    }
+    
+    //-----------------------------------------------------------------------------------------------------------------
+    // MARK: - Real Time Database Watchers
+    //-----------------------------------------------------------------------------------------------------------------
+    
     func userEventsWatcher(snap:DataSnapshot) {
         self.userEventNames.removeAll()
 
@@ -58,8 +138,6 @@ class MainMenuViewController : UITableViewController {
             for eventID in Array(userEvents.keys) {
                 self.userEventNames[eventID] = userEvents[eventID] as? String ?? "Unnamed Event"
             }
-        } else {
-            print("Cant parse user events")
         }
         
         self.tableView.reloadData()
@@ -116,66 +194,37 @@ class MainMenuViewController : UITableViewController {
         
     }
     
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        
-        // Set back button icon to read "back" instead of users name
-        let backItem = UIBarButtonItem()
-        backItem.title = "Back"
-        navigationItem.backBarButtonItem = backItem
-        
-        // Get current user
-        if let curUser = self.userToPresent {
-            
-            // Branch on segue identifier
-            if segue.identifier == "segueToCreateEvent" {
-                if let destinationVC = segue.destination as? CreateEventViewController {
-                    destinationVC.creatingUserUID = curUser.uid
-                }
-            } else if segue.identifier == "segueToEventDetail" {
-                if let destinationVC = segue.destination as? EventDetailViewController {
-                    let selectedEventID = Array(self.userEventNames.keys)[selectedEventIdx]
-                    destinationVC.prepareForDisplay(user: curUser, eventID: selectedEventID)
-                }
-            } else if segue.identifier == "segueToRideDetail" {
-                if let destinationVC = segue.destination as? RideDetailViewController {
-                    let selectedRideID = Array(self.userRides.keys)[selectedRideIdx]
-                    destinationVC.prepareForDisplay(rideID: selectedRideID, user: curUser, eventName: userRides[selectedRideID]!)
-                }
-            } else if segue.identifier == "segueToDriveDetail" {
-                if let destinationVC = segue.destination as? DriveDetailViewController {
-                    let selectedDriveID = Array(self.userDrives.keys)[selectedEventIdx]
-                    destinationVC.prepareForDisplay(user: curUser, eventID: selectedDriveID, eventName: userDrives[selectedDriveID]!)
-                }
-            } else if segue.identifier == "segueToSearch" {
-                if let destinationVC = segue.destination as? SearchViewController {
-                    destinationVC.currentUser = curUser
-                }
-            }
-            
-        } else {
-            
-            // Re authenticate if curent user not set
-            let alert = UIAlertController(
-                title: "Whoops",
-                message: "Please sign in again",
-                preferredStyle: UIAlertControllerStyle.alert
-            )
-            alert.addAction(UIAlertAction(title: "Okay", style: UIAlertActionStyle.default, handler: nil))
-            self.present(alert, animated: true, completion: nil)
-            
-        }
-    }
+    //-----------------------------------------------------------------------------------------------------------------
+    // MARK: - Table View Controller Functions
+    //-----------------------------------------------------------------------------------------------------------------
     
-    // Table View Methods
-    
+    // Number of sections
     override func numberOfSections(in tableView: UITableView) -> Int {
         return sectionTitles.count
     }
     
+    // Titles of sections
     override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         return sectionTitles[section]
     }
     
+    // Number of rows in section
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        if section == 0 {
+            return newEventOptions.count
+        } else if section == 1 {
+            return userEventNames.count
+        } else if section == 2 {
+            return userRides.count
+        } else if section == 3 {
+            return userDrives.count
+        }
+        
+        
+        return 0
+    }
+    
+    // Populate cells
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "mainMenuCell", for: indexPath as IndexPath)
         
@@ -195,21 +244,7 @@ class MainMenuViewController : UITableViewController {
         return cell
     }
     
-    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if section == 0 {
-            return newEventOptions.count
-        } else if section == 1 {
-            return userEventNames.count
-        } else if section == 2 {
-            return userRides.count
-        } else if section == 3 {
-            return userDrives.count
-        }
-        
-        
-        return 0
-    }
-    
+    // Did select cell
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if indexPath.section == 0 {
             if indexPath.item == 0 {
@@ -227,14 +262,6 @@ class MainMenuViewController : UITableViewController {
             self.selectedDriveIdx = indexPath.item
             performSegue(withIdentifier: "segueToDriveDetail", sender: self)
         }
-    }
-    
-    @IBAction func unwindToMainMenu(segue:UIStoryboardSegue) {
-        
-    }
-    
-    @IBAction func unwindToMainMenuFromDriveDetail(segue:UIStoryboardSegue) {
-        
     }
     
 }
