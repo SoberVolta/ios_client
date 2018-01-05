@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		A94B6899A4A4650ED83DD34D /* Pods_DedeRidesTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1B7EF4EEED1EBD52E09F3943 /* Pods_DedeRidesTests.framework */; };
 		D6FE32C3E15DF19255F305CA /* Pods_DedeRides.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4D29543C62596C11CBD2BEEF /* Pods_DedeRides.framework */; };
+		E01D8F4320000EB600B0B99C /* UserModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E01D8F4220000EB600B0B99C /* UserModel.swift */; };
 		E0A8A8AB1FFB2C9400B76C04 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0A8A8AA1FFB2C9400B76C04 /* AppDelegate.swift */; };
 		E0A8A8AD1FFB2C9400B76C04 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0A8A8AC1FFB2C9400B76C04 /* ViewController.swift */; };
 		E0A8A8B01FFB2C9400B76C04 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E0A8A8AE1FFB2C9400B76C04 /* Main.storyboard */; };
@@ -25,6 +26,7 @@
 		E0A8A8E51FFCB73000B76C04 /* DriveDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0A8A8E41FFCB73000B76C04 /* DriveDetailViewController.swift */; };
 		E0A8A8E71FFD50F100B76C04 /* SearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0A8A8E61FFD50F100B76C04 /* SearchViewController.swift */; };
 		E0A8A8EB1FFDECDC00B76C04 /* Utility.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0A8A8EA1FFDECDC00B76C04 /* Utility.swift */; };
+		E0A8A8ED1FFE1F9700B76C04 /* EventModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0A8A8EC1FFE1F9700B76C04 /* EventModel.swift */; };
 		E496332F1B1B35EF26B0EAFA /* Pods_DedeRidesUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 023651CCE9097E1F03D31860 /* Pods_DedeRidesUITests.framework */; };
 /* End PBXBuildFile section */
 
@@ -55,6 +57,7 @@
 		5934CE3B22CEAECEB8B5FC89 /* Pods-DedeRidesTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DedeRidesTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-DedeRidesTests/Pods-DedeRidesTests.release.xcconfig"; sourceTree = "<group>"; };
 		9E23F75826F48DBEA15F86EA /* Pods-DedeRidesUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DedeRidesUITests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-DedeRidesUITests/Pods-DedeRidesUITests.debug.xcconfig"; sourceTree = "<group>"; };
 		A128E62E550E4C434CB1C916 /* Pods-DedeRidesUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DedeRidesUITests.release.xcconfig"; path = "Pods/Target Support Files/Pods-DedeRidesUITests/Pods-DedeRidesUITests.release.xcconfig"; sourceTree = "<group>"; };
+		E01D8F4220000EB600B0B99C /* UserModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserModel.swift; sourceTree = "<group>"; };
 		E0A8A8A71FFB2C9400B76C04 /* DedeRides.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DedeRides.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E0A8A8AA1FFB2C9400B76C04 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		E0A8A8AC1FFB2C9400B76C04 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -77,6 +80,7 @@
 		E0A8A8E41FFCB73000B76C04 /* DriveDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DriveDetailViewController.swift; sourceTree = "<group>"; };
 		E0A8A8E61FFD50F100B76C04 /* SearchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchViewController.swift; sourceTree = "<group>"; };
 		E0A8A8EA1FFDECDC00B76C04 /* Utility.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utility.swift; sourceTree = "<group>"; };
+		E0A8A8EC1FFE1F9700B76C04 /* EventModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -154,6 +158,8 @@
 				E0A8A8DC1FFB509300B76C04 /* MainMenuViewController.swift */,
 				E0A8A8DE1FFB6F1800B76C04 /* CreateEventViewController.swift */,
 				E0A8A8E01FFC670500B76C04 /* EventDetailViewController.swift */,
+				E0A8A8EC1FFE1F9700B76C04 /* EventModel.swift */,
+				E01D8F4220000EB600B0B99C /* UserModel.swift */,
 				E0A8A8E21FFC97F100B76C04 /* RideDetailViewController.swift */,
 				E0A8A8E41FFCB73000B76C04 /* DriveDetailViewController.swift */,
 				E0A8A8E61FFD50F100B76C04 /* SearchViewController.swift */,
@@ -506,6 +512,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E0A8A8ED1FFE1F9700B76C04 /* EventModel.swift in Sources */,
 				E0A8A8EB1FFDECDC00B76C04 /* Utility.swift in Sources */,
 				E0A8A8E11FFC670500B76C04 /* EventDetailViewController.swift in Sources */,
 				E0A8A8DD1FFB509300B76C04 /* MainMenuViewController.swift in Sources */,
@@ -515,6 +522,7 @@
 				E0A8A8E31FFC97F100B76C04 /* RideDetailViewController.swift in Sources */,
 				E0A8A8AB1FFB2C9400B76C04 /* AppDelegate.swift in Sources */,
 				E0A8A8E51FFCB73000B76C04 /* DriveDetailViewController.swift in Sources */,
+				E01D8F4320000EB600B0B99C /* UserModel.swift in Sources */,
 				E0A8A8DB1FFB3F9200B76C04 /* DedeSignInButtonDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

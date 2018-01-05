@@ -29,6 +29,7 @@ class EventModel {
     //-----------------------------------------------------------------------------------------------------------------
     
     // Database References
+    static let eventSpaceRef = Database.database().reference().child("events")
     let eventRef: DatabaseReference
     
     // Notification Center
@@ -41,9 +42,9 @@ class EventModel {
     var eventName: String?
     var eventLocation: String?
     var eventOwner: String?
-    var eventQueue: [String:String]?
-    var eventActiveRides: [String:String]?
-    var eventDrivers: [String:String]?
+    var eventQueue = [String:String]()
+    var eventActiveRides = [String:String]()
+    var eventDrivers = [String:String]()
     
     //-----------------------------------------------------------------------------------------------------------------
     // MARK: - Initialization
@@ -52,7 +53,7 @@ class EventModel {
     init(eventID:String) {
         self.notificationCenter = NotificationCenter.default
         self.eventID = eventID
-        self.eventRef = Database.database().reference().child("events").child(eventID)
+        self.eventRef = EventModel.eventSpaceRef.child(eventID)
     }
     
     func attachDatabaseListeners() {
@@ -61,6 +62,7 @@ class EventModel {
         eventRef.child("owner").observe(.value, with: eventOwnerValueDidChange)
         eventRef.child("queue").observe(.value, with: eventQueueValueDidChange)
         eventRef.child("activeRides").observe(.value, with: eventActiveRidesValueDidChange)
+        eventRef.child("drivers").observe(.value, with: eventDriversValueDidChange)
     }
     
     //-----------------------------------------------------------------------------------------------------------------

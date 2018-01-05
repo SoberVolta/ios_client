@@ -27,6 +27,7 @@ class UserModel {
     //-----------------------------------------------------------------------------------------------------------------
     
     // Database Reference
+    static let userSpaceRef = Database.database().reference().child("users")
     let userRef: DatabaseReference
  
     // Notification Center
@@ -37,9 +38,9 @@ class UserModel {
     
     // Database Populated Values
     var userDisplayName: String?
-    var userOwnedEvents: [String:String]?
-    var userRides: [String:String]?
-    var userDrivesFor: [String:String]?
+    var userOwnedEvents = [String:String]()
+    var userRides = [String:String]()
+    var userDrivesFor = [String:String]()
     
     //-----------------------------------------------------------------------------------------------------------------
     // MARK: - Initialization
@@ -48,7 +49,7 @@ class UserModel {
     init(userUID uid: String) {
         self.notificationCenter = NotificationCenter.default
         self.userUID = uid
-        self.userRef = Database.database().reference().child("users").child(self.userUID)
+        self.userRef = UserModel.userSpaceRef.child(self.userUID)
     }
     
     func attachDatabaseListeners() {

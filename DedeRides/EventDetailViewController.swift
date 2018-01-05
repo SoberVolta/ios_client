@@ -10,15 +10,17 @@ import Foundation
 import UIKit
 import Firebase
 
+enum RideStatus {
+    case RideNotRequested
+    case RideInQueue
+    case RideActive
+}
+
 class EventDetailViewController : UIViewController {
     
     //-----------------------------------------------------------------------------------------------------------------
     // MARK: - Member Variables
     //-----------------------------------------------------------------------------------------------------------------
-    
-    // Segue initialized variables
-    var currentUser: User?
-    var eventUID: String?
     
     // Outlets
     @IBOutlet weak var eventNameLabel: UILabel!
@@ -27,151 +29,148 @@ class EventDetailViewController : UIViewController {
     @IBOutlet weak var offerDriveBtn: UIButton!
     @IBOutlet weak var deleteBtn: UIButton!
     
-    // Database references
-    let ref = Database.database().reference()
-    let eventsRef = Database.database().reference().child("events")
-    let usersRef = Database.database().reference().child("users")
-    let ridesRef = Database.database().reference().child("rides")
+    // Models
+    private var eventModel: EventModel!
+    private var userModel: UserModel!
     
     // Member variables
-    private var uiReady = false;
-    private var eventNameText: String?
-    private var eventLocationText = "Unspecified Location"
-    private var eventOwner: String?
-    private var userHasRequestedRide = false
-    private var userRideRequestID: String?
-    private var userIsInActiveRide = false
-    private var blueButtonColor: UIColor?
-    private var userHasOfferedDrive = false
+    let defaultButtonColor = UIColor(red: 0.0, green: 0.478431, blue: 1.0, alpha: 1.0)
+    private var rideStatus: RideStatus?
+    private var currentRideID: String?
     
     //-----------------------------------------------------------------------------------------------------------------
     // MARK: - View Controller Functions
     //-----------------------------------------------------------------------------------------------------------------
     
-    override func viewWillAppear(_ animated: Bool) {
-        uiReady = true;
-        updateUI()
-    }
-    
     func prepareForDisplay(user: User, eventID: String) {
-        self.currentUser = user
-        self.eventUID = eventID
         
-        eventsRef.child(eventID).observeSingleEvent(of: .value) { (snap) in
-            if let eventData = snap.value as? [String:Any] {
-                
-                // Get Values
-                self.eventNameText = eventData["name"] as? String ?? "Unnamed Event"
-                self.eventLocationText = eventData["location"] as? String ?? "Unspecified Location"
-                self.eventOwner = eventData["owner"] as? String
-                
-                // Check ride status
-                self.userHasRequestedRide = false
-                self.userRideRequestID = nil
-                if let queue = eventData["queue"] as? [String:String] {
-                    for rideID in Array(queue.keys) {
-                        if queue[rideID] == user.uid {
-                            self.userHasRequestedRide = true
-                            self.userRideRequestID = rideID
-                            break
-                        }
-                    }
-                    
-                } else {
-                    print("Not able to parse queue")
-                }
-                
-                // Check driver status
-                self.userHasOfferedDrive = false
-                if let drivers = eventData["drivers"] as? [String:Any] {
-                    if drivers[user.uid] != nil {
-                      self.userHasOfferedDrive = true
-                    }
-                } else {
-                    print("Not able to parse drivers")
-                }
-                
-                // Check for active ride
-                self.userIsInActiveRide = false
-                if !self.userHasRequestedRide {
-                    Database.database().reference().child("users").child(user.uid).child("rides")
-                        .observeSingleEvent(of: .value) { (snap) in
-                        if let ridesData = snap.value as? [String:Any] {
-                            for rideID in Array(ridesData.keys) {
-                                if let eventIDForCurrentRide = ridesData[rideID] as? String {
-                                    if eventIDForCurrentRide == eventID {
-                                        self.userIsInActiveRide = true
-                                    }
-                                }
-                            }
-                        }
-                        self.updateUI()
-                    }
-                } else {
-                    self.updateUI()
-                }
-            } else {
-                print("Cannot parse event as [String:String]")
-            }
-        }
+        // Create Event Model
+        self.eventModel = EventModel(eventID: eventID)
         
+        // Create User Model
+        self.userModel = UserModel(userUID: user.uid)
+        
+        // Add Notification Observers
+        eventModel.notificationCenter.addObserver(
+            forName: .EventNameDidChange,
+            object: eventModel,
+            queue: nil,
+            using: eventNameDidChange
+        )
+        eventModel.notificationCenter.addObserver(
+            forName: .EventLocationDidChange,
+            object: eventModel,
+            queue: nil,
+            using: eventLocationDidChange
+        )
+        eventModel.notificationCenter.addObserver(
+            forName: .EventQueueDidChange,
+            object: eventModel,
+            queue: nil,
+            using: rideStatusDidChange
+        )
+        userModel.notificationCenter.addObserver(
+            forName: .UserRidesSpaceDidChange,
+            object: userModel,
+            queue: nil,
+            using: rideStatusDidChange
+        )
+        eventModel.notificationCenter.addObserver(
+            forName: .EventDriversDidChange,
+            object: eventModel,
+            queue: nil,
+            using: eventUserDriverDidChange
+        )
+        eventModel.notificationCenter.addObserver(
+            forName: .EventOwnerDidChange,
+            object: eventModel,
+            queue: nil,
+            using: eventOwnerDidChange
+        )
+        
+        // Attach listeners
+        self.userModel.attachDatabaseListeners()
+        self.eventModel.attachDatabaseListeners()
     }
     
-    func updateUI() {
-        if(!uiReady) {
-            return;
+    //-----------------------------------------------------------------------------------------------------------------
+    // MARK: - Notification Listeners
+    //-----------------------------------------------------------------------------------------------------------------
+    
+    // Update Event Name
+    private func eventNameDidChange(_:Notification? = nil) {
+        self.eventNameLabel.text = self.eventModel.eventName
+    }
+    
+    // Update Event Location
+    private func eventLocationDidChange(_:Notification? = nil) {
+        self.eventLocationLabel.text = self.eventModel.eventLocation
+    }
+    
+    // Update Request Ride Button
+    private func rideStatusDidChange(_:Notification? = nil) {
+        
+        self.updateRideStatus()
+        
+        // Change button colors dependent on ride status
+        if self.rideStatus == .RideNotRequested {
+            self.requestRideBtn.setTitle("Request a Ride", for: .normal)
+            self.requestRideBtn.isEnabled = true
+            self.requestRideBtn.setTitleColor(defaultButtonColor, for: .normal)
+        } else if self.rideStatus == .RideInQueue {
+            self.requestRideBtn.setTitle("Cancel Ride Request", for: .normal)
+            self.requestRideBtn.isEnabled = true
+            self.requestRideBtn.setTitleColor(.red, for: .normal)
+        } else if self.rideStatus == .RideActive {
+            self.requestRideBtn.setTitle("Cancel Ride Request", for: .normal)
+            self.requestRideBtn.isEnabled = false
+            self.requestRideBtn.setTitleColor(.gray, for: .normal)
         }
-        
-        // Set labels
-        self.title = eventNameText
-        eventNameLabel.text = eventNameText
-        eventLocationLabel.text = eventLocationText
-        
-        // Hide/Show delete button
-        if let eventOwnerUID = self.eventOwner {
-            if let curUser = self.currentUser {
-                if curUser.uid != eventOwnerUID {
-                    self.deleteBtn.isHidden = true
-                } else {
-                    self.deleteBtn.isHidden = false
-                }
+    }
+    
+    private func updateRideStatus() {
+        // Check if rider is in queue
+        for rideID in Array(self.eventModel.eventQueue.keys) {
+            if self.eventModel.eventQueue[rideID] == self.userModel.userUID {
+                self.rideStatus = .RideInQueue
+                self.currentRideID = rideID
+                return
             }
         }
         
-        // Update "Request Ride" button depending on current ride status
-        // (not requested/requested/driver en route)
-        if userHasRequestedRide {
-            // Ride status: Requested
-            self.blueButtonColor = requestRideBtn.tintColor
-            requestRideBtn.setTitle("Cancel Ride Request", for: .normal)
-            requestRideBtn.setTitleColor(.red, for: .normal)
-        } else if userIsInActiveRide {
-            // Ride status: Driver en route
-            self.blueButtonColor = requestRideBtn.tintColor
-            requestRideBtn.setTitle("Cancel Ride Request", for: .normal)
-            requestRideBtn.setTitleColor(.gray, for: .normal)
-            requestRideBtn.isEnabled = false
-        } else {
-            // Ride status: Not requested
-            requestRideBtn.setTitle("Request a Ride", for: .normal)
-            requestRideBtn.isEnabled = true
-            if let color = self.blueButtonColor {
-                requestRideBtn.setTitleColor(color, for: .normal)
+        // Check if user is going to this event
+        for rideID in Array(self.userModel.userRides.keys) {
+            if self.userModel.userRides[rideID] == self.eventModel.eventID {
+                self.rideStatus = .RideActive
+                self.currentRideID = rideID
+                return
             }
         }
         
-        // Update "Offer Drive" button based on if user has already offered to drive or not
-        if userHasOfferedDrive {
-            self.blueButtonColor = requestRideBtn.tintColor
-            offerDriveBtn.setTitle("Cancel Drive Offer", for: .normal)
-            offerDriveBtn.setTitleColor(.red, for: .normal)
-        } else {
-            offerDriveBtn.setTitle("Offer to Drive", for: .normal)
-            if let color = self.blueButtonColor {
-                offerDriveBtn.setTitleColor(color, for: .normal)
-            }
-        }
+        self.rideStatus = .RideNotRequested
+        self.currentRideID = nil
+    }
+    
+    // Update Offer Drive Button
+    private func eventUserDriverDidChange(_:Notification? = nil) {
         
+        // If user is in events drivers
+        if eventModel.eventDrivers[userModel.userUID] != nil {
+            
+            self.offerDriveBtn.setTitle("Cancel Drive Offer", for: .normal)
+            self.offerDriveBtn.setTitleColor(.red, for: .normal)
+            
+        } else { // If user is not in events drivers
+            
+            self.offerDriveBtn.setTitle("Offer to Drive", for: .normal)
+            self.offerDriveBtn.setTitleColor(defaultButtonColor, for: .normal)
+            
+        }
+    }
+    
+    // Update Delete Button
+    private func eventOwnerDidChange(_:Notification? = nil) {
+        self.deleteBtn.isHidden = (self.userModel.userUID != self.eventModel.eventOwner)
     }
     
     //-----------------------------------------------------------------------------------------------------------------
@@ -181,13 +180,13 @@ class EventDetailViewController : UIViewController {
     @IBAction func requestRideBtnPressed() {
         
         // If the user has not already requested a ride...
-        if !self.userHasRequestedRide {
+        if self.rideStatus! == .RideNotRequested {
             
             // Ask if they want to request a ride
             displayActionSheet(
                 viewController: self,
                 actionSheetTitle: "Request a Ride",
-                actionSheetMessage: "Are you sure you want to request a ride to \(eventNameText ?? "this event")?",
+                actionSheetMessage: "Are you sure you want to request a ride to \(eventModel.eventName ?? "this event")?",
                 cancelTitle: "Cancel",
                 affirmTitle: "Request a Ride",
                 affirmHandler: requestRide
@@ -208,56 +207,40 @@ class EventDetailViewController : UIViewController {
         }
     }
     
-    func requestRide(_: UIAlertAction? = nil) {
+    private func requestRide(_: UIAlertAction? = nil) {
         
-        // Get values
-        if let curUser = self.currentUser {
-            if let eventID = self.eventUID {
-                
-                // Generte new key
-                let rideKey = self.ridesRef.childByAutoId().key
-                
-                // Form new data
-                let rideData: [String : Any] = [
-                    "status": 0,         // requested but not yet claimed
-                    "rider": curUser.uid,
-                    "event": eventID
-                ]
-                
-                // Update database
-                let updates: [String : Any] = [
-                    "/rides/\(rideKey)": rideData,
-                    "/events/\(eventID)/queue/\(rideKey)": curUser.uid,
-                    "/users/\(curUser.uid)/rides/\(rideKey)": eventID
-                ]
-                ref.updateChildValues(updates)
-                
-                // Update UI
-                prepareForDisplay(user: curUser, eventID: eventID)
-            }
-        }
+        // Generte new key
+        let rideKey = Database.database().reference().child("rides").childByAutoId().key
+        
+        // Form new data
+        let rideData: [String : Any] = [
+            "status": 0,         // requested but not yet claimed
+            "rider": userModel.userUID,
+            "event": eventModel.eventID
+        ]
+        
+        // Update database
+        let updates: [String : Any] = [
+            "/rides/\(rideKey)": rideData,
+            "/events/\(eventModel.eventID)/queue/\(rideKey)": userModel.userUID,
+            "/users/\(userModel.userUID)/rides/\(rideKey)": eventModel.eventID
+        ]
+        Database.database().reference().updateChildValues(updates)
+        
     }
     
-    func cancelRideRequest(_: UIAlertAction? = nil) {
+    private func cancelRideRequest(_: UIAlertAction? = nil) {
         
-        // Get values
-        if let curUser = self.currentUser {
-            if let eventID = self.eventUID {
-                if let rideID = self.userRideRequestID {
-                    
-                    // Update database
-                    let updates: [String : Any] = [
-                        "/rides/\(rideID)": NSNull(),
-                        "/events/\(eventID)/queue/\(rideID)": NSNull(),
-                        "/users/\(curUser.uid)/rides/\(rideID)": NSNull()
-                    ]
-                    ref.updateChildValues(updates)
-                    
-                    // Update UI
-                    prepareForDisplay(user: curUser, eventID: eventID)
-                    
-                }
-            }
+        if let rideID = self.currentRideID {
+            
+            // Update database
+            let updates: [String : Any] = [
+                "/rides/\(rideID)": NSNull(),
+                "/events/\(eventModel.eventID)/queue/\(rideID)": NSNull(),
+                "/users/\(userModel.userUID)/rides/\(rideID)": NSNull()
+            ]
+            Database.database().reference().updateChildValues(updates)
+            
         }
     }
     
@@ -268,13 +251,13 @@ class EventDetailViewController : UIViewController {
     @IBAction func offerDriveBtnPressed() {
         
         // If user has not yet offered to drive...
-        if !self.userHasOfferedDrive {
+        if eventModel.eventDrivers[userModel.userUID] == nil  {
             
             // Ask if they want to drive
             displayActionSheet(
                 viewController: self,
                 actionSheetTitle: "Offer to Drive",
-                actionSheetMessage: "Are you sure you want to drive for \(eventNameText ?? "thisEvent")?",
+                actionSheetMessage: "Are you sure you want to drive for \(self.eventModel.eventName ?? "this event")?",
                 cancelTitle: "Cancel",
                 affirmTitle: "Offer to Drive",
                 affirmHandler: offerDrive
@@ -295,44 +278,27 @@ class EventDetailViewController : UIViewController {
         }
     }
     
-    func offerDrive(_: UIAlertAction? = nil) {
+    private func offerDrive(_: UIAlertAction? = nil) {
         
-        // Get values
-        if let curUser = self.currentUser {
-            if let eventID = self.eventUID {
-                if let eventName = self.eventNameText {
-                    
-                    // Update Database
-                    let updates = [
-                        "/events/\(eventID)/drivers/\(curUser.uid)": curUser.displayName ?? "Unnamed Driver",
-                        "/users/\(curUser.uid)/drivesFor/\(eventID)": eventName
-                    ]
-                    ref.updateChildValues(updates)
-                
-                    // Update UI
-                    prepareForDisplay(user: curUser, eventID: eventID)
-                }
-            }
-        }
+        // Update Database
+        let updates = [
+            "/events/\(eventModel.eventID)/drivers/\(userModel.userUID)": userModel.userDisplayName ?? "Unnamed Driver",
+            "/users/\(userModel.userUID)/drivesFor/\(eventModel.eventID)": eventModel.eventName!
+        ]
+        Database.database().reference().updateChildValues(updates)
+        
     }
     
-    func cancelDriveOffer(_: UIAlertAction? = nil) {
+    private func cancelDriveOffer(_: UIAlertAction? = nil) {
+                
+        // Update Database
+        let updates = [
+            "/events/\(eventModel.eventID)/drivers/\(userModel.userUID)": NSNull(),
+            "/users/\(userModel.userUID)/drivesFor/\(eventModel.eventID)": NSNull()
+        ]
+        Database.database().reference().updateChildValues(updates)
         
-        // Get values
-        if let curUser = self.currentUser {
-            if let eventID = self.eventUID {
-                
-                // Update Database
-                let updates = [
-                    "/events/\(eventID)/drivers/\(curUser.uid)": NSNull(),
-                    "/users/\(curUser.uid)/drivesFor/\(eventID)": NSNull()
-                ]
-                ref.updateChildValues(updates)
-                
-                // Update UI
-                prepareForDisplay(user: curUser, eventID: eventID)
-            }
-        }
+        
     }
     
     //-----------------------------------------------------------------------------------------------------------------
@@ -345,7 +311,7 @@ class EventDetailViewController : UIViewController {
         displayActionSheet(
             viewController: self,
             actionSheetTitle: "Delete Event",
-            actionSheetMessage: "Are you sure you want to delete \(eventNameText ?? "thisEvent")",
+            actionSheetMessage: "Are you sure you want to delete \(eventModel.eventName ?? "thisEvent")",
             cancelTitle: "Cancel",
             affirmTitle: "Delete",
             affirmHandler: deleteCurrentEvent
@@ -353,7 +319,7 @@ class EventDetailViewController : UIViewController {
         
     }
     
-    func deleteCurrentEvent(_: UIAlertAction? = nil) {
+    private func deleteCurrentEvent(_: UIAlertAction? = nil) {
         // FIXME: Implement Delete Function
         print("Delete Current Event")
     }
