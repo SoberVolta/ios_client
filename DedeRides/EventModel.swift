@@ -14,11 +14,12 @@ import Firebase
 //-----------------------------------------------------------------------------------------------------------------
 
 extension NSNotification.Name {
-    public static let EventNameDidChange = Notification.Name("EventNameValueDidChange")
-    public static let EventLocationDidChange = Notification.Name("EventLocationValueDidChange")
-    public static let EventOwnerDidChange = Notification.Name("EventOwnerValueDidChange")
-    public static let EventQueueValueDidChange = Notification.Name("EventQueueValueDidChange")
-    public static let EventActiveRidesValueDidChange = Notification.Name("EventActiveRidesValueDidChange")
+    public static let EventNameDidChange = Notification.Name("EventNameDidChange")
+    public static let EventLocationDidChange = Notification.Name("EventLocationDidChange")
+    public static let EventOwnerDidChange = Notification.Name("EventOwnerDidChange")
+    public static let EventQueueDidChange = Notification.Name("EventQueueDidChange")
+    public static let EventActiveRidesDidChange = Notification.Name("EventActiveRidesDidChange")
+    public static let EventDriversDidChange = Notification.Name("EventDriversDidChange")
 }
 
 class EventModel {
@@ -41,7 +42,8 @@ class EventModel {
     var eventLocation: String?
     var eventOwner: String?
     var eventQueue: [String:String]?
-    var eventActiveRides: [String:Any]?
+    var eventActiveRides: [String:String]?
+    var eventDrivers: [String:String]?
     
     //-----------------------------------------------------------------------------------------------------------------
     // MARK: - Initialization
@@ -54,11 +56,11 @@ class EventModel {
     }
     
     func attachDatabaseListeners() {
-        eventRef.child("name").observe(.value, with: eventNameValueHasChanged)
-        eventRef.child("location").observe(.value, with: eventLocationValueHasChanged)
-        eventRef.child("owner").observe(.value, with: eventOwnerValueHasChanged)
-        eventRef.child("queue").observe(.value, with: eventQueueValueHasChanged)
-        eventRef.child("activeRides").observe(.value, with: eventActiveRidesValueHasChanged)
+        eventRef.child("name").observe(.value, with: eventNameValueDidChange)
+        eventRef.child("location").observe(.value, with: eventLocationValueDidChange)
+        eventRef.child("owner").observe(.value, with: eventOwnerValueDidChange)
+        eventRef.child("queue").observe(.value, with: eventQueueValueDidChange)
+        eventRef.child("activeRides").observe(.value, with: eventActiveRidesValueDidChange)
     }
     
     //-----------------------------------------------------------------------------------------------------------------
@@ -66,33 +68,39 @@ class EventModel {
     //-----------------------------------------------------------------------------------------------------------------
     
     // Update event name
-    private func eventNameValueHasChanged(snap:DataSnapshot) {
+    private func eventNameValueDidChange(snap:DataSnapshot) {
         self.eventName = snap.value as? String
         self.notificationCenter.post(name: .EventNameDidChange, object: self)
     }
     
     // Update event location
-    private func eventLocationValueHasChanged(snap:DataSnapshot) {
+    private func eventLocationValueDidChange(snap:DataSnapshot) {
         self.eventLocation = snap.value as? String
         self.notificationCenter.post(name: .EventLocationDidChange, object: self)
     }
     
     // Update event owner
-    private func eventOwnerValueHasChanged(snap:DataSnapshot) {
+    private func eventOwnerValueDidChange(snap:DataSnapshot) {
         self.eventOwner = snap.value as? String
         self.notificationCenter.post(name: .EventOwnerDidChange, object: self)
     }
     
+    // Update Drivers
+    private func eventDriversValueDidChange(snap:DataSnapshot) {
+        self.eventDrivers = snap.value as? [String:String] ?? [String:String]()
+        self.notificationCenter.post(name: .EventDriversDidChange, object: self)
+    }
+    
     // Update event queue
-    private func eventQueueValueHasChanged(snap:DataSnapshot) {
+    private func eventQueueValueDidChange(snap:DataSnapshot) {
         self.eventQueue = snap.value as? [String:String] ?? [String:String]()
-        self.notificationCenter.post(name: .EventQueueValueDidChange, object: self)
+        notificationCenter.post(name: .EventQueueDidChange, object: self)
     }
     
     // Update active rides
-    private func eventActiveRidesValueHasChanged(snap:DataSnapshot) {
+    private func eventActiveRidesValueDidChange(snap:DataSnapshot) {
         self.eventActiveRides = snap.value as? [String:String] ?? [String:String]()
-        self.notificationCenter.post(name: .EventActiveRidesValueDidChange, object: self)
+        notificationCenter.post(name: .EventActiveRidesDidChange, object: self)
     }
     
 }
