@@ -28,14 +28,15 @@ class EventModel {
     //-----------------------------------------------------------------------------------------------------------------
     
     // Database References
-    let ref = Database.database().reference()
     let eventRef: DatabaseReference
     
     // Notification Center
     let notificationCenter: NotificationCenter
     
-    // Event Specific Variables
+    // Initialized Value
     var eventID: String
+    
+    // Database Populated Variables
     var eventName: String?
     var eventLocation: String?
     var eventOwner: String?
@@ -49,17 +50,15 @@ class EventModel {
     init(eventID:String) {
         self.notificationCenter = NotificationCenter.default
         self.eventID = eventID
-        self.eventRef = ref.child("events").child(eventID)
+        self.eventRef = Database.database().reference().child("events").child(eventID)
     }
     
     func attachDatabaseListeners() {
-        
         eventRef.child("name").observe(.value, with: eventNameValueHasChanged)
         eventRef.child("location").observe(.value, with: eventLocationValueHasChanged)
         eventRef.child("owner").observe(.value, with: eventOwnerValueHasChanged)
         eventRef.child("queue").observe(.value, with: eventQueueValueHasChanged)
         eventRef.child("activeRides").observe(.value, with: eventActiveRidesValueHasChanged)
-        
     }
     
     //-----------------------------------------------------------------------------------------------------------------
