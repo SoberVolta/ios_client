@@ -97,8 +97,8 @@ class MainMenuViewController : UITableViewController {
             if let destinationVC = segue.destination as? RideDetailViewController {
                 let rideID = Array(self.userModel.userRides.keys)[selectedRideIdx]
                 destinationVC.prepareForDisplay(
-                    rideID: rideID,
-                    userUID: userModel.userUID,
+                    ride: RideModel(rideID: rideID),
+                    user: userModel,
                     eventName: userModel.userRides[rideID]!
                 )
             }

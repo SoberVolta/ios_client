@@ -41,6 +41,12 @@ class EventDetailViewController : UIViewController {
     // MARK: - View Controller Functions
     //-----------------------------------------------------------------------------------------------------------------
     
+    override func viewWillAppear(_ animated: Bool) {
+        // Attach listeners
+        self.userModel.attachDatabaseListeners()
+        self.eventModel.attachDatabaseListeners()
+    }
+    
     func prepareForDisplay(userModel: UserModel, eventID: String) {
         
         // User Model
@@ -87,9 +93,6 @@ class EventDetailViewController : UIViewController {
             using: eventOwnerDidChange
         )
         
-        // Attach listeners
-        self.userModel.attachDatabaseListeners()
-        self.eventModel.attachDatabaseListeners()
     }
     
     //-----------------------------------------------------------------------------------------------------------------
