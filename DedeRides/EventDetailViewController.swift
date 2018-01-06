@@ -41,13 +41,13 @@ class EventDetailViewController : UIViewController {
     // MARK: - View Controller Functions
     //-----------------------------------------------------------------------------------------------------------------
     
-    func prepareForDisplay(userUID: String, eventID: String) {
+    func prepareForDisplay(userModel: UserModel, eventID: String) {
+        
+        // User Model
+        self.userModel = userModel
         
         // Create Event Model
         self.eventModel = EventModel(eventID: eventID)
-        
-        // Create User Model
-        self.userModel = UserModel(userUID: userUID)
         
         // Add Notification Observers
         eventModel.notificationCenter.addObserver(
@@ -99,6 +99,7 @@ class EventDetailViewController : UIViewController {
     // Update Event Name
     private func eventNameDidChange(_:Notification? = nil) {
         self.eventNameLabel.text = self.eventModel.eventName
+        self.title = self.eventModel.eventName
     }
     
     // Update Event Location

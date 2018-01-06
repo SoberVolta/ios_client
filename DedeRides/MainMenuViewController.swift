@@ -16,7 +16,7 @@ class MainMenuViewController : UITableViewController {
     // MARK: - Member Variables
     //-----------------------------------------------------------------------------------------------------------------
     
-    // Segue Initialized Variables
+    // Segue Initialized Variable
     var userModel: UserModel!
     
     // Database References
@@ -91,7 +91,7 @@ class MainMenuViewController : UITableViewController {
         } else if segue.identifier == "segueToEventDetail" {
             if let destinationVC = segue.destination as? EventDetailViewController {
                 let eventID = Array(self.userModel.userOwnedEvents.keys)[selectedEventIdx]
-                destinationVC.prepareForDisplay(userUID: userModel.userUID, eventID: eventID)
+                destinationVC.prepareForDisplay(userModel: self.userModel, eventID: eventID)
             }
         } else if segue.identifier == "segueToRideDetail" {
             if let destinationVC = segue.destination as? RideDetailViewController {
