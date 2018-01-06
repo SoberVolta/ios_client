@@ -29,6 +29,7 @@ class EventModel {
     //-----------------------------------------------------------------------------------------------------------------
     
     // Database References
+    static let ref = Database.database().reference()
     static let eventSpaceRef = Database.database().reference().child("events")
     let eventRef: DatabaseReference
     
@@ -68,6 +69,25 @@ class EventModel {
     //-----------------------------------------------------------------------------------------------------------------
     // MARK: - Static Update Functions
     //-----------------------------------------------------------------------------------------------------------------
+    
+    static func createEvent(eventName: String, eventLocation: String, eventOwnerUID: String) {
+        
+        // Create event space in database
+        let newEventKey = eventSpaceRef.childByAutoId().key
+        
+        let newEventData = [
+            "name": eventName,
+            "location": eventLocation,
+            "owner": eventOwnerUID
+        ]
+        
+        // Update database
+        let updates: [String:Any] = [
+            "/events/\(newEventKey)": newEventData,
+            "/users/\(eventOwnerUID)/ownedEvents/\(newEventKey)": eventName
+        ]
+        ref.updateChildValues(updates)
+    }
     
     static func addDriverToEvent(eventID: String, eventName: String, driverUID: String, driverDisplayName: String) {
         

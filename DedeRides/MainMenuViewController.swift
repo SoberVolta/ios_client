@@ -86,7 +86,7 @@ class MainMenuViewController : UITableViewController {
         // Branch on segue identifier
         if segue.identifier == "segueToCreateEvent" {
             if let destinationVC = segue.destination as? CreateEventViewController {
-                destinationVC.creatingUserUID = userModel.userUID
+                destinationVC.creatingUser = userModel
             }
         } else if segue.identifier == "segueToEventDetail" {
             if let destinationVC = segue.destination as? EventDetailViewController {

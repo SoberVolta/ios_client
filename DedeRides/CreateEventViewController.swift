@@ -17,7 +17,7 @@ class CreateEventViewController : UIViewController, UITextFieldDelegate {
     //-----------------------------------------------------------------------------------------------------------------
     
     // Segue Initialized Variables
-    var creatingUserUID: String?
+    var creatingUser: UserModel!
     
     // Outlets
     @IBOutlet weak var eventNameTextField: UITextField!
@@ -83,26 +83,15 @@ class CreateEventViewController : UIViewController, UITextFieldDelegate {
         // Get Values
         if let eName = eventNameTextField.text {
             if let eLocation = eventLocationTextField.text {
-                if let uid = creatingUserUID {
                     
-                    // Create event space in database
-                    let newEventKey = eventsRef.childByAutoId().key
-                    let newEventData = [
-                        "name": eName,
-                        "location": eLocation,
-                        "owner": uid
-                    ]
-                    
-                    // Update database
-                    let updates: [String:Any] = [
-                        "/events/\(newEventKey)": newEventData,
-                        "/users/\(uid)/ownedEvents/\(newEventKey)": eName
-                    ]
-                    ref.updateChildValues(updates)
-                    
-                    // Exit once completed
-                    exit()
-                }
+                EventModel.createEvent(
+                    eventName: eName,
+                    eventLocation: eLocation,
+                    eventOwnerUID: creatingUser.userUID
+                )
+                
+                // Exit once completed
+                exit()
             }
         }
     }
