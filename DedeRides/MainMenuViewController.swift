@@ -20,18 +20,13 @@ class MainMenuViewController : UITableViewController {
     var userModel: UserModel!
     
     // Database References
-    let usersRef = Database.database().reference().child("users")
-    let eventsRef = Database.database().reference().child("events")
     
     // Table View Variables
     let sectionTitles = ["New Events", "My Events", "My Rides", "My Drives", "Saved Events"]
     let newEventOptions = ["Create Event", "Search for event"]
     
-    var userEventNames = [String:String]()
     var selectedEventIdx = -1
-    var userRides = [String:String]()
     var selectedRideIdx = -1
-    var userDrives = [String:String]()
     var selectedDriveIdx = -1
     
     //-----------------------------------------------------------------------------------------------------------------
@@ -40,9 +35,6 @@ class MainMenuViewController : UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        // Handle auth changes
-        Auth.auth().addStateDidChangeListener(handleAuthStateChange)
         
         // Hide back button
         let hiddentBackButton = UIBarButtonItem(title: "", style: .plain, target: navigationController, action: nil)
@@ -53,11 +45,35 @@ class MainMenuViewController : UITableViewController {
         tableView.dataSource = self
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "mainMenuCell")
         
-        // Register real time database observers
-        self.title = userModel.userDisplayName
-        usersRef.child(userModel.userUID).child("ownedEvents").observe(.value, with: userEventsWatcher)
-        usersRef.child(userModel.userUID).child("rides").observe(.value, with: userRideWatcher)
-        usersRef.child(userModel.userUID).child("drivesFor").observe(.value, with: userDriveForWatcher)
+        // Add notification observers
+        userModel.notificationCenter.addObserver(
+            forName: .UserDisplayNameDidChange,
+            object: userModel,
+            queue: nil,
+            using: userDisplayNameDidChange
+        )
+        userModel.notificationCenter.addObserver(
+            forName: .UserOwnedEventsDidChange,
+            object: userModel,
+            queue: nil,
+            using: userOwnedEventsDidChange
+        )
+        userModel.notificationCenter.addObserver(
+            forName: .UserRidesSpaceDidChange,
+            object: userModel,
+            queue: nil,
+            using: userRidesDidChange
+        )
+        userModel.notificationCenter.addObserver(
+            forName: .UserDrivesForSpaceDidChange,
+            object: userModel,
+            queue: nil,
+            using: userDrivesForDidChange
+        )
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        userModel.attachDatabaseListeners()
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -74,25 +90,25 @@ class MainMenuViewController : UITableViewController {
             }
         } else if segue.identifier == "segueToEventDetail" {
             if let destinationVC = segue.destination as? EventDetailViewController {
-                let selectedEventID = Array(self.userEventNames.keys)[selectedEventIdx]
-                destinationVC.prepareForDisplay(userUID: userModel.userUID, eventID: selectedEventID)
+                let eventID = Array(self.userModel.userOwnedEvents.keys)[selectedEventIdx]
+                destinationVC.prepareForDisplay(userUID: userModel.userUID, eventID: eventID)
             }
         } else if segue.identifier == "segueToRideDetail" {
             if let destinationVC = segue.destination as? RideDetailViewController {
-                let selectedRideID = Array(self.userRides.keys)[selectedRideIdx]
+                let rideID = Array(self.userModel.userRides.keys)[selectedRideIdx]
                 destinationVC.prepareForDisplay(
-                    rideID: selectedRideID,
+                    rideID: rideID,
                     userUID: userModel.userUID,
-                    eventName: userRides[selectedRideID]!
+                    eventName: userModel.userRides[rideID]!
                 )
             }
         } else if segue.identifier == "segueToDriveDetail" {
             if let destinationVC = segue.destination as? DriveDetailViewController {
-                let selectedDriveID = Array(self.userDrives.keys)[selectedDriveIdx]
+                let rideID = Array(self.userModel.userDrivesFor.keys)[selectedDriveIdx]
                 destinationVC.prepareForDisplay(
                     userUID: userModel.userUID,
-                    eventID: selectedDriveID,
-                    eventName: userDrives[selectedDriveID]!
+                    eventID: rideID,
+                    eventName: userModel.userDrivesFor[rideID]!
                 )
             }
         } else if segue.identifier == "segueToSearch" {
@@ -113,68 +129,23 @@ class MainMenuViewController : UITableViewController {
     }
     
     //-----------------------------------------------------------------------------------------------------------------
-    // MARK: - Real Time Database Watchers
+    // MARK: - Notification Observers
     //-----------------------------------------------------------------------------------------------------------------
     
-    func userEventsWatcher(snap:DataSnapshot) {
-        self.userEventNames.removeAll()
-
-        if let userEvents = snap.value as? [String:Any] {
-            for eventID in Array(userEvents.keys) {
-                self.userEventNames[eventID] = userEvents[eventID] as? String ?? "Unnamed Event"
-            }
-        }
-        
+    func userDisplayNameDidChange(_:Notification? = nil) {
+        self.title = userModel.userDisplayName
+    }
+    
+    func userOwnedEventsDidChange(_:Notification? = nil) {
         self.tableView.reloadData()
     }
     
-    func userRideWatcher(snap:DataSnapshot) {
-        self.userRides.removeAll()
-        
-        if let rides = snap.value as? [String:Any] {
-            for rideID in Array(rides.keys) {
-                if let eventID = rides[rideID] as? String {
-                    eventsRef.child(eventID).child("name").observeSingleEvent(of: .value) {(snap) in
-                        if let eventName = snap.value as? String {
-                            self.userRides[rideID] = eventName
-                        } else {
-                            print("Can't parse event name")
-                        }
-                        self.tableView.reloadData()
-                    }
-                }
-            }
-        }
-        
+    func userRidesDidChange(_:Notification? = nil) {
         self.tableView.reloadData()
     }
     
-    func userDriveForWatcher(snap:DataSnapshot) {
-        self.userDrives.removeAll()
-        
-        if let drives = snap.value as? [String:Any] {
-            for driveForEventID in Array(drives.keys) {
-                self.userDrives[driveForEventID] = drives[driveForEventID] as? String ?? "Unnamed Event"
-            }
-        }
-        
+    func userDrivesForDidChange(_:Notification? = nil) {
         self.tableView.reloadData()
-    }
-    
-    func handleAuthStateChange( auth: Auth, user: User? ) {
-        
-        if let _ = user {
-        } else {
-            // Re authenticate if curent user not set
-            let alert = UIAlertController(
-                title: "Whoops",
-                message: "Please sign in again",
-                preferredStyle: UIAlertControllerStyle.alert
-            )
-            alert.addAction(UIAlertAction(title: "Okay", style: UIAlertActionStyle.default, handler: nil))
-            self.present(alert, animated: true, completion: nil)
-        }
-        
     }
     
     //-----------------------------------------------------------------------------------------------------------------
@@ -196,13 +167,12 @@ class MainMenuViewController : UITableViewController {
         if section == 0 {
             return newEventOptions.count
         } else if section == 1 {
-            return userEventNames.count
+            return userModel.userOwnedEvents.count
         } else if section == 2 {
-            return userRides.count
+            return userModel.userRides.count
         } else if section == 3 {
-            return userDrives.count
+            return userModel.userDrivesFor.count
         }
-        
         
         return 0
     }
@@ -214,14 +184,14 @@ class MainMenuViewController : UITableViewController {
         if indexPath.section == 0 {
             cell.textLabel?.text = newEventOptions[indexPath.item]
         } else if indexPath.section == 1 {
-            let key = Array(userEventNames.keys)[indexPath.item]
-            cell.textLabel?.text = userEventNames[key]
+            let eventID = Array(userModel.userOwnedEvents.keys)[indexPath.item]
+            cell.textLabel?.text = userModel.userOwnedEvents[eventID]
         } else if indexPath.section == 2 {
-            let key = Array(userRides.keys)[indexPath.item]
-            cell.textLabel?.text = "Ride to \(userRides[key] ?? "Undetermined Event")"
+            let rideID = Array(userModel.userRides.keys)[indexPath.item]
+            cell.textLabel?.text = "Ride to \(userModel.userRides[rideID] ?? "Undetermined Event")"
         } else if indexPath.section == 3 {
-            let key = Array(userDrives.keys)[indexPath.item]
-            cell.textLabel?.text = "Drive for \(userDrives[key] ?? "Undetermined Event")"
+            let rideID = Array(userModel.userDrivesFor.keys)[indexPath.item]
+            cell.textLabel?.text = "Drive for \(userModel.userDrivesFor[rideID] ?? "Undetermined Event")"
         }
         
         return cell
@@ -246,5 +216,4 @@ class MainMenuViewController : UITableViewController {
             performSegue(withIdentifier: "segueToDriveDetail", sender: self)
         }
     }
-    
 }

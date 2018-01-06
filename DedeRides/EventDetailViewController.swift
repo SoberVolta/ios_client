@@ -128,23 +128,20 @@ class EventDetailViewController : UIViewController {
     }
     
     private func updateRideStatus() {
-        // Check if rider is in queue
-        for rideID in Array(self.eventModel.eventQueue.keys) {
-            if self.eventModel.eventQueue[rideID] == self.userModel.userUID {
-                self.rideStatus = .RideInQueue
-                self.currentRideID = rideID
-                return
-            }
+        // Check if any user ride is also in event queue
+        if let rideID = Set(userModel.userRides.keys).intersection(eventModel.eventQueue.keys).first {
+            self.rideStatus = .RideInQueue
+            self.currentRideID = rideID
+            return
         }
         
-        // Check if user is going to this event
-        for rideID in Array(self.userModel.userRides.keys) {
-            if self.userModel.userRides[rideID] == self.eventModel.eventID {
-                self.rideStatus = .RideActive
-                self.currentRideID = rideID
-                return
-            }
+        // Check if any user ride is also in events active rides
+        if let rideID = Set(userModel.userRides.keys).intersection(eventModel.eventActiveRides.keys).first{
+            self.rideStatus = .RideActive
+            self.currentRideID = rideID
+            return
         }
+        
         
         self.rideStatus = .RideNotRequested
         self.currentRideID = nil
@@ -208,7 +205,8 @@ class EventDetailViewController : UIViewController {
     
     private func requestRide(_: UIAlertAction? = nil) {
         RideModel.createNewRide(
-            eventID: eventModel.eventID,
+            forEventWithID: eventModel.eventID,
+            withName: eventModel.eventName!,
             userUID: userModel.userUID
         )
     }

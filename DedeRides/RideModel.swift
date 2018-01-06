@@ -24,7 +24,7 @@ class RideModel {
     //-----------------------------------------------------------------------------------------------------------------
     
     
-    static func createNewRide(eventID: String, userUID: String) {
+    static func createNewRide(forEventWithID eventID: String, withName eventName: String, userUID: String) {
         
         // Generte new key
         let rideKey = Database.database().reference().child("rides").childByAutoId().key
@@ -40,7 +40,7 @@ class RideModel {
         let updates: [String : Any] = [
             "/rides/\(rideKey)": rideData,
             "/events/\(eventID)/queue/\(rideKey)": userUID,
-            "/users/\(userUID)/rides/\(rideKey)": eventID
+            "/users/\(userUID)/rides/\(rideKey)": eventName
         ]
         Database.database().reference().updateChildValues(updates)
     }
