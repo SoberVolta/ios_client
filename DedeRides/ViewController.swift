@@ -114,7 +114,7 @@ class ViewController: UIViewController {
         if segue.identifier == "segueToMainMenu" {
             if let destinationVC = segue.destination as? MainMenuViewController {
                 if let newUser = self.userToPresent {
-                    destinationVC.currentUser = newUser
+                    destinationVC.userModel = UserModel(userUID: newUser.uid)
                 }
             } else {
                 print("destination not main menu")

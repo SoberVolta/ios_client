@@ -17,7 +17,7 @@ class MainMenuViewController : UITableViewController {
     //-----------------------------------------------------------------------------------------------------------------
     
     // Segue Initialized Variables
-    var currentUser: User?
+    var userModel: UserModel!
     
     // Database References
     let usersRef = Database.database().reference().child("users")
@@ -54,14 +54,10 @@ class MainMenuViewController : UITableViewController {
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "mainMenuCell")
         
         // Register real time database observers
-        if let currentUser = currentUser {
-            self.title = currentUser.displayName
-            usersRef.child(currentUser.uid).child("ownedEvents").observe(.value, with: userEventsWatcher)
-            usersRef.child(currentUser.uid).child("rides").observe(.value, with: userRideWatcher)
-            usersRef.child(currentUser.uid).child("drivesFor").observe(.value, with: userDriveForWatcher)
-        } else {
-            self.title = "No User"
-        }
+        self.title = userModel.userDisplayName
+        usersRef.child(userModel.userUID).child("ownedEvents").observe(.value, with: userEventsWatcher)
+        usersRef.child(userModel.userUID).child("rides").observe(.value, with: userRideWatcher)
+        usersRef.child(userModel.userUID).child("drivesFor").observe(.value, with: userDriveForWatcher)
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -71,54 +67,38 @@ class MainMenuViewController : UITableViewController {
         backItem.title = "Back"
         navigationItem.backBarButtonItem = backItem
         
-        // Get current user
-        if let curUser = self.currentUser {
-            
-            // Branch on segue identifier
-            if segue.identifier == "segueToCreateEvent" {
-                if let destinationVC = segue.destination as? CreateEventViewController {
-                    destinationVC.creatingUserUID = curUser.uid
-                }
-            } else if segue.identifier == "segueToEventDetail" {
-                if let destinationVC = segue.destination as? EventDetailViewController {
-                    let selectedEventID = Array(self.userEventNames.keys)[selectedEventIdx]
-                    destinationVC.prepareForDisplay(userUID: curUser.uid, eventID: selectedEventID)
-                }
-            } else if segue.identifier == "segueToRideDetail" {
-                if let destinationVC = segue.destination as? RideDetailViewController {
-                    let selectedRideID = Array(self.userRides.keys)[selectedRideIdx]
-                    destinationVC.prepareForDisplay(
-                        rideID: selectedRideID,
-                        user: curUser, eventName:
-                        userRides[selectedRideID]!
-                    )
-                }
-            } else if segue.identifier == "segueToDriveDetail" {
-                if let destinationVC = segue.destination as? DriveDetailViewController {
-                    let selectedDriveID = Array(self.userDrives.keys)[selectedDriveIdx]
-                    destinationVC.prepareForDisplay(
-                        user: curUser,
-                        eventID: selectedDriveID,
-                        eventName: userDrives[selectedDriveID]!
-                    )
-                }
-            } else if segue.identifier == "segueToSearch" {
-                if let destinationVC = segue.destination as? SearchViewController {
-                    destinationVC.currentUser = curUser
-                }
+        // Branch on segue identifier
+        if segue.identifier == "segueToCreateEvent" {
+            if let destinationVC = segue.destination as? CreateEventViewController {
+                destinationVC.creatingUserUID = userModel.userUID
             }
-            
-        } else {
-            
-            // Re authenticate if curent user not set
-            let alert = UIAlertController(
-                title: "Whoops",
-                message: "Please sign in again",
-                preferredStyle: UIAlertControllerStyle.alert
-            )
-            alert.addAction(UIAlertAction(title: "Okay", style: UIAlertActionStyle.default, handler: nil))
-            self.present(alert, animated: true, completion: nil)
-            
+        } else if segue.identifier == "segueToEventDetail" {
+            if let destinationVC = segue.destination as? EventDetailViewController {
+                let selectedEventID = Array(self.userEventNames.keys)[selectedEventIdx]
+                destinationVC.prepareForDisplay(userUID: userModel.userUID, eventID: selectedEventID)
+            }
+        } else if segue.identifier == "segueToRideDetail" {
+            if let destinationVC = segue.destination as? RideDetailViewController {
+                let selectedRideID = Array(self.userRides.keys)[selectedRideIdx]
+                destinationVC.prepareForDisplay(
+                    rideID: selectedRideID,
+                    userUID: userModel.userUID,
+                    eventName: userRides[selectedRideID]!
+                )
+            }
+        } else if segue.identifier == "segueToDriveDetail" {
+            if let destinationVC = segue.destination as? DriveDetailViewController {
+                let selectedDriveID = Array(self.userDrives.keys)[selectedDriveIdx]
+                destinationVC.prepareForDisplay(
+                    userUID: userModel.userUID,
+                    eventID: selectedDriveID,
+                    eventName: userDrives[selectedDriveID]!
+                )
+            }
+        } else if segue.identifier == "segueToSearch" {
+            if let destinationVC = segue.destination as? SearchViewController {
+                destinationVC.currentUserUID = userModel.userUID
+            }
         }
     }
     

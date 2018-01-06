@@ -12,7 +12,7 @@ import Firebase
 
 class DriveDetailViewController: UIViewController {
     
-    var currentUser: User?
+    var currentUserUID: String?
     var eventUID: String?
     var eventName: String?
     
@@ -40,15 +40,15 @@ class DriveDetailViewController: UIViewController {
         updateUI()
     }
     
-    func prepareForDisplay(user: User, eventID: String, eventName: String) {
-        self.currentUser = user
+    func prepareForDisplay(userUID: String, eventID: String, eventName: String) {
+        self.currentUserUID = userUID
         self.eventUID = eventID
         self.eventName = eventName
         
         self.isActiveDrive = false
         self.activeDriveID = nil
         
-        usersRef.child(user.uid).child("drives").observeSingleEvent(of: .value){(snap) in
+        usersRef.child(userUID).child("drives").observeSingleEvent(of: .value){(snap) in
             if let drivesData = snap.value as? [String:Any] {
                 for drivesRideID in Array(drivesData.keys) {
                     if let drivesEventID = drivesData[drivesRideID] as? String {
@@ -119,21 +119,19 @@ class DriveDetailViewController: UIViewController {
     }
     
     func takeNextInQueue(_:UIAlertAction) {
-        if let curUser = self.currentUser {
-            if let rideID = self.nextRideInQueue {
-                if let eventID = self.eventUID {
-                    let updates: [String:Any] = [
-                        "/users/\(curUser.uid)/drives/\(rideID)": eventID,
-                        "/rides/\(rideID)/status": 1,
-                        "/rides/\(rideID)/driver:": curUser.uid,
-                        "/events/\(eventID)/queue/\(rideID)": NSNull(),
-                        "/events/\(eventID)/activeRides/\(rideID)": curUser.uid
-                    ]
-                    
-                    ref.updateChildValues(updates)
-                    
-                    prepareForDisplay(user: curUser, eventID: eventID, eventName: self.eventName!)
-                }
+        if let rideID = self.nextRideInQueue {
+            if let eventID = self.eventUID {
+                let updates: [String:Any] = [
+                    "/users/\(self.currentUserUID!)/drives/\(rideID)": eventID,
+                    "/rides/\(rideID)/status": 1,
+                    "/rides/\(rideID)/driver:": self.currentUserUID!,
+                    "/events/\(eventID)/queue/\(rideID)": NSNull(),
+                    "/events/\(eventID)/activeRides/\(rideID)": self.currentUserUID!
+                ]
+                
+                ref.updateChildValues(updates)
+                
+                prepareForDisplay(userUID: self.currentUserUID!, eventID: eventID, eventName: self.eventName!)
             }
         }
     }
@@ -149,24 +147,22 @@ class DriveDetailViewController: UIViewController {
     }
     
     func endCurrentDrive(_:UIAlertAction) {
-        if let curUser = self.currentUser {
-            if let rideID = self.activeDriveID {
-                if let eventID = self.eventUID {
-                    ridesRef.child(rideID).child("rider").observeSingleEvent(of: .value){(snap) in
-                        if let riderUID = snap.value as? String {
-                            let updates: [String:Any] = [
-                                "/rides/\(rideID)": NSNull(),
-                                "/events/\(eventID)/activeRides/\(rideID)": NSNull(),
-                                "/users/\(curUser.uid)/drives/\(rideID)": NSNull(),
-                                "/users/\(riderUID)/rides/\(rideID)": NSNull()
-                            ]
-                            
-                            self.ref.updateChildValues(updates)
-                            
-                            self.prepareForDisplay(user: curUser, eventID: eventID, eventName: self.eventName!)
-                        } else {
-                            print("Unable to parse rider id")
-                        }
+        if let rideID = self.activeDriveID {
+            if let eventID = self.eventUID {
+                ridesRef.child(rideID).child("rider").observeSingleEvent(of: .value){(snap) in
+                    if let riderUID = snap.value as? String {
+                        let updates: [String:Any] = [
+                            "/rides/\(rideID)": NSNull(),
+                            "/events/\(eventID)/activeRides/\(rideID)": NSNull(),
+                            "/users/\(self.currentUserUID!)/drives/\(rideID)": NSNull(),
+                            "/users/\(riderUID)/rides/\(rideID)": NSNull()
+                        ]
+                        
+                        self.ref.updateChildValues(updates)
+                        
+                        self.prepareForDisplay(userUID: self.currentUserUID!, eventID: eventID, eventName: self.eventName!)
+                    } else {
+                        print("Unable to parse rider id")
                     }
                 }
             }
@@ -184,17 +180,15 @@ class DriveDetailViewController: UIViewController {
     }
     
     func cancelDriveOffer(_:UIAlertAction) {
-        if let curUser = self.currentUser {
-            if let eventID = self.eventUID {
-                let updates = [
-                    "/events/\(eventID)/drivers/\(curUser.uid)": NSNull(),
-                    "/users/\(curUser.uid)/drivesFor/\(eventID)": NSNull()
-                ]
-                
-                ref.updateChildValues(updates)
-                
-                exit()
-            }
+        if let eventID = self.eventUID {
+            let updates = [
+                "/events/\(eventID)/drivers/\(self.currentUserUID!)": NSNull(),
+                "/users/\(self.currentUserUID!)/drivesFor/\(eventID)": NSNull()
+            ]
+            
+            ref.updateChildValues(updates)
+            
+            exit()
         }
     }
     

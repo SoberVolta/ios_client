@@ -13,7 +13,7 @@ import Firebase
 class RideDetailViewController : UIViewController {
     
     var rideUID: String?
-    var currentUser: User?
+    var currentUserUID: String?
     var eventName: String?
     
     @IBOutlet weak var eventLink: UIButton!
@@ -37,12 +37,12 @@ class RideDetailViewController : UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         uiReady = true;
-        prepareForDisplay(rideID: self.rideUID!, user: self.currentUser!, eventName: self.eventName!)
+        prepareForDisplay(rideID: self.rideUID!, userUID: currentUserUID!, eventName: self.eventName!)
     }
     
-    func prepareForDisplay(rideID: String, user: User, eventName: String) {
+    func prepareForDisplay(rideID: String, userUID: String, eventName: String) {
         self.rideUID = rideID
-        self.currentUser = user
+        self.currentUserUID = userUID
         self.eventName = eventName
         
         ridesRef.child(rideID).observeSingleEvent(of: .value) {(snap) in
@@ -101,10 +101,8 @@ class RideDetailViewController : UIViewController {
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "segueFromRideDetailToEventDetail" {
             if let destinationVC = segue.destination as? EventDetailViewController {
-                if let curUser = self.currentUser {
-                    if let eventID = self.dbEventID {
-                        destinationVC.prepareForDisplay(userUID: curUser.uid, eventID: eventID)
-                    }
+                if let eventID = self.dbEventID {
+                    destinationVC.prepareForDisplay(userUID: self.currentUserUID!, eventID: eventID)
                 }
             }
         }
@@ -125,20 +123,18 @@ class RideDetailViewController : UIViewController {
     }
     
     func cancelRideRequest(_: UIAlertAction) {
-        if let curUser = self.currentUser {
-            if let eventID = self.dbEventID {
-                if let rideID = self.rideUID {
-                    let updates: [String : Any] = [
-                        "/rides/\(rideID)": NSNull(),
-                        "/events/\(eventID)/queue/\(rideID)": NSNull(),
-                        "/users/\(curUser.uid)/rides/\(rideID)": NSNull()
-                    ]
-                    
-                    // Update database
-                    ref.updateChildValues(updates)
-                    
-                    exit()
-                }
+        if let eventID = self.dbEventID {
+            if let rideID = self.rideUID {
+                let updates: [String : Any] = [
+                    "/rides/\(rideID)": NSNull(),
+                    "/events/\(eventID)/queue/\(rideID)": NSNull(),
+                    "/users/\(self.currentUserUID!)/rides/\(rideID)": NSNull()
+                ]
+                
+                // Update database
+                ref.updateChildValues(updates)
+                
+                exit()
             }
         }
     }

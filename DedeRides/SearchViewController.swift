@@ -12,7 +12,7 @@ import Firebase
 
 class SearchViewController : UIViewController {
     
-    var currentUser: User?
+    var currentUserUID: String?
     var validSearchEvent: String?
     
     @IBOutlet weak var searchIdentifierLabel: UILabel!
@@ -41,7 +41,7 @@ class SearchViewController : UIViewController {
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "segueFromSearchToEventDetail" {
             if let destinationVC = segue.destination as? EventDetailViewController {
-                destinationVC.prepareForDisplay(userUID: self.currentUser!.uid, eventID: self.validSearchEvent!)
+                destinationVC.prepareForDisplay(userUID: self.currentUserUID!, eventID: self.validSearchEvent!)
             }
         }
         
