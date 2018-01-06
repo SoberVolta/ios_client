@@ -8,7 +8,6 @@
 
 import Foundation
 import UIKit
-import Firebase
 
 enum RideStatus {
     case RideNotRequested
@@ -42,13 +41,13 @@ class EventDetailViewController : UIViewController {
     // MARK: - View Controller Functions
     //-----------------------------------------------------------------------------------------------------------------
     
-    func prepareForDisplay(user: User, eventID: String) {
+    func prepareForDisplay(userUID: String, eventID: String) {
         
         // Create Event Model
         self.eventModel = EventModel(eventID: eventID)
         
         // Create User Model
-        self.userModel = UserModel(userUID: user.uid)
+        self.userModel = UserModel(userUID: userUID)
         
         // Add Notification Observers
         eventModel.notificationCenter.addObserver(
@@ -208,39 +207,19 @@ class EventDetailViewController : UIViewController {
     }
     
     private func requestRide(_: UIAlertAction? = nil) {
-        
-        // Generte new key
-        let rideKey = Database.database().reference().child("rides").childByAutoId().key
-        
-        // Form new data
-        let rideData: [String : Any] = [
-            "status": 0,         // requested but not yet claimed
-            "rider": userModel.userUID,
-            "event": eventModel.eventID
-        ]
-        
-        // Update database
-        let updates: [String : Any] = [
-            "/rides/\(rideKey)": rideData,
-            "/events/\(eventModel.eventID)/queue/\(rideKey)": userModel.userUID,
-            "/users/\(userModel.userUID)/rides/\(rideKey)": eventModel.eventID
-        ]
-        Database.database().reference().updateChildValues(updates)
-        
+        RideModel.createNewRide(
+            eventID: eventModel.eventID,
+            userUID: userModel.userUID
+        )
     }
     
     private func cancelRideRequest(_: UIAlertAction? = nil) {
-        
-        if let rideID = self.currentRideID {
-            
-            // Update database
-            let updates: [String : Any] = [
-                "/rides/\(rideID)": NSNull(),
-                "/events/\(eventModel.eventID)/queue/\(rideID)": NSNull(),
-                "/users/\(userModel.userUID)/rides/\(rideID)": NSNull()
-            ]
-            Database.database().reference().updateChildValues(updates)
-            
+        if let curRideID = self.currentRideID {
+            RideModel.cancelRideRequest(
+                rideID: curRideID,
+                eventID: eventModel.eventID,
+                userUID: userModel.userUID
+            )
         }
     }
     
@@ -279,26 +258,19 @@ class EventDetailViewController : UIViewController {
     }
     
     private func offerDrive(_: UIAlertAction? = nil) {
-        
-        // Update Database
-        let updates = [
-            "/events/\(eventModel.eventID)/drivers/\(userModel.userUID)": userModel.userDisplayName ?? "Unnamed Driver",
-            "/users/\(userModel.userUID)/drivesFor/\(eventModel.eventID)": eventModel.eventName!
-        ]
-        Database.database().reference().updateChildValues(updates)
-        
+        EventModel.addDriverToEvent(
+            eventID: eventModel.eventID,
+            eventName: eventModel.eventName!,
+            driverUID: userModel.userUID,
+            driverDisplayName: userModel.userDisplayName!
+        )
     }
     
     private func cancelDriveOffer(_: UIAlertAction? = nil) {
-                
-        // Update Database
-        let updates = [
-            "/events/\(eventModel.eventID)/drivers/\(userModel.userUID)": NSNull(),
-            "/users/\(userModel.userUID)/drivesFor/\(eventModel.eventID)": NSNull()
-        ]
-        Database.database().reference().updateChildValues(updates)
-        
-        
+        EventModel.removeDriverFromEvent(
+            eventID: eventModel.eventID,
+            driverUID: userModel.userUID
+        )
     }
     
     //-----------------------------------------------------------------------------------------------------------------

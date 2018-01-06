@@ -82,7 +82,7 @@ class MainMenuViewController : UITableViewController {
             } else if segue.identifier == "segueToEventDetail" {
                 if let destinationVC = segue.destination as? EventDetailViewController {
                     let selectedEventID = Array(self.userEventNames.keys)[selectedEventIdx]
-                    destinationVC.prepareForDisplay(user: curUser, eventID: selectedEventID)
+                    destinationVC.prepareForDisplay(userUID: curUser.uid, eventID: selectedEventID)
                 }
             } else if segue.identifier == "segueToRideDetail" {
                 if let destinationVC = segue.destination as? RideDetailViewController {

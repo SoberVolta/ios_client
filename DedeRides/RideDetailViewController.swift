@@ -103,7 +103,7 @@ class RideDetailViewController : UIViewController {
             if let destinationVC = segue.destination as? EventDetailViewController {
                 if let curUser = self.currentUser {
                     if let eventID = self.dbEventID {
-                        destinationVC.prepareForDisplay(user: curUser, eventID: eventID)
+                        destinationVC.prepareForDisplay(userUID: curUser.uid, eventID: eventID)
                     }
                 }
             }

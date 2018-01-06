@@ -41,7 +41,7 @@ class SearchViewController : UIViewController {
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "segueFromSearchToEventDetail" {
             if let destinationVC = segue.destination as? EventDetailViewController {
-                destinationVC.prepareForDisplay(user: self.currentUser!, eventID: self.validSearchEvent!)
+                destinationVC.prepareForDisplay(userUID: self.currentUser!.uid, eventID: self.validSearchEvent!)
             }
         }
         

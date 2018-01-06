@@ -66,6 +66,30 @@ class EventModel {
     }
     
     //-----------------------------------------------------------------------------------------------------------------
+    // MARK: - Static Update Functions
+    //-----------------------------------------------------------------------------------------------------------------
+    
+    static func addDriverToEvent(eventID: String, eventName: String, driverUID: String, driverDisplayName: String) {
+        
+        // Update Database
+        let updates = [
+            "/events/\(eventID)/drivers/\(driverUID)": driverDisplayName,
+            "/users/\(driverUID)/drivesFor/\(eventID)": eventName
+        ]
+        Database.database().reference().updateChildValues(updates)
+    }
+    
+    static func removeDriverFromEvent(eventID: String, driverUID: String) {
+        
+        // Update Database
+        let updates = [
+            "/events/\(eventID)/drivers/\(driverUID)": NSNull(),
+            "/users/\(driverUID)/drivesFor/\(eventID)": NSNull()
+        ]
+        Database.database().reference().updateChildValues(updates)
+    }
+    
+    //-----------------------------------------------------------------------------------------------------------------
     // MARK: - Realtime Database Functions
     //-----------------------------------------------------------------------------------------------------------------
     

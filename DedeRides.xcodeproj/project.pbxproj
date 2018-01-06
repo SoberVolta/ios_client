@@ -27,6 +27,7 @@
 		E0A8A8E71FFD50F100B76C04 /* SearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0A8A8E61FFD50F100B76C04 /* SearchViewController.swift */; };
 		E0A8A8EB1FFDECDC00B76C04 /* Utility.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0A8A8EA1FFDECDC00B76C04 /* Utility.swift */; };
 		E0A8A8ED1FFE1F9700B76C04 /* EventModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0A8A8EC1FFE1F9700B76C04 /* EventModel.swift */; };
+		E0D0783E20004EFA00779244 /* RideModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0D0783D20004EFA00779244 /* RideModel.swift */; };
 		E496332F1B1B35EF26B0EAFA /* Pods_DedeRidesUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 023651CCE9097E1F03D31860 /* Pods_DedeRidesUITests.framework */; };
 /* End PBXBuildFile section */
 
@@ -81,6 +82,7 @@
 		E0A8A8E61FFD50F100B76C04 /* SearchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchViewController.swift; sourceTree = "<group>"; };
 		E0A8A8EA1FFDECDC00B76C04 /* Utility.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utility.swift; sourceTree = "<group>"; };
 		E0A8A8EC1FFE1F9700B76C04 /* EventModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventModel.swift; sourceTree = "<group>"; };
+		E0D0783D20004EFA00779244 /* RideModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RideModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -160,6 +162,7 @@
 				E0A8A8E01FFC670500B76C04 /* EventDetailViewController.swift */,
 				E0A8A8EC1FFE1F9700B76C04 /* EventModel.swift */,
 				E01D8F4220000EB600B0B99C /* UserModel.swift */,
+				E0D0783D20004EFA00779244 /* RideModel.swift */,
 				E0A8A8E21FFC97F100B76C04 /* RideDetailViewController.swift */,
 				E0A8A8E41FFCB73000B76C04 /* DriveDetailViewController.swift */,
 				E0A8A8E61FFD50F100B76C04 /* SearchViewController.swift */,
@@ -515,6 +518,7 @@
 				E0A8A8ED1FFE1F9700B76C04 /* EventModel.swift in Sources */,
 				E0A8A8EB1FFDECDC00B76C04 /* Utility.swift in Sources */,
 				E0A8A8E11FFC670500B76C04 /* EventDetailViewController.swift in Sources */,
+				E0D0783E20004EFA00779244 /* RideModel.swift in Sources */,
 				E0A8A8DD1FFB509300B76C04 /* MainMenuViewController.swift in Sources */,
 				E0A8A8AD1FFB2C9400B76C04 /* ViewController.swift in Sources */,
 				E0A8A8E71FFD50F100B76C04 /* SearchViewController.swift in Sources */,
