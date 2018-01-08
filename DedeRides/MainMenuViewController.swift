@@ -197,7 +197,7 @@ class MainMenuViewController : UITableViewController {
     
     // Populate cells
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "mainMenuCell", for: indexPath as IndexPath)
+        let cell = tableView.dequeueReusableCell(withIdentifier: "MainMenuCell", for: indexPath) as! LabelCell
         
         if indexPath.section == 0 {
             cell.textLabel?.text = newEventOptions[indexPath.item]
@@ -234,4 +234,10 @@ class MainMenuViewController : UITableViewController {
             performSegue(withIdentifier: "segueToDriveDetail", sender: self)
         }
     }
+}
+
+class LabelCell: UITableViewCell {
+    
+    @IBOutlet weak var titleLabel: UILabel!
+    
 }
