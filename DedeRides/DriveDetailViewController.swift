@@ -167,6 +167,7 @@ class DriveDetailViewController: UIViewController {
             actionSheetMessage: "Are you sure you want to stop driving for \(eventModel.eventName ?? "this event")",
             cancelTitle: "Continue Driving",
             affirmTitle: "Resend Offer to Drive",
+            affirmStyle: .destructive,
             affirmHandler: cancelDriveOffer
         )
     }

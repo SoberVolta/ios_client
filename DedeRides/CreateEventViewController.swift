@@ -110,6 +110,7 @@ class CreateEventViewController : UIViewController, UITextFieldDelegate {
                         actionSheetMessage: "All details will be lost",
                         cancelTitle: "Continue Editing",
                         affirmTitle: "Discard Details",
+                        affirmStyle: .destructive,
                         affirmHandler: exit
                     )
                     

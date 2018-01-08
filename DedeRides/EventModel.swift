@@ -140,7 +140,6 @@ class EventModel {
     }
     
     func takeNextRideInQueue(driverUID: String) {
-        let eventID = self.eventID
         self.eventRef.child("queue").runTransactionBlock({ (curData: MutableData) -> TransactionResult in
             
             // Get queue
@@ -154,10 +153,10 @@ class EventModel {
                 
                 // Update other database spaces
                 let updates: [String:Any] = [
-                    "/users/\(driverUID)/drives/\(firstRideInQueue)": eventID,      // Driver space
-                    "/rides/\(firstRideInQueue)/status": 1,                         // Ride status
-                    "/rides/\(firstRideInQueue)/driver": driverUID,                 // Ride driver
-                    "/events/\(eventID)/activeRides/\(firstRideInQueue)": driverUID // Event active rides
+                    "/users/\(driverUID)/drives/\(firstRideInQueue)": self.eventID,      // Driver space
+                    "/rides/\(firstRideInQueue)/status": 1,                              // Ride status
+                    "/rides/\(firstRideInQueue)/driver": driverUID,                      // Ride driver
+                    "/events/\(self.eventID)/activeRides/\(firstRideInQueue)": driverUID // Event active rides
                 ]
                 EventModel.ref.updateChildValues(updates)
             }

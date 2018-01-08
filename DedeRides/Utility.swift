@@ -14,7 +14,9 @@ func displayActionSheet(
     actionSheetTitle: String,
     actionSheetMessage: String,
     cancelTitle: String,
+    cancelStyle: UIAlertActionStyle = .cancel,
     affirmTitle: String,
+    affirmStyle: UIAlertActionStyle = .default,
     affirmHandler: ((_:UIAlertAction)->Void)? = nil
     ){
     let actionSheet = UIAlertController(
@@ -22,10 +24,10 @@ func displayActionSheet(
         message: actionSheetMessage,
         preferredStyle: .actionSheet
     )
-    let cancelAction = UIAlertAction(title: cancelTitle, style: .destructive, handler: nil)
+    let cancelAction = UIAlertAction(title: cancelTitle, style: cancelStyle, handler: nil)
     actionSheet.addAction(cancelAction)
     
-    let affirmAction = UIAlertAction(title: affirmTitle, style: .default, handler: affirmHandler)
+    let affirmAction = UIAlertAction(title: affirmTitle, style: affirmStyle, handler: affirmHandler)
     actionSheet.addAction(affirmAction)
     viewController.present(actionSheet, animated: true, completion: nil)
 }

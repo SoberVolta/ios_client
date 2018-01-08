@@ -96,6 +96,7 @@ class RideDetailViewController : UIViewController {
             actionSheetMessage: "Are you sure you want to cancel your ride request to \(self.eventName ?? "this event")?",
             cancelTitle: "Keep Ride Request",
             affirmTitle: "Cancel Ride Request",
+            affirmStyle: .destructive,
             affirmHandler: cancelRideRequest
         )
     }

@@ -69,17 +69,6 @@ class RideModel {
     // MARK: - Update Functions
     //-----------------------------------------------------------------------------------------------------------------
     
-    func cancelRideRequest() {
-        
-        // Update database
-        let updates: [String : Any] = [
-            "/rides/\(self.rideID)": NSNull(),
-            "/events/\(self.rideEventID!)/queue/\(self.rideID)": NSNull(),
-            "/users/\(self.rideRiderUID!)/rides/\(self.rideID)": NSNull()
-        ]
-        Database.database().reference().updateChildValues(updates)
-    }
-    
     func endActiveRide() {
         if let eventID = self.rideEventID, let riderUID = self.rideRiderUID, let driverUID = self.rideDriverUID {
             
@@ -91,6 +80,31 @@ class RideModel {
             ]
             
             RideModel.ref.updateChildValues(updates)
+        }
+    }
+    
+    func cancelRideRequest() {
+        if let eventID = self.rideEventID {
+            RideModel.ref.child("events").child(eventID).child("queue")
+                .runTransactionBlock({ (curData: MutableData) -> TransactionResult in
+                
+                // Get queue
+                var queue = curData.value as? [String:String] ?? [String:String]()
+                
+                // Remove from queue
+                queue.removeValue(forKey: self.rideID)
+                
+                // Update other database spaces
+                let updates: [String : Any] = [
+                    "/rides/\(self.rideID)": NSNull(),
+                    "/users/\(self.rideRiderUID!)/rides/\(self.rideID)": NSNull()
+                ]
+                Database.database().reference().updateChildValues(updates)
+                
+                // Return data
+                curData.value = queue
+                return TransactionResult.success(withValue: curData)
+            })
         }
     }
     

@@ -201,6 +201,7 @@ class EventDetailViewController : UIViewController {
                 actionSheetMessage: "Are you sure you want to cancel your ride request?",
                 cancelTitle: "Keep Ride Request",
                 affirmTitle: "Cancel Ride Request",
+                affirmStyle: .destructive,
                 affirmHandler: cancelRideRequest
             )
             
@@ -245,6 +246,7 @@ class EventDetailViewController : UIViewController {
                 actionSheetMessage: "Are you sure you want to resend you offer to drive for this event?",
                 cancelTitle: "Keep Offer to Drive",
                 affirmTitle: "Cancel Offer to Drive",
+                affirmStyle: .destructive,
                 affirmHandler: cancelDriveOffer
             )
             
@@ -272,6 +274,7 @@ class EventDetailViewController : UIViewController {
             actionSheetMessage: "Are you sure you want to delete \(eventModel.eventName ?? "thisEvent")",
             cancelTitle: "Cancel",
             affirmTitle: "Delete",
+            affirmStyle: .destructive,
             affirmHandler: deleteCurrentEvent
         )
         
