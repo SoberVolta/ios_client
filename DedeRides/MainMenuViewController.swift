@@ -106,9 +106,8 @@ class MainMenuViewController : UITableViewController {
             if let destinationVC = segue.destination as? DriveDetailViewController {
                 let rideID = Array(self.userModel.userDrivesFor.keys)[selectedDriveIdx]
                 destinationVC.prepareForDisplay(
-                    userUID: userModel.userUID,
-                    eventID: rideID,
-                    eventName: userModel.userDrivesFor[rideID]!
+                    user: userModel,
+                    event: EventModel(eventID: rideID)
                 )
             }
         } else if segue.identifier == "segueToSearch" {
