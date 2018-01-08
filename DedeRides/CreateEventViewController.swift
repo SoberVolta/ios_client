@@ -8,7 +8,6 @@
 
 import Foundation
 import UIKit
-import Firebase
 
 class CreateEventViewController : UIViewController, UITextFieldDelegate {
     
@@ -22,11 +21,6 @@ class CreateEventViewController : UIViewController, UITextFieldDelegate {
     // Outlets
     @IBOutlet weak var eventNameTextField: UITextField!
     @IBOutlet weak var eventLocationTextField: UITextField!
-    
-    // Database References
-    let ref = Database.database().reference()
-    let eventsRef = Database.database().reference().child("events")
-    let usersRef = Database.database().reference().child("users")
     
     //-----------------------------------------------------------------------------------------------------------------
     // MARK: - View Controller Functions
