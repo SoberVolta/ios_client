@@ -37,42 +37,58 @@ class DriveDetailViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         uiReady = true;
         updateUI()
+        
+        self.currentUser.notificationCenter.addObserver(
+            forName: .UserActiveDrivesSpaceDidChange,
+            object: currentUser,
+            queue: nil,
+            using: userActiveDrivesSpaceDidChange
+        )
+        self.eventModel.notificationCenter.addObserver(
+            forName: .EventQueueDidChange,
+            object: eventModel,
+            queue: nil,
+            using: eventQueueSpaceDidChange
+        )
+        self.eventModel.notificationCenter.addObserver(
+            forName: .EventActiveRidesDidChange,
+            object: eventModel,
+            queue: nil,
+            using: userActiveDrivesSpaceDidChange
+        )
+        
+        eventModel.attachDatabaseListeners()
+        currentUser.attachDatabaseListeners()
+    }
+    
+    func userActiveDrivesSpaceDidChange(_:Notification? = nil) {
+        if let rideID = Set(self.currentUser.userActiveDrives.keys).intersection(self.eventModel.eventActiveRides.keys).first {
+            self.isActiveDrive = true
+            self.activeDriveID = rideID
+        } else {
+            self.isActiveDrive = false
+            self.activeDriveID = nil
+        }
+        
+        updateUI()
+    }
+    
+    func eventQueueSpaceDidChange(_:Notification? = nil) {
+        if  eventModel.eventQueue.count > 0 {
+            let nextRide = Array(eventModel.eventQueue.keys)[0]
+            self.nextRideInQueue = nextRide
+            self.riderWaitingInQueue = true
+        } else {
+            self.nextRideInQueue = nil
+            self.riderWaitingInQueue = false
+        }
+        
+        updateUI()
     }
     
     func prepareForDisplay(user: UserModel, event: EventModel) {
         self.currentUser = user
         self.eventModel = event
-        
-        self.isActiveDrive = false
-        self.activeDriveID = nil
-        
-        usersRef.child(user.userUID).child("drives").observeSingleEvent(of: .value){(snap) in
-            if let drivesData = snap.value as? [String:Any] {
-                for drivesRideID in Array(drivesData.keys) {
-                    if let drivesEventID = drivesData[drivesRideID] as? String {
-                        if drivesEventID == event.eventID {
-                            self.isActiveDrive = true
-                            self.activeDriveID = drivesRideID
-                            break
-                        }
-                    } else {
-                        print("Cant parse event ID from drives space")
-                    }
-                }
-            }
-            self.updateUI()
-        }
-        
-        eventsRef.child(eventModel.eventID).child("queue").observeSingleEvent(of: .value) {(snap) in
-            if let queueData = snap.value as? [String:Any] {
-                let nextRide = Array(queueData.keys)[0]
-                self.nextRideInQueue = nextRide
-                self.riderWaitingInQueue = true
-            } else {
-                self.riderWaitingInQueue = false;
-            }
-            self.updateUI()
-        }
     }
     
     func updateUI() {

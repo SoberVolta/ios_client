@@ -18,6 +18,7 @@ extension NSNotification.Name {
     public static let UserOwnedEventsDidChange = Notification.Name("UserOwnedEventsDidChange")
     public static let UserRidesSpaceDidChange = Notification.Name("UserRidesSpaceDidChange")
     public static let UserDrivesForSpaceDidChange = Notification.Name("UserDrivesForSpaceDidChange")
+    public static let UserActiveDrivesSpaceDidChange = Notification.Name("UserActiveDrivesSpaceDidChange")
 }
 
 class UserModel {
@@ -41,6 +42,7 @@ class UserModel {
     var userOwnedEvents = [String:String]()
     var userRides = [String:String]()
     var userDrivesFor = [String:String]()
+    var userActiveDrives = [String:String]()
     
     //-----------------------------------------------------------------------------------------------------------------
     // MARK: - Initialization
@@ -57,6 +59,7 @@ class UserModel {
         self.userRef.child("ownedEvents").observe(.value, with: self.userOwnedEventsValueDidChange)
         self.userRef.child("rides").observe(.value, with: self.userRidesSpaceValueDidChange)
         self.userRef.child("drivesFor").observe(.value, with: self.userDrivesForSpaceValueDidChange)
+        self.userRef.child("drives").observe(.value, with: self.userActiveDrivesSpaceValueDidChange)
     }
      
     //-----------------------------------------------------------------------------------------------------------------
@@ -87,5 +90,10 @@ class UserModel {
         self.notificationCenter.post(name: .UserDrivesForSpaceDidChange, object: self)
     }
     
+    // Update Active Drives
+    private func userActiveDrivesSpaceValueDidChange(snap:DataSnapshot) {
+        self.userActiveDrives = snap.value as? [String:String] ?? [String:String]()
+        self.notificationCenter.post(name: .UserActiveDrivesSpaceDidChange, object: self)
+    }
     
 }
