@@ -236,8 +236,10 @@ class MainMenuViewController : UITableViewController {
     }
 }
 
+//-----------------------------------------------------------------------------------------------------------------
+// MARK: - Custom Cell Type
+//-----------------------------------------------------------------------------------------------------------------
+
 class LabelCell: UITableViewCell {
-    
-    @IBOutlet weak var titleLabel: UILabel!
     
 }

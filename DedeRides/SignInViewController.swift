@@ -56,6 +56,10 @@ class SignInViewController: UIViewController, LoginButtonDelegate {
         
     }
     
+    //-----------------------------------------------------------------------------------------------------------------
+    // MARK: - Observer Function
+    //-----------------------------------------------------------------------------------------------------------------
+    
     func handleAuthStateChange(_:Notification? = nil) {
         if let user = self.authModel.currentUser {
             userToPresent = user

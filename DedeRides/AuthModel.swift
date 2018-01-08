@@ -20,14 +20,43 @@ extension NSNotification.Name {
 
 class AuthModel {
  
+    //-----------------------------------------------------------------------------------------------------------------
+    // MARK: - Member Variables
+    //-----------------------------------------------------------------------------------------------------------------
+    
     static let defaultAuthModel = AuthModel()
     
     let notificationCenter = NotificationCenter.default
     var currentUser: UserModel?
     
+    //-----------------------------------------------------------------------------------------------------------------
+    // MARK: - Initialize
+    //-----------------------------------------------------------------------------------------------------------------
+    
     init() {
         Auth.auth().addStateDidChangeListener(self.handleAuthStateChange)
     }
+    
+    //-----------------------------------------------------------------------------------------------------------------
+    // MARK: - Public Interface Functions
+    //-----------------------------------------------------------------------------------------------------------------
+    
+    func signIn(authenticationToken: String) {
+        let credential = FacebookAuthProvider.credential(withAccessToken: authenticationToken)
+        Auth.auth().signIn(with: credential, completion: nil)
+    }
+    
+    func signOut() {
+        do {
+            try Auth.auth().signOut()
+        } catch let signOutError as NSError {
+            print ("Error signing out: %@", signOutError)
+        }
+    }
+    
+    //-----------------------------------------------------------------------------------------------------------------
+    // MARK: - Oberver Function
+    //-----------------------------------------------------------------------------------------------------------------
     
     private func handleAuthStateChange(auth: Auth, user: User?) {
         
@@ -43,19 +72,6 @@ class AuthModel {
         self.notificationCenter.post(name: .AuthValueDidChange, object: self)
         self.notificationCenter.post(name: .AuthValueDidChangeLastCall, object: self)
         
-    }
-    
-    func signIn(authenticationToken: String) {
-        let credential = FacebookAuthProvider.credential(withAccessToken: authenticationToken)
-        Auth.auth().signIn(with: credential, completion: nil)
-    }
-    
-    func signOut() {
-        do {
-            try Auth.auth().signOut()
-        } catch let signOutError as NSError {
-            print ("Error signing out: %@", signOutError)
-        }
     }
     
 }
