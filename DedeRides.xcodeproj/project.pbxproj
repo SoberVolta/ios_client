@@ -11,14 +11,13 @@
 		D6FE32C3E15DF19255F305CA /* Pods_DedeRides.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4D29543C62596C11CBD2BEEF /* Pods_DedeRides.framework */; };
 		E01D8F4320000EB600B0B99C /* UserModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E01D8F4220000EB600B0B99C /* UserModel.swift */; };
 		E0A8A8AB1FFB2C9400B76C04 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0A8A8AA1FFB2C9400B76C04 /* AppDelegate.swift */; };
-		E0A8A8AD1FFB2C9400B76C04 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0A8A8AC1FFB2C9400B76C04 /* ViewController.swift */; };
+		E0A8A8AD1FFB2C9400B76C04 /* SignInViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0A8A8AC1FFB2C9400B76C04 /* SignInViewController.swift */; };
 		E0A8A8B01FFB2C9400B76C04 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E0A8A8AE1FFB2C9400B76C04 /* Main.storyboard */; };
 		E0A8A8B21FFB2C9400B76C04 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E0A8A8B11FFB2C9400B76C04 /* Assets.xcassets */; };
 		E0A8A8B51FFB2C9400B76C04 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E0A8A8B31FFB2C9400B76C04 /* LaunchScreen.storyboard */; };
 		E0A8A8C01FFB2C9400B76C04 /* DedeRidesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0A8A8BF1FFB2C9400B76C04 /* DedeRidesTests.swift */; };
 		E0A8A8CB1FFB2C9400B76C04 /* DedeRidesUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0A8A8CA1FFB2C9400B76C04 /* DedeRidesUITests.swift */; };
 		E0A8A8D91FFB3BA300B76C04 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = E0A8A8D81FFB3BA300B76C04 /* GoogleService-Info.plist */; };
-		E0A8A8DB1FFB3F9200B76C04 /* DedeSignInButtonDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0A8A8DA1FFB3F9200B76C04 /* DedeSignInButtonDelegate.swift */; };
 		E0A8A8DD1FFB509300B76C04 /* MainMenuViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0A8A8DC1FFB509300B76C04 /* MainMenuViewController.swift */; };
 		E0A8A8DF1FFB6F1800B76C04 /* CreateEventViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0A8A8DE1FFB6F1800B76C04 /* CreateEventViewController.swift */; };
 		E0A8A8E11FFC670500B76C04 /* EventDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0A8A8E01FFC670500B76C04 /* EventDetailViewController.swift */; };
@@ -61,7 +60,7 @@
 		E01D8F4220000EB600B0B99C /* UserModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserModel.swift; sourceTree = "<group>"; };
 		E0A8A8A71FFB2C9400B76C04 /* DedeRides.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DedeRides.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E0A8A8AA1FFB2C9400B76C04 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		E0A8A8AC1FFB2C9400B76C04 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		E0A8A8AC1FFB2C9400B76C04 /* SignInViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInViewController.swift; sourceTree = "<group>"; };
 		E0A8A8AF1FFB2C9400B76C04 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		E0A8A8B11FFB2C9400B76C04 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		E0A8A8B41FFB2C9400B76C04 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -73,7 +72,6 @@
 		E0A8A8CA1FFB2C9400B76C04 /* DedeRidesUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DedeRidesUITests.swift; sourceTree = "<group>"; };
 		E0A8A8CC1FFB2C9400B76C04 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		E0A8A8D81FFB3BA300B76C04 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
-		E0A8A8DA1FFB3F9200B76C04 /* DedeSignInButtonDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DedeSignInButtonDelegate.swift; sourceTree = "<group>"; };
 		E0A8A8DC1FFB509300B76C04 /* MainMenuViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainMenuViewController.swift; sourceTree = "<group>"; };
 		E0A8A8DE1FFB6F1800B76C04 /* CreateEventViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateEventViewController.swift; sourceTree = "<group>"; };
 		E0A8A8E01FFC670500B76C04 /* EventDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventDetailViewController.swift; sourceTree = "<group>"; };
@@ -155,8 +153,7 @@
 				E0A8A8D81FFB3BA300B76C04 /* GoogleService-Info.plist */,
 				E0A8A8B61FFB2C9400B76C04 /* Info.plist */,
 				E0A8A8EA1FFDECDC00B76C04 /* Utility.swift */,
-				E0A8A8AC1FFB2C9400B76C04 /* ViewController.swift */,
-				E0A8A8DA1FFB3F9200B76C04 /* DedeSignInButtonDelegate.swift */,
+				E0A8A8AC1FFB2C9400B76C04 /* SignInViewController.swift */,
 				E0A8A8DC1FFB509300B76C04 /* MainMenuViewController.swift */,
 				E0A8A8DE1FFB6F1800B76C04 /* CreateEventViewController.swift */,
 				E0A8A8E01FFC670500B76C04 /* EventDetailViewController.swift */,
@@ -520,14 +517,13 @@
 				E0A8A8E11FFC670500B76C04 /* EventDetailViewController.swift in Sources */,
 				E0D0783E20004EFA00779244 /* RideModel.swift in Sources */,
 				E0A8A8DD1FFB509300B76C04 /* MainMenuViewController.swift in Sources */,
-				E0A8A8AD1FFB2C9400B76C04 /* ViewController.swift in Sources */,
+				E0A8A8AD1FFB2C9400B76C04 /* SignInViewController.swift in Sources */,
 				E0A8A8E71FFD50F100B76C04 /* SearchViewController.swift in Sources */,
 				E0A8A8DF1FFB6F1800B76C04 /* CreateEventViewController.swift in Sources */,
 				E0A8A8E31FFC97F100B76C04 /* RideDetailViewController.swift in Sources */,
 				E0A8A8AB1FFB2C9400B76C04 /* AppDelegate.swift in Sources */,
 				E0A8A8E51FFCB73000B76C04 /* DriveDetailViewController.swift in Sources */,
 				E01D8F4320000EB600B0B99C /* UserModel.swift in Sources */,
-				E0A8A8DB1FFB3F9200B76C04 /* DedeSignInButtonDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

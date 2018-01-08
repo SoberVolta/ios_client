@@ -63,6 +63,33 @@ class UserModel {
         self.userRef.child("drivesFor").observe(.value, with: self.userDrivesForSpaceValueDidChange)
         self.userRef.child("drives").observe(.value, with: self.userActiveDrivesSpaceValueDidChange)
     }
+    
+    static func addUserToDatabase(firebaseUserContext user: User) {
+        UserModel.userSpaceRef.child(user.uid).runTransactionBlock({(currentData: MutableData) -> TransactionResult in
+            
+            // Check if this user already exists
+            if let _ = currentData.value as? [String : AnyObject] {
+                return TransactionResult.success(withValue: currentData)
+            }
+            
+            // Add user's facebook display name to database
+            if let displayName = user.displayName {
+                var newUserData = [String : AnyObject]()
+                newUserData["displayName"] = displayName as AnyObject
+                
+                // Update database
+                currentData.value = newUserData
+            }
+            
+            // Signal done
+            return TransactionResult.success(withValue: currentData)
+            
+        }) { (error, committed, snap) in
+            if let error = error {
+                print(error.localizedDescription)
+            }
+        }
+    }
      
     //-----------------------------------------------------------------------------------------------------------------
     // MARK: - Realtime Database Functions
