@@ -69,7 +69,7 @@ class EventModel {
     }
     
     //-----------------------------------------------------------------------------------------------------------------
-    // MARK: - Static Update Functions
+    // MARK: - Update Functions
     //-----------------------------------------------------------------------------------------------------------------
     
     static func createEvent(eventName: String, eventLocation: String, eventOwnerUID: String) {
@@ -91,24 +91,52 @@ class EventModel {
         ref.updateChildValues(updates)
     }
     
-    static func addDriverToEvent(eventID: String, eventName: String, driverUID: String, driverDisplayName: String) {
+    func addDriverToEvent(driver: UserModel) {
+        
+        if let eventName = self.eventName, let driverDisplayName = driver.userDisplayName {
+        
+            // Update Database
+            let updates = [
+                "/events/\(self.eventID)/drivers/\(driver.userUID)": driverDisplayName,
+                "/users/\(driver.userUID)/drivesFor/\(self.eventID)": eventName
+            ]
+            Database.database().reference().updateChildValues(updates)
+            
+        }
+    }
+    
+    func removeDriverFromEvent(driverUID: String) {
         
         // Update Database
         let updates = [
-            "/events/\(eventID)/drivers/\(driverUID)": driverDisplayName,
-            "/users/\(driverUID)/drivesFor/\(eventID)": eventName
+            "/events/\(self.eventID)/drivers/\(driverUID)": NSNull(),
+            "/users/\(driverUID)/drivesFor/\(self.eventID)": NSNull()
         ]
         Database.database().reference().updateChildValues(updates)
     }
     
-    static func removeDriverFromEvent(eventID: String, driverUID: String) {
+    func enqueNewRideRequst(rider: UserModel) {
         
-        // Update Database
-        let updates = [
-            "/events/\(eventID)/drivers/\(driverUID)": NSNull(),
-            "/users/\(driverUID)/drivesFor/\(eventID)": NSNull()
-        ]
-        Database.database().reference().updateChildValues(updates)
+        if let eventName = self.eventName {
+        
+            // Generte new key
+            let rideKey = Database.database().reference().child("rides").childByAutoId().key
+            
+            // Form new data
+            let rideData: [String : Any] = [
+                "status": 0,         // requested but not yet claimed
+                "rider": rider.userUID,
+                "event": eventID
+            ]
+            
+            // Update database
+            let updates: [String : Any] = [
+                "/rides/\(rideKey)": rideData,
+                "/events/\(self.eventID)/queue/\(rideKey)": rider.userUID,
+                "/users/\(rider.userUID)/rides/\(rideKey)": eventName
+            ]
+            EventModel.ref.updateChildValues(updates)
+        }
     }
     
     func takeNextRideInQueue(driverUID: String) {

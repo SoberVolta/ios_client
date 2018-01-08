@@ -66,37 +66,16 @@ class RideModel {
     }
     
     //-----------------------------------------------------------------------------------------------------------------
-    // MARK: - Static Update Functions
+    // MARK: - Update Functions
     //-----------------------------------------------------------------------------------------------------------------
     
-    static func createNewRide(forEventWithID eventID: String, withName eventName: String, userUID: String) {
-        
-        // Generte new key
-        let rideKey = Database.database().reference().child("rides").childByAutoId().key
-        
-        // Form new data
-        let rideData: [String : Any] = [
-            "status": 0,         // requested but not yet claimed
-            "rider": userUID,
-            "event": eventID
-        ]
+    func cancelRideRequest() {
         
         // Update database
         let updates: [String : Any] = [
-            "/rides/\(rideKey)": rideData,
-            "/events/\(eventID)/queue/\(rideKey)": userUID,
-            "/users/\(userUID)/rides/\(rideKey)": eventName
-        ]
-        Database.database().reference().updateChildValues(updates)
-    }
-    
-    static func cancelRideRequest(rideID: String, eventID: String, userUID: String) {
-        
-        // Update database
-        let updates: [String : Any] = [
-            "/rides/\(rideID)": NSNull(),
-            "/events/\(eventID)/queue/\(rideID)": NSNull(),
-            "/users/\(userUID)/rides/\(rideID)": NSNull()
+            "/rides/\(self.rideID)": NSNull(),
+            "/events/\(self.rideEventID!)/queue/\(self.rideID)": NSNull(),
+            "/users/\(self.rideRiderUID!)/rides/\(self.rideID)": NSNull()
         ]
         Database.database().reference().updateChildValues(updates)
     }

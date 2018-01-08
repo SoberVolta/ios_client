@@ -172,7 +172,7 @@ class DriveDetailViewController: UIViewController {
     }
     
     func cancelDriveOffer(_:UIAlertAction) {
-        EventModel.removeDriverFromEvent(eventID: eventModel.eventID, driverUID: currentUser.userUID)
+        eventModel.removeDriverFromEvent(driverUID: currentUser.userUID)
         exit()
     }
     

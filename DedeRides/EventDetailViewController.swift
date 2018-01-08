@@ -35,7 +35,7 @@ class EventDetailViewController : UIViewController {
     // Member variables
     let defaultButtonColor = UIColor(red: 0.0, green: 0.478431, blue: 1.0, alpha: 1.0)
     private var rideStatus: RideStatus?
-    private var currentRideID: String?
+    private var currentRide: RideModel?
     
     //-----------------------------------------------------------------------------------------------------------------
     // MARK: - View Controller Functions
@@ -135,20 +135,20 @@ class EventDetailViewController : UIViewController {
         // Check if any user ride is also in event queue
         if let rideID = Set(userModel.userRides.keys).intersection(eventModel.eventQueue.keys).first {
             self.rideStatus = .RideInQueue
-            self.currentRideID = rideID
+            self.currentRide = RideModel(rideID: rideID)
             return
         }
         
         // Check if any user ride is also in events active rides
         if let rideID = Set(userModel.userRides.keys).intersection(eventModel.eventActiveRides.keys).first{
             self.rideStatus = .RideActive
-            self.currentRideID = rideID
+            self.currentRide = RideModel(rideID: rideID)
             return
         }
         
         
         self.rideStatus = .RideNotRequested
-        self.currentRideID = nil
+        self.currentRide = nil
     }
     
     // Update Offer Drive Button
@@ -208,20 +208,12 @@ class EventDetailViewController : UIViewController {
     }
     
     private func requestRide(_: UIAlertAction? = nil) {
-        RideModel.createNewRide(
-            forEventWithID: eventModel.eventID,
-            withName: eventModel.eventName!,
-            userUID: userModel.userUID
-        )
+        eventModel.enqueNewRideRequst(rider: userModel)
     }
     
     private func cancelRideRequest(_: UIAlertAction? = nil) {
-        if let curRideID = self.currentRideID {
-            RideModel.cancelRideRequest(
-                rideID: curRideID,
-                eventID: eventModel.eventID,
-                userUID: userModel.userUID
-            )
+        if let curRide = self.currentRide {
+            curRide.cancelRideRequest()
         }
     }
     
@@ -260,19 +252,11 @@ class EventDetailViewController : UIViewController {
     }
     
     private func offerDrive(_: UIAlertAction? = nil) {
-        EventModel.addDriverToEvent(
-            eventID: eventModel.eventID,
-            eventName: eventModel.eventName!,
-            driverUID: userModel.userUID,
-            driverDisplayName: userModel.userDisplayName!
-        )
+        eventModel.addDriverToEvent(driver: userModel)
     }
     
     private func cancelDriveOffer(_: UIAlertAction? = nil) {
-        EventModel.removeDriverFromEvent(
-            eventID: eventModel.eventID,
-            driverUID: userModel.userUID
-        )
+        eventModel.removeDriverFromEvent(driverUID: userModel.userUID)
     }
     
     //-----------------------------------------------------------------------------------------------------------------

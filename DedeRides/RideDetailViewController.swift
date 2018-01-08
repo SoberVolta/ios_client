@@ -101,11 +101,7 @@ class RideDetailViewController : UIViewController {
     }
     
     func cancelRideRequest(_: UIAlertAction) {
-        RideModel.cancelRideRequest(
-            rideID: rideModel.rideID,
-            eventID: rideModel.rideEventID!,
-            userUID: currentUser.userUID
-        )
+        rideModel.cancelRideRequest()
     }
     
     //-----------------------------------------------------------------------------------------------------------------
