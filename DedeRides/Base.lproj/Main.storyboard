@@ -71,9 +71,11 @@
                         <segue destination="Nut-l8-ekE" kind="show" identifier="segueToRideDetail" id="Pdf-z1-1C8"/>
                         <segue destination="xbq-PB-OXx" kind="show" identifier="segueToDriveDetail" id="7Xv-qh-jsQ"/>
                         <segue destination="8zs-a9-axx" kind="show" identifier="segueToSearch" id="SwQ-TX-H2j"/>
+                        <segue destination="u28-fh-CUB" kind="unwind" identifier="unwindToSignInView" unwindAction="unwindToSignInViewWithSegue:" id="KLN-BN-xn4"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Rx3-Xg-5lg" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <exit id="u28-fh-CUB" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
             <point key="canvasLocation" x="836" y="54"/>
         </scene>
@@ -559,6 +561,6 @@
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>
-        <segue reference="AQq-lQ-Ffa"/>
+        <segue reference="6h4-py-kfZ"/>
     </inferredMetricsTieBreakers>
 </document>

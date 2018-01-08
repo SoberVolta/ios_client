@@ -70,6 +70,14 @@ class MainMenuViewController : UITableViewController {
             queue: nil,
             using: userDrivesForDidChange
         )
+    
+        // Auth notification
+        AuthModel.defaultAuthModel.notificationCenter.addObserver(
+            forName: .AuthValueDidChangeLastCall,
+            object: AuthModel.defaultAuthModel,
+            queue: nil,
+            using: forceReSignIn
+        )
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -145,6 +153,18 @@ class MainMenuViewController : UITableViewController {
     
     func userDrivesForDidChange(_:Notification? = nil) {
         self.tableView.reloadData()
+    }
+    
+    func forceReSignIn(_:Notification? = nil) {
+        if AuthModel.defaultAuthModel.currentUser == nil {
+            displayAlert(
+                viewController: self,
+                titleText: "Whoops!",
+                messageText: "Looks like you've been signed out. Please sign back in.",
+                awknowledgeText: "Okay!"
+            )
+            performSegue(withIdentifier: "unwindToSignInView", sender: self)
+        }
     }
     
     //-----------------------------------------------------------------------------------------------------------------

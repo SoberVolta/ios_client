@@ -9,7 +9,6 @@
 import UIKit
 import FacebookCore
 import FacebookLogin
-import Firebase
 
 class SignInViewController: UIViewController, LoginButtonDelegate {
     
@@ -17,6 +16,7 @@ class SignInViewController: UIViewController, LoginButtonDelegate {
     // MARK: - Member Variables
     //-----------------------------------------------------------------------------------------------------------------
     
+    let authModel = AuthModel.defaultAuthModel
     var userToPresent: UserModel?
     
     //-----------------------------------------------------------------------------------------------------------------
@@ -26,7 +26,13 @@ class SignInViewController: UIViewController, LoginButtonDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        Auth.auth().addStateDidChangeListener(handleAuthStateChange)
+        // Get notified when user authentication changes
+        self.authModel.notificationCenter.addObserver(
+            forName: .AuthValueDidChange,
+            object: AuthModel.defaultAuthModel,
+            queue: nil,
+            using: handleAuthStateChange
+        )
         
         // Facebook Login button
         let loginButton = LoginButton(readPermissions: [ .publicProfile ])
@@ -46,10 +52,13 @@ class SignInViewController: UIViewController, LoginButtonDelegate {
         }
     }
     
-    func handleAuthStateChange( auth: Auth, user: User? ) {
-        if let user = user {
-            UserModel.addUserToDatabase(firebaseUserContext: user)
-            userToPresent = UserModel(userUID: user.uid)
+    @IBAction func unwindToSignInView(segue:UIStoryboardSegue) {
+        
+    }
+    
+    func handleAuthStateChange(_:Notification? = nil) {
+        if let user = self.authModel.currentUser {
+            userToPresent = user
             performSegue(withIdentifier: "segueToMainMenu", sender: self)
         }
     }
@@ -60,18 +69,13 @@ class SignInViewController: UIViewController, LoginButtonDelegate {
     
     func loginButtonDidCompleteLogin(_ loginButton: LoginButton, result: LoginResult) {
         if let currentAccessToken = AccessToken.current {
-            let credential = FacebookAuthProvider.credential(withAccessToken: currentAccessToken.authenticationToken)
-            Auth.auth().signIn(with: credential, completion: nil)
+            self.authModel.signIn(authenticationToken: currentAccessToken.authenticationToken)
         }
     }
     
     func loginButtonDidLogOut(_ loginButton: LoginButton) {
         FacebookLogin.LoginManager().logOut()
-        do {
-            try Auth.auth().signOut()
-        } catch let signOutError as NSError {
-            print ("Error signing out: %@", signOutError)
-        }
+        authModel.signOut()
     }
     
 }

@@ -22,10 +22,25 @@ func displayActionSheet(
         message: actionSheetMessage,
         preferredStyle: .actionSheet
     )
-    let cancelAction = UIAlertAction(title: cancelTitle, style: .cancel, handler: nil)
+    let cancelAction = UIAlertAction(title: cancelTitle, style: .destructive, handler: nil)
     actionSheet.addAction(cancelAction)
     
     let affirmAction = UIAlertAction(title: affirmTitle, style: .default, handler: affirmHandler)
     actionSheet.addAction(affirmAction)
     viewController.present(actionSheet, animated: true, completion: nil)
+}
+
+func displayAlert(
+    viewController: UIViewController,
+    titleText: String,
+    messageText: String,
+    awknowledgeText: String
+    ) {
+    let alert = UIAlertController(
+        title: titleText,
+        message: messageText,
+        preferredStyle: .alert
+    )
+    alert.addAction(UIAlertAction(title: awknowledgeText, style: .default, handler: nil))
+    viewController.present(alert, animated: true, completion: nil)
 }
