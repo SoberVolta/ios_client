@@ -52,6 +52,8 @@ class UserModel {
         self.notificationCenter = NotificationCenter.default
         self.userUID = uid
         self.userRef = UserModel.userSpaceRef.child(self.userUID)
+        
+        attachDatabaseListeners()
     }
     
     func attachDatabaseListeners() {

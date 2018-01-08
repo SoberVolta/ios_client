@@ -28,6 +28,7 @@ class RideModel {
     //-----------------------------------------------------------------------------------------------------------------
     
     // Database References
+    static let ref = Database.database().reference()
     static let rideSpaceRef = Database.database().reference().child("rides")
     let rideRef: DatabaseReference
     
@@ -52,6 +53,8 @@ class RideModel {
         self.notificationCenter = NotificationCenter.default
         self.rideID = rideID
         self.rideRef = RideModel.rideSpaceRef.child(rideID)
+        
+        attachDatabaseListeners()
     }
     
     func attachDatabaseListeners() {
@@ -96,6 +99,20 @@ class RideModel {
             "/users/\(userUID)/rides/\(rideID)": NSNull()
         ]
         Database.database().reference().updateChildValues(updates)
+    }
+    
+    func endActiveRide() {
+        if let eventID = self.rideEventID, let riderUID = self.rideRiderUID, let driverUID = self.rideDriverUID {
+            
+            let updates: [String:Any] = [
+                "/rides/\(self.rideID)": NSNull(),
+                "/events/\(eventID)/activeRides/\(self.rideID)": NSNull(),
+                "/users/\(driverUID)/drives/\(self.rideID)": NSNull(),
+                "/users/\(riderUID)/rides/\(self.rideID)": NSNull()
+            ]
+            
+            RideModel.ref.updateChildValues(updates)
+        }
     }
     
     //-----------------------------------------------------------------------------------------------------------------

@@ -55,6 +55,8 @@ class EventModel {
         self.notificationCenter = NotificationCenter.default
         self.eventID = eventID
         self.eventRef = EventModel.eventSpaceRef.child(eventID)
+        
+        attachDatabaseListeners()
     }
     
     func attachDatabaseListeners() {
@@ -107,6 +109,35 @@ class EventModel {
             "/users/\(driverUID)/drivesFor/\(eventID)": NSNull()
         ]
         Database.database().reference().updateChildValues(updates)
+    }
+    
+    func takeNextRideInQueue(driverUID: String) {
+        let eventID = self.eventID
+        self.eventRef.child("queue").runTransactionBlock({ (curData: MutableData) -> TransactionResult in
+            
+            // Get queue
+            var queue = curData.value as? [String:String] ?? [String:String]()
+            
+            // Get the first ride in queue
+            if let firstRideInQueue = Array(queue.keys).sorted().first {
+                
+                // Remove from queue
+                queue.removeValue(forKey: firstRideInQueue)
+                
+                // Update other database spaces
+                let updates: [String:Any] = [
+                    "/users/\(driverUID)/drives/\(firstRideInQueue)": eventID,      // Driver space
+                    "/rides/\(firstRideInQueue)/status": 1,                         // Ride status
+                    "/rides/\(firstRideInQueue)/driver": driverUID,                 // Ride driver
+                    "/events/\(eventID)/activeRides/\(firstRideInQueue)": driverUID // Event active rides
+                ]
+                EventModel.ref.updateChildValues(updates)
+            }
+            
+            // Return data
+            curData.value = queue
+            return TransactionResult.success(withValue: curData)
+        })
     }
     
     //-----------------------------------------------------------------------------------------------------------------
