@@ -27,7 +27,8 @@ class EventDetailViewController : UIViewController {
     @IBOutlet weak var requestRideBtn: UIButton!
     @IBOutlet weak var offerDriveBtn: UIButton!
     @IBOutlet weak var saveEventBtn: UIButton!
-    @IBOutlet weak var viewDriveOffersBtn: UIButton!
+    @IBOutlet weak var viewDriversBtn: UIButton!
+    @IBOutlet weak var copyEventLinkBtn: UIButton!
     @IBOutlet weak var deleteBtn: UIButton!
     
     // Models
@@ -183,7 +184,7 @@ class EventDetailViewController : UIViewController {
     private func eventUserDriverDidChange(_:Notification? = nil) {
         
         let pendingCount = eventModel.eventPendingDrivers.count
-        self.viewDriveOffersBtn.setTitle(
+        self.viewDriversBtn.setTitle(
             "View Drivers \(pendingCount == 0 ? "" : "(\(pendingCount) Pending)")",
             for: .normal
         )
@@ -209,7 +210,7 @@ class EventDetailViewController : UIViewController {
         // If event is saved
         if userModel.userSavedEvents[eventModel.eventID] != nil {
             
-            self.saveEventBtn.setTitle("Event Saved! ✔️", for: .normal)
+            self.saveEventBtn.setTitle("✔️ Event Saved!", for: .normal)
             
         // If event is not saved
         } else {
@@ -222,7 +223,8 @@ class EventDetailViewController : UIViewController {
     // Update Delete Button
     private func eventOwnerDidChange(_:Notification? = nil) {
         let hide = (self.userModel.userUID != self.eventModel.eventOwner)
-        self.viewDriveOffersBtn.isHidden = hide
+        self.viewDriversBtn.isHidden = hide
+        self.copyEventLinkBtn.isHidden = hide
         self.deleteBtn.isHidden = hide
     }
     
@@ -358,6 +360,19 @@ class EventDetailViewController : UIViewController {
     
     @IBAction func viewDriveOffersBtnPressed(sender:Any? = nil) {
         performSegue(withIdentifier: "viewDriveOffersSegue", sender: self)
+    }
+    
+    //-----------------------------------------------------------------------------------------------------------------
+    // MARK: - Copy Event Link
+    //-----------------------------------------------------------------------------------------------------------------
+    
+    @IBAction func copyEventLinkBtnPressed(sender:Any? = nil) {
+        UIPasteboard.general.string = eventModel.eventHTTPLink
+        
+        self.copyEventLinkBtn.setTitle("✔️ Link Copied!", for: .normal)
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2.0, execute: {
+            self.copyEventLinkBtn.setTitle("Copy Event Link", for: .normal)
+        })
     }
     
     //-----------------------------------------------------------------------------------------------------------------

@@ -38,7 +38,8 @@ class EventModel {
     let notificationCenter: NotificationCenter
     
     // Initialized Value
-    var eventID: String
+    let eventID: String
+    let eventHTTPLink: String
     
     // Database Populated Variables
     var eventName: String?
@@ -56,6 +57,7 @@ class EventModel {
     init(eventID:String) {
         self.notificationCenter = NotificationCenter.default
         self.eventID = eventID
+        self.eventHTTPLink = "https://dede-rides.firebase.com/event/index.html?id=\(eventID)"
         self.eventRef = EventModel.eventSpaceRef.child(eventID)
         
         attachDatabaseListeners()
