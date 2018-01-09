@@ -21,6 +21,7 @@ extension NSNotification.Name {
     public static let EventActiveRidesDidChange = Notification.Name("EventActiveRidesDidChange")
     public static let EventDriversDidChange = Notification.Name("EventDriversDidChange")
     public static let EventPendingDriversDidChange = Notification.Name("EventPendingDriversDidChange")
+    public static let EventDisabledDidChange = Notification.Name("EventDisabledDidChange")
 }
 
 class EventModel {
@@ -49,6 +50,7 @@ class EventModel {
     var eventActiveRides = [String:String]()
     var eventDrivers = [String:String]()
     var eventPendingDrivers = [UserUID:UserDisplayName]()
+    var eventDisabled = false
     
     //-----------------------------------------------------------------------------------------------------------------
     // MARK: - Initialization
@@ -71,6 +73,7 @@ class EventModel {
         eventRef.child("activeRides").observe(.value, with: eventActiveRidesValueDidChange)
         eventRef.child("drivers").observe(.value, with: eventDriversValueDidChange)
         eventRef.child("pendingDrivers").observe(.value, with: eventPendingDriversValueDidChange)
+        eventRef.child("disabled").observe(.value, with: eventDisabledValueDidChange)
     }
 
     //-----------------------------------------------------------------------------------------------------------------
@@ -197,6 +200,14 @@ class EventModel {
         })
     }
     
+    func enableEvent() {
+        self.eventRef.child("disabled").setValue(NSNull())
+    }
+    
+    func disableEvent() {
+        self.eventRef.child("disabled").setValue(true)
+    }
+    
     //-----------------------------------------------------------------------------------------------------------------
     // MARK: - Realtime Database Functions
     //-----------------------------------------------------------------------------------------------------------------
@@ -242,6 +253,12 @@ class EventModel {
     private func eventActiveRidesValueDidChange(snap:DataSnapshot) {
         self.eventActiveRides = snap.value as? [String:String] ?? [String:String]()
         notificationCenter.post(name: .EventActiveRidesDidChange, object: self)
+    }
+    
+    // Update disabled
+    private func eventDisabledValueDidChange(snap:DataSnapshot) {
+        self.eventDisabled = snap.value as? Bool ?? false
+        notificationCenter.post(name: .EventDisabledDidChange, object: self)
     }
     
 }

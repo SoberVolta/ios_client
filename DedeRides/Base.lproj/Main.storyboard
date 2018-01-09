@@ -157,8 +157,17 @@
                                     <action selector="copyEventLinkBtnPressedWithSender:" destination="BoV-Vf-erJ" eventType="touchUpInside" id="efd-pf-KpH"/>
                                 </connections>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="fn1-YL-OdZ">
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Al7-eW-w5N">
                                 <rect key="frame" x="16" y="364" width="343" height="30"/>
+                                <state key="normal" title="Disable Event">
+                                    <color key="titleColor" red="0.0" green="0.56031829119999998" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                </state>
+                                <connections>
+                                    <action selector="disableEventBtnPressedWithSender:" destination="BoV-Vf-erJ" eventType="touchUpInside" id="VBR-mX-b3L"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="fn1-YL-OdZ">
+                                <rect key="frame" x="16" y="402" width="343" height="30"/>
                                 <state key="normal" title="Delete">
                                     <color key="titleColor" red="1" green="0.14913141730000001" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 </state>
@@ -170,12 +179,14 @@
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
                             <constraint firstItem="E2h-iF-cTe" firstAttribute="top" secondItem="Edi-6V-WuI" secondAttribute="bottom" constant="8" id="0Kx-eo-fGQ"/>
+                            <constraint firstItem="fn1-YL-OdZ" firstAttribute="top" secondItem="Al7-eW-w5N" secondAttribute="bottom" constant="8" id="94h-uo-prY"/>
                             <constraint firstItem="NPK-48-J2X" firstAttribute="leading" secondItem="mmV-PB-odI" secondAttribute="leading" constant="16" id="9KP-XZ-ude"/>
                             <constraint firstItem="Jhd-y3-L4l" firstAttribute="leading" secondItem="mmV-PB-odI" secondAttribute="leading" constant="16" id="9cR-Mf-DiZ"/>
                             <constraint firstItem="mmV-PB-odI" firstAttribute="trailing" secondItem="Edi-6V-WuI" secondAttribute="trailing" constant="16" id="Bmv-k7-1QN"/>
                             <constraint firstItem="NPK-48-J2X" firstAttribute="top" secondItem="XhG-bV-4KE" secondAttribute="bottom" constant="8" id="CEL-2j-k5g"/>
                             <constraint firstItem="mmV-PB-odI" firstAttribute="trailing" secondItem="Jhd-y3-L4l" secondAttribute="trailing" constant="16" id="CuL-tI-IgN"/>
                             <constraint firstItem="N87-wG-Kfg" firstAttribute="top" secondItem="E2h-iF-cTe" secondAttribute="bottom" constant="8" id="F4g-Cq-OOt"/>
+                            <constraint firstItem="Al7-eW-w5N" firstAttribute="leading" secondItem="mmV-PB-odI" secondAttribute="leading" constant="16" id="Fez-7k-QkT"/>
                             <constraint firstItem="fn1-YL-OdZ" firstAttribute="leading" secondItem="mmV-PB-odI" secondAttribute="leading" constant="16" id="HQx-Km-BHH"/>
                             <constraint firstItem="XhG-bV-4KE" firstAttribute="top" secondItem="N87-wG-Kfg" secondAttribute="bottom" constant="8" id="Hpp-tu-jh3"/>
                             <constraint firstItem="mmV-PB-odI" firstAttribute="trailing" secondItem="NPK-48-J2X" secondAttribute="trailing" constant="16" id="Hqw-aF-wr0"/>
@@ -183,13 +194,14 @@
                             <constraint firstItem="XhG-bV-4KE" firstAttribute="leading" secondItem="mmV-PB-odI" secondAttribute="leading" constant="16" id="PO4-Jn-dvL"/>
                             <constraint firstItem="cro-67-lMm" firstAttribute="top" secondItem="p3v-6Y-YWb" secondAttribute="bottom" constant="8" id="QI2-AI-1wF"/>
                             <constraint firstItem="Edi-6V-WuI" firstAttribute="top" secondItem="cro-67-lMm" secondAttribute="bottom" constant="8" id="QoX-Sc-LaY"/>
+                            <constraint firstItem="Al7-eW-w5N" firstAttribute="top" secondItem="NPK-48-J2X" secondAttribute="bottom" constant="8" id="YmT-r9-7Yx"/>
                             <constraint firstItem="cro-67-lMm" firstAttribute="leading" secondItem="mmV-PB-odI" secondAttribute="leading" constant="16" id="aJy-Zl-Yci"/>
                             <constraint firstItem="Edi-6V-WuI" firstAttribute="leading" secondItem="mmV-PB-odI" secondAttribute="leading" constant="16" id="bUw-P4-2ub"/>
                             <constraint firstItem="8XR-Cf-0vQ" firstAttribute="leading" secondItem="mmV-PB-odI" secondAttribute="leading" constant="16" id="dqJ-ms-p9x"/>
                             <constraint firstItem="mmV-PB-odI" firstAttribute="trailing" secondItem="N87-wG-Kfg" secondAttribute="trailing" constant="16" id="i3Y-tJ-EIt"/>
                             <constraint firstItem="mmV-PB-odI" firstAttribute="trailing" secondItem="fn1-YL-OdZ" secondAttribute="trailing" constant="16" id="k3Q-Ga-eLi"/>
+                            <constraint firstItem="mmV-PB-odI" firstAttribute="trailing" secondItem="Al7-eW-w5N" secondAttribute="trailing" constant="16" id="kGn-EV-0xs"/>
                             <constraint firstItem="p3v-6Y-YWb" firstAttribute="leading" secondItem="mmV-PB-odI" secondAttribute="leading" constant="16" id="kZS-jR-eC3"/>
-                            <constraint firstItem="fn1-YL-OdZ" firstAttribute="top" secondItem="NPK-48-J2X" secondAttribute="bottom" constant="8" id="lyc-6r-1jU"/>
                             <constraint firstItem="mmV-PB-odI" firstAttribute="trailing" secondItem="cro-67-lMm" secondAttribute="trailing" constant="16" id="mCA-o4-e17"/>
                             <constraint firstItem="E2h-iF-cTe" firstAttribute="leading" secondItem="mmV-PB-odI" secondAttribute="leading" constant="16" id="ovB-j6-osf"/>
                             <constraint firstItem="Jhd-y3-L4l" firstAttribute="top" secondItem="mmV-PB-odI" secondAttribute="top" constant="38" id="raO-zB-9np"/>
@@ -206,6 +218,7 @@
                     <connections>
                         <outlet property="copyEventLinkBtn" destination="NPK-48-J2X" id="uch-Rx-hIL"/>
                         <outlet property="deleteBtn" destination="fn1-YL-OdZ" id="lKz-1u-Fgh"/>
+                        <outlet property="disableEventBtn" destination="Al7-eW-w5N" id="4al-OO-Hwx"/>
                         <outlet property="eventLocationLabel" destination="cro-67-lMm" id="7GX-n6-kyI"/>
                         <outlet property="eventNameLabel" destination="8XR-Cf-0vQ" id="MeF-Kh-n8n"/>
                         <outlet property="offerDriveBtn" destination="E2h-iF-cTe" id="ygX-YI-OAY"/>
@@ -213,9 +226,11 @@
                         <outlet property="saveEventBtn" destination="N87-wG-Kfg" id="EAc-Hm-b9x"/>
                         <outlet property="viewDriversBtn" destination="XhG-bV-4KE" id="nOi-BX-PkX"/>
                         <segue destination="M0R-Jc-Ngt" kind="show" identifier="viewDriveOffersSegue" id="yv3-bg-8Pc"/>
+                        <segue destination="scX-ed-yGn" kind="unwind" identifier="unwindFromEventDetail" unwindAction="unwindFromEventDetailWithSegue:" id="clg-7N-mqT"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="NfS-93-fIW" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <exit id="scX-ed-yGn" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
             <point key="canvasLocation" x="2792.8000000000002" y="436.73163418290858"/>
         </scene>
@@ -625,6 +640,6 @@
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>
-        <segue reference="AQq-lQ-Ffa"/>
+        <segue reference="4cd-mK-Q9n"/>
     </inferredMetricsTieBreakers>
 </document>

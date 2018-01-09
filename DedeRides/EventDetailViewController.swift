@@ -29,6 +29,7 @@ class EventDetailViewController : UIViewController {
     @IBOutlet weak var saveEventBtn: UIButton!
     @IBOutlet weak var viewDriversBtn: UIButton!
     @IBOutlet weak var copyEventLinkBtn: UIButton!
+    @IBOutlet weak var disableEventBtn: UIButton!
     @IBOutlet weak var deleteBtn: UIButton!
     
     // Models
@@ -37,6 +38,7 @@ class EventDetailViewController : UIViewController {
     
     // Member variables
     let defaultButtonColor = UIColor(red: 0.0, green: 0.478431, blue: 1.0, alpha: 1.0)
+    let cloverColor = UIColor(red: 0.0, green: 143/255, blue: 0.0, alpha: 1.0)
     private var rideStatus: RideStatus?
     private var currentRide: RideModel?
     
@@ -113,6 +115,18 @@ class EventDetailViewController : UIViewController {
             queue: nil,
             using: userSavedEventsDidChange
         )
+        eventModel.notificationCenter.addObserver(
+            forName: .EventDisabledDidChange,
+            object: eventModel,
+            queue: nil,
+            using: eventDisabledDidChange
+        )
+        eventModel.notificationCenter.addObserver(
+            forName: .EventDisabledDidChange,
+            object: eventModel,
+            queue: nil,
+            using: eventOwnerDidChange
+        )
         
     }
     
@@ -122,6 +136,10 @@ class EventDetailViewController : UIViewController {
                 destinationVC.prepareForDisplay(event: self.eventModel)
             }
         }
+    }
+    
+    func exit() {
+        performSegue(withIdentifier: "unwindFromEventDetail", sender: self)
     }
     
     //-----------------------------------------------------------------------------------------------------------------
@@ -220,12 +238,31 @@ class EventDetailViewController : UIViewController {
         }
     }
     
-    // Update Delete Button
+    // Update Diable Event Button
+    private func eventDisabledDidChange(_:Notification? = nil) {
+        if eventModel.eventDisabled {
+            disableEventBtn.setTitle("Enable Event", for: .normal)
+            disableEventBtn.setTitleColor(self.cloverColor, for: .normal)
+        } else {
+            disableEventBtn.setTitle("Disable Event", for: .normal)
+            disableEventBtn.setTitleColor(.red, for: .normal)
+        }
+    }
+    
+    // Update Owner Only Buttons
     private func eventOwnerDidChange(_:Notification? = nil) {
         let hide = (self.userModel.userUID != self.eventModel.eventOwner)
+        
+        if hide && eventModel.eventDisabled {
+            exit()
+        }
+        
         self.viewDriversBtn.isHidden = hide
         self.copyEventLinkBtn.isHidden = hide
+        self.disableEventBtn.isHidden = hide
         self.deleteBtn.isHidden = hide
+        
+        
     }
     
     //-----------------------------------------------------------------------------------------------------------------
@@ -373,6 +410,14 @@ class EventDetailViewController : UIViewController {
         DispatchQueue.main.asyncAfter(deadline: .now() + 2.0, execute: {
             self.copyEventLinkBtn.setTitle("Copy Event Link", for: .normal)
         })
+    }
+    
+    //-----------------------------------------------------------------------------------------------------------------
+    // MARK: - Disable Event
+    //-----------------------------------------------------------------------------------------------------------------
+    
+    @IBAction func disableEventBtnPressed(sender:Any? = nil) {
+        eventModel.eventDisabled ? eventModel.enableEvent() : eventModel.disableEvent()
     }
     
     //-----------------------------------------------------------------------------------------------------------------

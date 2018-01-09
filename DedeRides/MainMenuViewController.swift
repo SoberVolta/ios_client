@@ -146,6 +146,10 @@ class MainMenuViewController : UITableViewController {
         
     }
     
+    @IBAction func unwindFromEventDetail(segue:UIStoryboardSegue) {
+        
+    }
+    
     //-----------------------------------------------------------------------------------------------------------------
     // MARK: - Notification Observers
     //-----------------------------------------------------------------------------------------------------------------
