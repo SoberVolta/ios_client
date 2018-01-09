@@ -20,6 +20,7 @@ extension NSNotification.Name {
     public static let EventQueueDidChange = Notification.Name("EventQueueDidChange")
     public static let EventActiveRidesDidChange = Notification.Name("EventActiveRidesDidChange")
     public static let EventDriversDidChange = Notification.Name("EventDriversDidChange")
+    public static let EventPendingDriversDidChange = Notification.Name("EventPendingDriversDidChange")
 }
 
 class EventModel {
@@ -46,6 +47,7 @@ class EventModel {
     var eventQueue = [String:String]()
     var eventActiveRides = [String:String]()
     var eventDrivers = [String:String]()
+    var eventPendingDrivers = [UserUID:UserDisplayName]()
     
     //-----------------------------------------------------------------------------------------------------------------
     // MARK: - Initialization
@@ -66,8 +68,9 @@ class EventModel {
         eventRef.child("queue").observe(.value, with: eventQueueValueDidChange)
         eventRef.child("activeRides").observe(.value, with: eventActiveRidesValueDidChange)
         eventRef.child("drivers").observe(.value, with: eventDriversValueDidChange)
+        eventRef.child("pendingDrivers").observe(.value, with: eventPendingDriversValueDidChange)
     }
-    
+
     //-----------------------------------------------------------------------------------------------------------------
     // MARK: - Update Functions
     //-----------------------------------------------------------------------------------------------------------------
@@ -91,14 +94,39 @@ class EventModel {
         ref.updateChildValues(updates)
     }
     
+    func addDriveOffer(driver: UserModel) {
+        if let displayName = driver.userDisplayName {
+            eventRef.child("pendingDrivers").child(driver.userUID).setValue(displayName)
+        }
+    }
+    
+    func cancelPendingDriveOffer(driver: UserModel) {
+        self.cancelPendingDriveOffer(driverUID: driver.userUID)
+    }
+    
+    func cancelPendingDriveOffer(driverUID: String) {
+        eventRef.child("pendingDrivers").child(driverUID).setValue(NSNull())
+    }
+    
     func addDriverToEvent(driver: UserModel) {
         
-        if let eventName = self.eventName, let driverDisplayName = driver.userDisplayName {
+        if let driverDisplayName = driver.userDisplayName {
         
+            self.addDriverToEvent(driverUID: driver.userUID, driverDisplayName: driverDisplayName)
+            
+        }
+        
+    }
+    
+    func addDriverToEvent(driverUID: String, driverDisplayName: String) {
+     
+        if let eventName = self.eventName {
+            
             // Update Database
-            let updates = [
-                "/events/\(self.eventID)/drivers/\(driver.userUID)": driverDisplayName,
-                "/users/\(driver.userUID)/drivesFor/\(self.eventID)": eventName
+            let updates: [String:Any] = [
+                "/events/\(self.eventID)/pendingDrivers/\(driverUID)": NSNull(),
+                "/events/\(self.eventID)/drivers/\(driverUID)": driverDisplayName,
+                "/users/\(driverUID)/drivesFor/\(self.eventID)": eventName
             ]
             Database.database().reference().updateChildValues(updates)
             
@@ -193,6 +221,13 @@ class EventModel {
     private func eventDriversValueDidChange(snap:DataSnapshot) {
         self.eventDrivers = snap.value as? [String:String] ?? [String:String]()
         self.notificationCenter.post(name: .EventDriversDidChange, object: self)
+    }
+    
+    
+    // Update Pending Drivers
+    private func eventPendingDriversValueDidChange(snap:DataSnapshot) {
+        self.eventPendingDrivers = snap.value as? [String:String] ?? [String:String]()
+        self.notificationCenter.post(name: .EventPendingDriversDidChange, object: self)
     }
     
     // Update event queue

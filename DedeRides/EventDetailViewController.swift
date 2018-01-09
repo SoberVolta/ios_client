@@ -27,6 +27,7 @@ class EventDetailViewController : UIViewController {
     @IBOutlet weak var requestRideBtn: UIButton!
     @IBOutlet weak var offerDriveBtn: UIButton!
     @IBOutlet weak var saveEventBtn: UIButton!
+    @IBOutlet weak var viewDriveOffersBtn: UIButton!
     @IBOutlet weak var deleteBtn: UIButton!
     
     // Models
@@ -88,6 +89,12 @@ class EventDetailViewController : UIViewController {
             using: eventUserDriverDidChange
         )
         eventModel.notificationCenter.addObserver(
+            forName: .EventPendingDriversDidChange,
+            object: eventModel,
+            queue: nil,
+            using: eventUserDriverDidChange
+        )
+        eventModel.notificationCenter.addObserver(
             forName: .EventOwnerDidChange,
             object: eventModel,
             queue: nil,
@@ -106,6 +113,14 @@ class EventDetailViewController : UIViewController {
             using: userSavedEventsDidChange
         )
         
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "viewDriveOffersSegue" {
+            if let destinationVC = segue.destination as? ViewDriversViewController {
+                destinationVC.prepareForDisplay(event: self.eventModel)
+            }
+        }
     }
     
     //-----------------------------------------------------------------------------------------------------------------
@@ -167,8 +182,15 @@ class EventDetailViewController : UIViewController {
     // Update Offer Drive Button
     private func eventUserDriverDidChange(_:Notification? = nil) {
         
+        let pendingCount = eventModel.eventPendingDrivers.count
+        self.viewDriveOffersBtn.setTitle(
+            "View Drivers \(pendingCount == 0 ? "" : "(\(pendingCount) Pending)")",
+            for: .normal
+        )
+        
         // If user is in events drivers
-        if eventModel.eventDrivers[userModel.userUID] != nil {
+        if eventModel.eventDrivers[userModel.userUID] != nil
+            || eventModel.eventPendingDrivers[userModel.userUID] != nil {
             
             self.offerDriveBtn.setTitle("Cancel Drive Offer", for: .normal)
             self.offerDriveBtn.setTitleColor(.red, for: .normal)
@@ -199,7 +221,9 @@ class EventDetailViewController : UIViewController {
     
     // Update Delete Button
     private func eventOwnerDidChange(_:Notification? = nil) {
-        self.deleteBtn.isHidden = (self.userModel.userUID != self.eventModel.eventOwner)
+        let hide = (self.userModel.userUID != self.eventModel.eventOwner)
+        self.viewDriveOffersBtn.isHidden = hide
+        self.deleteBtn.isHidden = hide
     }
     
     //-----------------------------------------------------------------------------------------------------------------
@@ -253,20 +277,22 @@ class EventDetailViewController : UIViewController {
     
     @IBAction func offerDriveBtnPressed() {
         
-        // If user has not yet offered to drive...
-        if eventModel.eventDrivers[userModel.userUID] == nil  {
+        // If user drive offer is pending
+        if eventModel.eventPendingDrivers[userModel.userUID] != nil {
             
-            // Ask if they want to drive
+            // Ask if they want to cancel their offer to drive
             displayActionSheet(
                 viewController: self,
-                actionSheetTitle: "Offer to Drive",
-                actionSheetMessage: "Are you sure you want to drive for \(self.eventModel.eventName ?? "this event")?",
-                cancelTitle: "Cancel",
-                affirmTitle: "Offer to Drive",
-                affirmHandler: offerDrive
+                actionSheetTitle: "Cancel Offer to Drive",
+                actionSheetMessage: "Are you sure you want to resend you offer to drive for this event?",
+                cancelTitle: "Keep Offer to Drive",
+                affirmTitle: "Cancel Offer to Drive",
+                affirmStyle: .destructive,
+                affirmHandler: cancelPendingDriveOffer
             )
             
-        } else {
+        // If user is an active driver
+        } else if eventModel.eventDrivers[userModel.userUID] != nil  {
             
             // Ask if they want to cancel their offer to drive
             displayActionSheet(
@@ -279,11 +305,28 @@ class EventDetailViewController : UIViewController {
                 affirmHandler: cancelDriveOffer
             )
             
+        // If user has not offered to drive
+        } else {
+            
+            // Ask if they want to drive
+            displayActionSheet(
+                viewController: self,
+                actionSheetTitle: "Offer to Drive",
+                actionSheetMessage: "Are you sure you want to drive for \(self.eventModel.eventName ?? "this event")?",
+                cancelTitle: "Cancel",
+                affirmTitle: "Offer to Drive",
+                affirmHandler: offerDrive
+            )
+            
         }
     }
     
     private func offerDrive(_: UIAlertAction? = nil) {
-        eventModel.addDriverToEvent(driver: userModel)
+        eventModel.addDriveOffer(driver: userModel)
+    }
+    
+    private func cancelPendingDriveOffer(_: UIAlertAction? = nil) {
+        eventModel.cancelPendingDriveOffer(driverUID: userModel.userUID)
     }
     
     private func cancelDriveOffer(_: UIAlertAction? = nil) {
@@ -307,6 +350,14 @@ class EventDetailViewController : UIViewController {
             userModel.saveEvent(event: eventModel)
             
         }
+    }
+    
+    //-----------------------------------------------------------------------------------------------------------------
+    // MARK: - View Drive Offers
+    //-----------------------------------------------------------------------------------------------------------------
+    
+    @IBAction func viewDriveOffersBtnPressed(sender:Any? = nil) {
+        performSegue(withIdentifier: "viewDriveOffersSegue", sender: self)
     }
     
     //-----------------------------------------------------------------------------------------------------------------
