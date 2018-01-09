@@ -93,6 +93,12 @@ class EventDetailViewController : UIViewController {
             queue: nil,
             using: eventOwnerDidChange
         )
+        eventModel.notificationCenter.addObserver(
+            forName: .EventActiveRidesDidChange,
+            object: eventModel,
+            queue: nil,
+            using: rideStatusDidChange
+        )
         userModel.notificationCenter.addObserver(
             forName: .UserSavedEventsDidChange,
             object: userModel,
