@@ -19,6 +19,7 @@ extension NSNotification.Name {
     public static let UserRidesSpaceDidChange = Notification.Name("UserRidesSpaceDidChange")
     public static let UserDrivesForSpaceDidChange = Notification.Name("UserDrivesForSpaceDidChange")
     public static let UserActiveDrivesSpaceDidChange = Notification.Name("UserActiveDrivesSpaceDidChange")
+    public static let UserSavedEventsDidChange = Notification.Name("UserSavedEventsDidChange")
 }
 
 class UserModel {
@@ -39,10 +40,11 @@ class UserModel {
     
     // Database Populated Values
     var userDisplayName: String?
-    var userOwnedEvents = [String:String]()
-    var userRides = [String:String]()
-    var userDrivesFor = [String:String]()
-    var userActiveDrives = [String:String]()
+    var userOwnedEvents = [EventID:EventName]()
+    var userRides = [RideID:EventName]()
+    var userDrivesFor = [EventID:EventName]()
+    var userActiveDrives = [RideID:EventID]()
+    var userSavedEvents = [EventID:EventName]()
     
     //-----------------------------------------------------------------------------------------------------------------
     // MARK: - Initialization
@@ -62,6 +64,7 @@ class UserModel {
         self.userRef.child("rides").observe(.value, with: self.userRidesSpaceValueDidChange)
         self.userRef.child("drivesFor").observe(.value, with: self.userDrivesForSpaceValueDidChange)
         self.userRef.child("drives").observe(.value, with: self.userActiveDrivesSpaceValueDidChange)
+        self.userRef.child("savedEvents").observe(.value, with: self.userSavedEventsSpaceValueDidChange)
     }
     
     static func addUserToDatabase(firebaseUserContext user: User) {
@@ -89,6 +92,24 @@ class UserModel {
                 print(error.localizedDescription)
             }
         }
+    }
+    
+    func saveEvent(event: EventModel) {
+        if let eventName = event.eventName {
+            self.saveEvent(eventID: event.eventID, eventName: eventName)
+        }
+    }
+    
+    func saveEvent(eventID: String, eventName: String) {
+        userRef.child("savedEvents").child(eventID).setValue(eventName)
+    }
+    
+    func unsaveEvent(event: EventModel) {
+        self.unsaveEvent(eventID: event.eventID)
+    }
+    
+    func unsaveEvent(eventID: String) {
+        userRef.child("savedEvents").child(eventID).setValue(NSNull())
     }
      
     //-----------------------------------------------------------------------------------------------------------------
@@ -123,6 +144,12 @@ class UserModel {
     private func userActiveDrivesSpaceValueDidChange(snap:DataSnapshot) {
         self.userActiveDrives = snap.value as? [String:String] ?? [String:String]()
         self.notificationCenter.post(name: .UserActiveDrivesSpaceDidChange, object: self)
+    }
+    
+    // Update Saved Events
+    private func userSavedEventsSpaceValueDidChange(snap:DataSnapshot) {
+        self.userSavedEvents = snap.value as? [String:String] ?? [String:String]()
+        self.notificationCenter.post(name: .UserSavedEventsDidChange, object: self)
     }
     
 }

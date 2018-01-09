@@ -26,6 +26,7 @@ class EventDetailViewController : UIViewController {
     @IBOutlet weak var eventLocationLabel: UILabel!
     @IBOutlet weak var requestRideBtn: UIButton!
     @IBOutlet weak var offerDriveBtn: UIButton!
+    @IBOutlet weak var saveEventBtn: UIButton!
     @IBOutlet weak var deleteBtn: UIButton!
     
     // Models
@@ -91,6 +92,12 @@ class EventDetailViewController : UIViewController {
             object: eventModel,
             queue: nil,
             using: eventOwnerDidChange
+        )
+        userModel.notificationCenter.addObserver(
+            forName: .UserSavedEventsDidChange,
+            object: userModel,
+            queue: nil,
+            using: userSavedEventsDidChange
         )
         
     }
@@ -164,6 +171,22 @@ class EventDetailViewController : UIViewController {
             
             self.offerDriveBtn.setTitle("Offer to Drive", for: .normal)
             self.offerDriveBtn.setTitleColor(defaultButtonColor, for: .normal)
+            
+        }
+    }
+    
+    // Update Saved Event Button
+    private func userSavedEventsDidChange(_:Notification? = nil) {
+        
+        // If event is saved
+        if userModel.userSavedEvents[eventModel.eventID] != nil {
+            
+            self.saveEventBtn.setTitle("Event Saved! ✔️", for: .normal)
+            
+        // If event is not saved
+        } else {
+         
+            self.saveEventBtn.setTitle("Save Event", for: .normal)
             
         }
     }
@@ -259,6 +282,25 @@ class EventDetailViewController : UIViewController {
     
     private func cancelDriveOffer(_: UIAlertAction? = nil) {
         eventModel.removeDriverFromEvent(driverUID: userModel.userUID)
+    }
+    
+    //-----------------------------------------------------------------------------------------------------------------
+    // MARK: - Save Event
+    //-----------------------------------------------------------------------------------------------------------------
+    
+    @IBAction func saveEventBtnPressed(sender:Any? = nil) {
+        
+        // If event is saved
+        if userModel.userSavedEvents[eventModel.eventID] != nil {
+            
+            userModel.unsaveEvent(eventID: eventModel.eventID)
+            
+        // If event is not saved
+        } else {
+            
+            userModel.saveEvent(event: eventModel)
+            
+        }
     }
     
     //-----------------------------------------------------------------------------------------------------------------

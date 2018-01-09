@@ -27,6 +27,7 @@ class MainMenuViewController : UITableViewController {
     var selectedEventIdx = -1
     var selectedRideIdx = -1
     var selectedDriveIdx = -1
+    var selectedSavedEventIdx = -1
     
     //-----------------------------------------------------------------------------------------------------------------
     // MARK: - View Controller Functions
@@ -69,6 +70,12 @@ class MainMenuViewController : UITableViewController {
             queue: nil,
             using: userDrivesForDidChange
         )
+        userModel.notificationCenter.addObserver(
+            forName: .UserSavedEventsDidChange,
+            object: userModel,
+            queue: nil,
+            using: userSavedEventsDidChange
+        )
     
         // Auth notification
         AuthModel.defaultAuthModel.notificationCenter.addObserver(
@@ -97,7 +104,12 @@ class MainMenuViewController : UITableViewController {
             }
         } else if segue.identifier == "segueToEventDetail" {
             if let destinationVC = segue.destination as? EventDetailViewController {
-                let eventID = Array(self.userModel.userOwnedEvents.keys)[selectedEventIdx]
+                var eventID = ""
+                if selectedEventIdx == -1 {
+                    eventID = Array(self.userModel.userSavedEvents.keys)[selectedSavedEventIdx]
+                } else {
+                    eventID = Array(self.userModel.userOwnedEvents.keys)[selectedEventIdx]
+                }
                 destinationVC.prepareForDisplay(userModel: self.userModel, eventID: eventID)
             }
         } else if segue.identifier == "segueToRideDetail" {
@@ -154,6 +166,10 @@ class MainMenuViewController : UITableViewController {
         self.tableView.reloadData()
     }
     
+    func userSavedEventsDidChange(_:Notification? = nil) {
+        self.tableView.reloadData()
+    }
+    
     func forceReSignIn(_:Notification? = nil) {
         if AuthModel.defaultAuthModel.currentUser == nil {
             displayAlert(
@@ -190,6 +206,8 @@ class MainMenuViewController : UITableViewController {
             return userModel.userRides.count
         } else if section == 3 {
             return userModel.userDrivesFor.count
+        } else if section == 4 {
+            return userModel.userSavedEvents.count
         }
         
         return 0
@@ -210,6 +228,10 @@ class MainMenuViewController : UITableViewController {
         } else if indexPath.section == 3 {
             let rideID = Array(userModel.userDrivesFor.keys)[indexPath.item]
             cell.textLabel?.text = "Drive for \(userModel.userDrivesFor[rideID] ?? "Undetermined Event")"
+        } else if indexPath.section == 4 {
+            let idx = indexPath.item
+            let eventID = Array(userModel.userSavedEvents.keys)[idx]
+            cell.textLabel?.text = userModel.userSavedEvents[eventID]
         }
         
         return cell
@@ -225,6 +247,7 @@ class MainMenuViewController : UITableViewController {
             }
         } else if indexPath.section == 1 {
             self.selectedEventIdx = indexPath.item
+            self.selectedSavedEventIdx = -1
             performSegue(withIdentifier: "segueToEventDetail", sender: self)
         } else if indexPath.section == 2 {
             self.selectedRideIdx = indexPath.item
@@ -232,6 +255,10 @@ class MainMenuViewController : UITableViewController {
         } else if indexPath.section == 3 {
             self.selectedDriveIdx = indexPath.item
             performSegue(withIdentifier: "segueToDriveDetail", sender: self)
+        } else if indexPath.section == 4 {
+            self.selectedEventIdx = -1
+            self.selectedSavedEventIdx = indexPath.item
+            performSegue(withIdentifier: "segueToEventDetail", sender: self)
         }
     }
 }

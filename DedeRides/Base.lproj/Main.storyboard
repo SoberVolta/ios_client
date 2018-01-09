@@ -134,8 +134,17 @@
                                     <action selector="offerDriveBtnPressed" destination="BoV-Vf-erJ" eventType="touchUpInside" id="2Xu-Nh-veN"/>
                                 </connections>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="fn1-YL-OdZ">
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="N87-wG-Kfg">
                                 <rect key="frame" x="16" y="250" width="343" height="30"/>
+                                <state key="normal" title="Save Event">
+                                    <color key="titleColor" red="1" green="0.83234566450000003" blue="0.47320586440000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                </state>
+                                <connections>
+                                    <action selector="saveEventBtnPressedWithSender:" destination="BoV-Vf-erJ" eventType="touchUpInside" id="gRS-ZJ-3Ua"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="fn1-YL-OdZ">
+                                <rect key="frame" x="16" y="288" width="343" height="30"/>
                                 <state key="normal" title="Delete">
                                     <color key="titleColor" red="1" green="0.14913141730000001" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 </state>
@@ -150,19 +159,22 @@
                             <constraint firstItem="Jhd-y3-L4l" firstAttribute="leading" secondItem="mmV-PB-odI" secondAttribute="leading" constant="16" id="9cR-Mf-DiZ"/>
                             <constraint firstItem="mmV-PB-odI" firstAttribute="trailing" secondItem="Edi-6V-WuI" secondAttribute="trailing" constant="16" id="Bmv-k7-1QN"/>
                             <constraint firstItem="mmV-PB-odI" firstAttribute="trailing" secondItem="Jhd-y3-L4l" secondAttribute="trailing" constant="16" id="CuL-tI-IgN"/>
+                            <constraint firstItem="fn1-YL-OdZ" firstAttribute="top" secondItem="N87-wG-Kfg" secondAttribute="bottom" constant="8" id="ET5-uB-elZ"/>
+                            <constraint firstItem="N87-wG-Kfg" firstAttribute="top" secondItem="E2h-iF-cTe" secondAttribute="bottom" constant="8" id="F4g-Cq-OOt"/>
                             <constraint firstItem="fn1-YL-OdZ" firstAttribute="leading" secondItem="mmV-PB-odI" secondAttribute="leading" constant="16" id="HQx-Km-BHH"/>
                             <constraint firstItem="cro-67-lMm" firstAttribute="top" secondItem="p3v-6Y-YWb" secondAttribute="bottom" constant="8" id="QI2-AI-1wF"/>
                             <constraint firstItem="Edi-6V-WuI" firstAttribute="top" secondItem="cro-67-lMm" secondAttribute="bottom" constant="8" id="QoX-Sc-LaY"/>
                             <constraint firstItem="cro-67-lMm" firstAttribute="leading" secondItem="mmV-PB-odI" secondAttribute="leading" constant="16" id="aJy-Zl-Yci"/>
-                            <constraint firstItem="fn1-YL-OdZ" firstAttribute="top" secondItem="E2h-iF-cTe" secondAttribute="bottom" constant="8" id="aiw-NM-yZx"/>
                             <constraint firstItem="Edi-6V-WuI" firstAttribute="leading" secondItem="mmV-PB-odI" secondAttribute="leading" constant="16" id="bUw-P4-2ub"/>
                             <constraint firstItem="8XR-Cf-0vQ" firstAttribute="leading" secondItem="mmV-PB-odI" secondAttribute="leading" constant="16" id="dqJ-ms-p9x"/>
+                            <constraint firstItem="mmV-PB-odI" firstAttribute="trailing" secondItem="N87-wG-Kfg" secondAttribute="trailing" constant="16" id="i3Y-tJ-EIt"/>
                             <constraint firstItem="mmV-PB-odI" firstAttribute="trailing" secondItem="fn1-YL-OdZ" secondAttribute="trailing" constant="16" id="k3Q-Ga-eLi"/>
                             <constraint firstItem="p3v-6Y-YWb" firstAttribute="leading" secondItem="mmV-PB-odI" secondAttribute="leading" constant="16" id="kZS-jR-eC3"/>
                             <constraint firstItem="mmV-PB-odI" firstAttribute="trailing" secondItem="cro-67-lMm" secondAttribute="trailing" constant="16" id="mCA-o4-e17"/>
                             <constraint firstItem="E2h-iF-cTe" firstAttribute="leading" secondItem="mmV-PB-odI" secondAttribute="leading" constant="16" id="ovB-j6-osf"/>
                             <constraint firstItem="Jhd-y3-L4l" firstAttribute="top" secondItem="mmV-PB-odI" secondAttribute="top" constant="38" id="raO-zB-9np"/>
                             <constraint firstItem="mmV-PB-odI" firstAttribute="trailing" secondItem="8XR-Cf-0vQ" secondAttribute="trailing" constant="16" id="sE2-Ku-3dG"/>
+                            <constraint firstItem="N87-wG-Kfg" firstAttribute="leading" secondItem="mmV-PB-odI" secondAttribute="leading" constant="16" id="te3-F4-lQ6"/>
                             <constraint firstItem="mmV-PB-odI" firstAttribute="trailing" secondItem="p3v-6Y-YWb" secondAttribute="trailing" constant="16" id="uEJ-jq-IT2"/>
                             <constraint firstItem="8XR-Cf-0vQ" firstAttribute="top" secondItem="Jhd-y3-L4l" secondAttribute="bottom" constant="8" id="uLZ-Aw-MjD"/>
                             <constraint firstItem="mmV-PB-odI" firstAttribute="trailing" secondItem="E2h-iF-cTe" secondAttribute="trailing" constant="16" id="vSc-tJ-DXK"/>
@@ -177,6 +189,7 @@
                         <outlet property="eventNameLabel" destination="8XR-Cf-0vQ" id="MeF-Kh-n8n"/>
                         <outlet property="offerDriveBtn" destination="E2h-iF-cTe" id="ygX-YI-OAY"/>
                         <outlet property="requestRideBtn" destination="Edi-6V-WuI" id="oIy-GV-wNg"/>
+                        <outlet property="saveEventBtn" destination="N87-wG-Kfg" id="EAc-Hm-b9x"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="NfS-93-fIW" userLabel="First Responder" sceneMemberID="firstResponder"/>
