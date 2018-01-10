@@ -148,7 +148,7 @@ class EventModel {
         Database.database().reference().updateChildValues(updates)
     }
     
-    func enqueNewRideRequst(rider: UserModel) {
+    func enqueNewRideRequst(rider: UserModel, latitude lat: Double, longitude lon: Double) {
         
         if let eventName = self.eventName {
         
@@ -159,7 +159,9 @@ class EventModel {
             let rideData: [String : Any] = [
                 "status": 0,         // requested but not yet claimed
                 "rider": rider.userUID,
-                "event": eventID
+                "event": eventID,
+                "latitude": lat,
+                "longitude": lon
             ]
             
             // Update database

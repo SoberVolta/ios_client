@@ -20,11 +20,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "DedeRides/EventDetailViewController.swift"
-            timestampString = "537270891.1960239"
+            timestampString = "537272004.430222"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "256"
-            endingLineNumber = "256"
+            startingLineNumber = "270"
+            endingLineNumber = "270"
             landmarkName = "eventOwnerDidChange(_:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -37,11 +37,11 @@
             condition = "self.eventDisabled == true"
             continueAfterRunningActions = "No"
             filePath = "DedeRides/EventModel.swift"
-            timestampString = "537270891.196105"
+            timestampString = "537272004.43121"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "261"
-            endingLineNumber = "261"
+            startingLineNumber = "263"
+            endingLineNumber = "263"
             landmarkName = "eventDisabledValueDidChange(snap:)"
             landmarkType = "7">
          </BreakpointContent>

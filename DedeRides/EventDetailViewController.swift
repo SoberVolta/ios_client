@@ -8,6 +8,7 @@
 
 import Foundation
 import UIKit
+import MapKit
 
 enum RideStatus {
     case RideNotRequested
@@ -15,7 +16,7 @@ enum RideStatus {
     case RideActive
 }
 
-class EventDetailViewController : UIViewController {
+class EventDetailViewController : UIViewController, CLLocationManagerDelegate {
     
     //-----------------------------------------------------------------------------------------------------------------
     // MARK: - Member Variables
@@ -35,18 +36,31 @@ class EventDetailViewController : UIViewController {
     // Models
     private var eventModel: EventModel!
     private var userModel: UserModel!
+    private let locationManager = CLLocationManager()
     
     // Member variables
     let defaultButtonColor = UIColor(red: 0.0, green: 0.478431, blue: 1.0, alpha: 1.0)
     let cloverColor = UIColor(red: 0.0, green: 143/255, blue: 0.0, alpha: 1.0)
     private var rideStatus: RideStatus?
     private var currentRide: RideModel?
+    private var currentLatitude: Double?
+    private var currentLongitude: Double?
     
     //-----------------------------------------------------------------------------------------------------------------
     // MARK: - View Controller Functions
     //-----------------------------------------------------------------------------------------------------------------
     
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        self.locationManager.requestWhenInUseAuthorization()
+        self.locationManager.desiredAccuracy = kCLLocationAccuracyBest
+        self.locationManager.startUpdatingLocation()
+    }
+    
     override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
         // Attach listeners
         self.userModel.attachDatabaseListeners()
         self.eventModel.attachDatabaseListeners()
@@ -301,7 +315,9 @@ class EventDetailViewController : UIViewController {
     }
     
     private func requestRide(_: UIAlertAction? = nil) {
-        eventModel.enqueNewRideRequst(rider: userModel)
+        if let lat = locationManager.location?.coordinate.latitude, let lon = locationManager.location?.coordinate.longitude {
+            eventModel.enqueNewRideRequst(rider: userModel, latitude: lat, longitude: lon)
+        }
     }
     
     private func cancelRideRequest(_: UIAlertAction? = nil) {
@@ -442,6 +458,23 @@ class EventDetailViewController : UIViewController {
     private func deleteCurrentEvent(_: UIAlertAction? = nil) {
         // FIXME: Implement Delete Function
         print("Delete Current Event")
+    }
+    
+    //-----------------------------------------------------------------------------------------------------------------
+    // MARK: - Location Manager Delegate
+    //-----------------------------------------------------------------------------------------------------------------
+    
+    private func locationManager(manager: CLLocationManager!, didChangeAuthorizationStatus status: CLAuthorizationStatus) {
+        if status == .authorizedWhenInUse {
+            self.locationManager.startUpdatingLocation()
+        } else {
+            displayAlert(
+                viewController: self,
+                titleText: "Whoops!",
+                messageText: "Dede needs your location in order for you to request a ride.",
+                awknowledgeText: "Okay"
+            )
+        }
     }
     
 }
