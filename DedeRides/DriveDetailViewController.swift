@@ -8,6 +8,7 @@
 
 import Foundation
 import UIKit
+import MapKit
 
 class DriveDetailViewController: UIViewController {
     
@@ -92,7 +93,7 @@ class DriveDetailViewController: UIViewController {
             self.queueIdentifierLabel.text = nil
             self.nextInQueueBtn.setTitle(nil, for: .normal)
             self.currentRideIdentifierLabel.text = "Current Ride"
-            self.currentRideBtn.setTitle(rideID, for: .normal)
+            self.currentRideBtn.setTitle("Get Rider's Location", for: .normal)
             self.endCurrentDriveBtn.setTitle("End Current Drive", for: .normal)
             self.cancelDriveOfferBtn.setTitle(nil, for: .normal)
             
@@ -133,6 +134,39 @@ class DriveDetailViewController: UIViewController {
     
     func takeNextInQueue(_:UIAlertAction) {
         self.eventModel.takeNextRideInQueue(driverUID: currentUser.userUID)
+    }
+    
+    @IBAction func currentRideBtnPressed(sender:Any? = nil) {
+        
+        if let drive = self.activeDrive {
+            
+            if let latitude = drive.ridersLatitude, let longitude = drive.ridersLongitude {
+                
+                // Format coordinates
+                let lat: CLLocationDegrees = latitude
+                let lon: CLLocationDegrees = longitude
+                let coords = CLLocationCoordinate2DMake(lat, lon)
+                
+                // Format map view
+                let regionDistance: CLLocationDistance = 1000
+                let regionSpan = MKCoordinateRegionMakeWithDistance(coords, regionDistance, regionDistance)
+                
+                // Set launch options
+                let options = [
+                    MKLaunchOptionsMapCenterKey: NSValue(mkCoordinate: regionSpan.center),
+                    MKLaunchOptionsMapSpanKey: NSValue(mkCoordinateSpan: regionSpan.span)
+                ]
+                
+                // Open in maps
+                let placeMark = MKPlacemark(coordinate: coords, addressDictionary: nil)
+                let mapItem = MKMapItem(placemark: placeMark)
+                mapItem.name = "Rider's Location"
+                mapItem.openInMaps(launchOptions: options)
+                
+            }
+            
+        }
+        
     }
     
     //-----------------------------------------------------------------------------------------------------------------

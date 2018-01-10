@@ -19,6 +19,7 @@ extension NSNotification.Name {
     public static let RideDriverDidChange = Notification.Name("RideDriverDidChange")
     public static let RideStatusDidChange = Notification.Name("RideStatusDidChange")
     public static let RideWasRemoved = Notification.Name("RideWasRemoved")
+    public static let RidersLocationDidChange = Notification.Name("RidersLocationDidChange")
 }
 
 class RideModel {
@@ -44,6 +45,8 @@ class RideModel {
     var rideDriverUID: String?
     var rideStatus: Int?
     var rideWasRemoved = false
+    var ridersLatitude: Double?
+    var ridersLongitude: Double?
     
     //-----------------------------------------------------------------------------------------------------------------
     // MARK: - Initialization
@@ -62,6 +65,8 @@ class RideModel {
         self.rideRef.child("rider").observe(.value, with: rideRiderValueDidChange)
         self.rideRef.child("driver").observe(.value, with: rideDriverValueDidChange)
         self.rideRef.child("status").observe(.value, with: rideStatusValueDidChange)
+        self.rideRef.child("latitude").observe(.value, with: ridersLatitudeValueDidChange)
+        self.rideRef.child("longitude").observe(.value, with: ridersLongitudeValueDidChange)
         self.rideRef.observe(.value, with: rideWasRemovedValue)
     }
     
@@ -138,6 +143,16 @@ class RideModel {
             self.rideWasRemoved = true
             self.notificationCenter.post(name: .RideWasRemoved, object: self)
         }
+    }
+    
+    private func ridersLatitudeValueDidChange(snap:DataSnapshot) {
+        self.ridersLatitude = snap.value as? Double
+        self.notificationCenter.post(name: .RidersLocationDidChange, object: self)
+    }
+    
+    private func ridersLongitudeValueDidChange(snap:DataSnapshot) {
+        self.ridersLongitude = snap.value as? Double
+        self.notificationCenter.post(name: .RidersLocationDidChange, object: self)
     }
     
 }
