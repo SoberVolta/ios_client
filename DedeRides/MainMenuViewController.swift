@@ -21,8 +21,7 @@ class MainMenuViewController : UITableViewController {
     // Database References
     
     // Table View Variables
-    let sectionTitles = ["New Events", "My Events", "My Rides", "My Drives", "Saved Events"]
-    let newEventOptions = ["Create Event", "Search for event"]
+    let sectionTitles = ["My Events", "My Rides", "My Drives", "Saved Events"]
     
     var selectedEventIdx = -1
     var selectedRideIdx = -1
@@ -40,9 +39,13 @@ class MainMenuViewController : UITableViewController {
         let hiddentBackButton = UIBarButtonItem(title: "", style: .plain, target: navigationController, action: nil)
         navigationItem.leftBarButtonItem = hiddentBackButton
         
+        let add = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addButtonPressed))
+        navigationItem.rightBarButtonItem = add
+        
         // Table View Tasks
         tableView.delegate = self
         tableView.dataSource = self
+//        tableView.backgroundColor = UIColor(red: 93.0/255, green: 15.0/255, blue: 13.0/255, alpha: 1.0)
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "mainMenuCell")
         
         // Add notification observers
@@ -136,6 +139,10 @@ class MainMenuViewController : UITableViewController {
         }
     }
     
+    @objc func addButtonPressed() {
+        performSegue(withIdentifier: "segueToCreateEvent", sender: self)
+    }
+    
     // MARK: Unwind Segues
     
     @IBAction func unwindToMainMenu(segue:UIStoryboardSegue) {
@@ -203,14 +210,12 @@ class MainMenuViewController : UITableViewController {
     // Number of rows in section
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if section == 0 {
-            return newEventOptions.count
-        } else if section == 1 {
             return userModel.userOwnedEvents.count
-        } else if section == 2 {
+        } else if section == 1 {
             return userModel.userRides.count
-        } else if section == 3 {
+        } else if section == 2 {
             return userModel.userDrivesFor.count
-        } else if section == 4 {
+        } else if section == 3 {
             return userModel.userSavedEvents.count
         }
         
@@ -222,17 +227,15 @@ class MainMenuViewController : UITableViewController {
         let cell = tableView.dequeueReusableCell(withIdentifier: "MainMenuCell", for: indexPath) as! LabelCell
         
         if indexPath.section == 0 {
-            cell.textLabel?.text = newEventOptions[indexPath.item]
-        } else if indexPath.section == 1 {
             let eventID = Array(userModel.userOwnedEvents.keys)[indexPath.item]
             cell.textLabel?.text = userModel.userOwnedEvents[eventID]
-        } else if indexPath.section == 2 {
+        } else if indexPath.section == 1 {
             let rideID = Array(userModel.userRides.keys)[indexPath.item]
             cell.textLabel?.text = "Ride to \(userModel.userRides[rideID] ?? "Undetermined Event")"
-        } else if indexPath.section == 3 {
+        } else if indexPath.section == 2 {
             let rideID = Array(userModel.userDrivesFor.keys)[indexPath.item]
             cell.textLabel?.text = "Drive for \(userModel.userDrivesFor[rideID] ?? "Undetermined Event")"
-        } else if indexPath.section == 4 {
+        } else if indexPath.section == 3 {
             let idx = indexPath.item
             let eventID = Array(userModel.userSavedEvents.keys)[idx]
             cell.textLabel?.text = userModel.userSavedEvents[eventID]
@@ -244,28 +247,29 @@ class MainMenuViewController : UITableViewController {
     // Did select cell
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if indexPath.section == 0 {
-            if indexPath.item == 0 {
-                performSegue(withIdentifier: "segueToCreateEvent", sender: self)
-            } else if indexPath.item == 1 {
-                performSegue(withIdentifier: "segueToSearch", sender: self)
-            }
-        } else if indexPath.section == 1 {
             self.selectedEventIdx = indexPath.item
             self.selectedSavedEventIdx = -1
             performSegue(withIdentifier: "segueToEventDetail", sender: self)
-        } else if indexPath.section == 2 {
+        } else if indexPath.section == 1 {
             self.selectedRideIdx = indexPath.item
             performSegue(withIdentifier: "segueToRideDetail", sender: self)
-        } else if indexPath.section == 3 {
+        } else if indexPath.section == 2 {
             self.selectedDriveIdx = indexPath.item
             performSegue(withIdentifier: "segueToDriveDetail", sender: self)
-        } else if indexPath.section == 4 {
+        } else if indexPath.section == 3 {
             self.selectedEventIdx = -1
             self.selectedSavedEventIdx = indexPath.item
             performSegue(withIdentifier: "segueToEventDetail", sender: self)
         }
     }
+    
+    override func tableView(_ tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
+//        let header = view as! UITableViewHeaderFooterView
+//        header.textLabel?.textColor = UIColor.white
+    }
+    
 }
+
 
 //-----------------------------------------------------------------------------------------------------------------
 // MARK: - Custom Cell Type

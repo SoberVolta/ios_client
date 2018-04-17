@@ -11,6 +11,8 @@ target 'DedeRides' do
   pod 'Firebase/Core'
   pod 'Firebase/Auth'
   pod 'Firebase/Database'
+  pod 'Firebase/Messaging'
+  pod 'FirebaseInstanceID'
 
   target 'DedeRidesTests' do
     inherit! :search_paths

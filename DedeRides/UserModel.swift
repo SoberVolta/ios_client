@@ -45,6 +45,7 @@ class UserModel {
     var userDrivesFor = [EventID:EventName]()
     var userActiveDrives = [RideID:EventID]()
     var userSavedEvents = [EventID:EventName]()
+    var subscribedEvents = [String]()
     
     //-----------------------------------------------------------------------------------------------------------------
     // MARK: - Initialization
@@ -94,6 +95,21 @@ class UserModel {
         }
     }
     
+    private func subscribeToEventNotifications(eventID: String) {
+        self.subscribedEvents.append(eventID)
+        print( "Subcribing to \(eventID)" )
+        Messaging.messaging().subscribe(toTopic: eventID)
+    }
+    
+    private func unsubscribeFromAllEventNotifications() {
+        for eventID: String in self.subscribedEvents {
+            print( "Unsubcribing from \(eventID)" )
+            Messaging.messaging().unsubscribe(fromTopic: eventID)
+        }
+        
+        self.subscribedEvents.removeAll()
+    }
+    
     func saveEvent(event: EventModel) {
         if let eventName = event.eventName {
             self.saveEvent(eventID: event.eventID, eventName: eventName)
@@ -136,7 +152,15 @@ class UserModel {
     
     // Update Drives For
     private func userDrivesForSpaceValueDidChange(snap:DataSnapshot) {
+        
+        self.unsubscribeFromAllEventNotifications()
+        
         self.userDrivesFor = snap.value as? [String:String] ?? [String:String]()
+        
+        for eventID: EventID in self.userDrivesFor.keys {
+            self.subscribeToEventNotifications(eventID: eventID)
+        }
+        
         self.notificationCenter.post(name: .UserDrivesForSpaceDidChange, object: self)
     }
     
